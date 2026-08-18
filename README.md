@@ -1,14 +1,17 @@
-# The Next Steps Professional Website — Same-Folder Version
+# The Next Steps Wealth Building Journey
 
-This website uses the supplied Next Steps flyers as the source for its graphics.
+Static website designed for GitHub Pages.
 
-The layout is an original professional financial-website structure: hero section, navigation, calls to action, six-level cards, framework section, coaching callout, roadmap, and dedicated detail pages. It is not a copy of the reference design.
+## Files
+- `index.html` — main landing page
+- `about.html` — about the framework
+- `journey.html` — six-step overview
+- `step-1.html` through `step-6.html` — individual step pages
+- `coaching.html` — coaching
+- `resources.html` — resources
+- `blog.html` — blog
+- `contact.html` — contact form
+- `images/next-steps-hero.jpeg` — supplied hero graphic
+- `style.css` and `script.js` — site styling and behavior
 
-IMPORTANT:
-There is NO images folder.
-
-Every image is in the SAME ROOT FOLDER as index.html, about.html, journey.html, contact.html, step1.html–step6.html, and styles.css.
-
-Upload all files directly into the same GitHub Pages folder. Do not move any image into another folder.
-
-Replace the placeholder contact information in contact.html before publishing.
+No build process or external libraries are required.
