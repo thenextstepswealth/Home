@@ -1,22 +1,21 @@
-# The Next Steps Wealth-Building Journey
+# The Next Steps Wealth-Building Journey — SAME-FOLDER VERSION
 
-This folder is a complete static GitHub Pages website.
+IMPORTANT: There is NO images folder in this version.
 
-## Upload
-Upload the contents of this folder to the root of your GitHub repository. Keep the `images` folder and all HTML/CSS files exactly as arranged.
+Every image file is in the exact same root folder as:
+- index.html
+- about.html
+- journey.html
+- contact.html
+- step1.html through step6.html
+- styles.css
 
-## Entry point
-`index.html`
+All image references use root-relative-to-this-folder filenames such as:
+`src="hero-flyer.jpg"`
+`src="step-1-freedom-row.jpg"`
 
-## Image assets
-All website images are included locally in `images/`. No external image URLs are required.
+Therefore, upload ALL files in this ZIP into the same GitHub repository folder that contains `index.html`.
 
-## Pages
-- Home: index.html
-- About: about.html
-- Journey: journey.html
-- Contact: contact.html
-- Steps 1–6: step1.html through step6.html
+Do NOT create an images folder and do NOT move the image files.
 
-## Before publishing
-Replace the placeholder contact information in `contact.html` with your actual business contact details.
+This package contains all image assets, including the original supplied flyer, header/footer crops, hero graphic, six row graphics, six illustration graphics, six label graphics, and favicon.
