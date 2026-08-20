@@ -1,0 +1,1 @@
+Upload the contents of this folder to your website hosting root. index.html is the homepage. The assets folder contains the website images. The six step pages are linked from the journey cards. No external libraries are required.
