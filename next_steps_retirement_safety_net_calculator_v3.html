@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Next Steps Retirement Safety Net Calculator</title>
+<style>
+:root{--ink:#1f2937;--muted:#667085;--line:#d9dee7;--bg:#f7f8fa;--card:#fff;--accent:#1f5f73;--good:#166534;--warn:#9a3412;--bad:#b42318}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.45}
+.wrap{max-width:1080px;margin:auto;padding:28px 18px 50px}.brand{font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700}
+h1{font-size:2rem;margin:.25rem 0 .35rem} h2{font-size:1.15rem;margin:0 0 14px}.sub{color:var(--muted);margin:0 0 24px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:14px 0;box-shadow:0 1px 2px #00000008}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+label{font-weight:650;font-size:.9rem;display:block;margin-bottom:6px}.hint{font-size:.78rem;color:var(--muted);font-weight:400}
+input,select{width:100%;padding:10px 11px;border:1px solid #cbd2dc;border-radius:9px;background:white;font:inherit}
+input[type=range]{padding:0}.range-row{display:flex;align-items:center;gap:12px}.range-row input{flex:1}.pill{min-width:66px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:7px;background:#fafafa;font-weight:700}
+.check{display:flex;gap:10px;align-items:center}.check input{width:auto}.hidden{display:none}
+.results{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.metric{border:1px solid var(--line);border-radius:12px;padding:15px;background:#fff}.metric .k{font-size:.78rem;color:var(--muted)}.metric .v{font-size:1.4rem;font-weight:750;margin-top:4px}
+.status{border-radius:12px;padding:14px;margin-top:14px;font-weight:650}.good{background:#ecfdf3;color:var(--good)}.bad{background:#fff1f0;color:var(--bad)}
+.info{font-size:.78rem;color:var(--muted);border-top:1px solid var(--line);margin-top:16px;padding-top:13px}.info strong{color:var(--ink)}
+button.info-btn{border:1px solid #cbd2dc;background:#fff;border-radius:50%;width:20px;height:20px;padding:0;line-height:18px;font-size:12px;cursor:pointer}
+.small{font-size:.78rem;color:var(--muted)} .section-title{display:flex;align-items:center;gap:7px}.money{font-variant-numeric:tabular-nums}
+.calculate-wrap{text-align:center;margin:18px 0}
+.calculate-btn{border:0;border-radius:10px;padding:12px 20px;background:var(--accent);color:#fff;font:inherit;font-weight:750;cursor:pointer}
+.calculate-btn:hover{opacity:.92}
+@media(max-width:760px){.grid,.grid3,.results{grid-template-columns:1fr}h1{font-size:1.55rem}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">Next Steps Wealth-Building Journey</div>
+  <h1>Retirement Safety Net Calculator</h1>
+  <p class="sub">Step 2 — SECURE YOUR FUTURE. Estimate the retirement income you may need, the retirement safety net that could support it, and whether your current savings and contributions are on track.</p>
+
+  <form id="calc">
+    <div class="card">
+      <div class="section-title"><h2>Your Information</h2></div>
+      <div class="grid">
+        <div><label>Year born</label><input id="birth" type="number" min="1930" max="2010" value="1975"></div>
+        <div><label>Retirement age <span class="hint">(auto-populated from Social Security full retirement age)</span></label><input id="retAge" type="number" min="50" max="80" step=".1"></div>
+        <div><label>Your annual income</label><input id="income" type="number" min="0" step="1000" value="100000"></div>
+        <div><label>Current retirement savings</label><input id="savings" type="number" min="0" step="1000" value="100000"></div>
+        <div><label>Current retirement contribution</label>
+          <div class="range-row"><input id="contribPct" type="range" min="0" max="100" step=".5" value="5"><span class="pill" id="contribPctOut">5%</span></div>
+          <div class="hint">Estimated current annual contribution: <span id="contribAmt" class="money"></span></div>
+        </div>
+        <div><label>Expected annual income increase <button type="button" class="info-btn" title="Annual percentage increase you expect in income.">?</button></label><input id="incomeGrowth" type="number" min="0" max="20" step=".5" value="3"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Retirement Income Target</h2>
+      <label>Pre-retirement income desired in retirement <button type="button" class="info-btn" title="This is a planning assumption, not a universal recommendation.">?</button></label>
+      <div class="range-row"><input id="replacement" type="range" min="40" max="100" step=".5" value="70"><span class="pill" id="replacementOut">70%</span></div>
+      <div class="info"><strong>Why this range?</strong> Organizations publish different retirement-income planning guidelines. Fidelity, Vanguard and T. Rowe Price use different approaches and ranges. These figures are general planning examples—not guarantees or individualized recommendations. Your retirement-income need depends on your own circumstances, spending, taxes, housing, healthcare, Social Security and other factors.</div>
+    </div>
+
+    <div class="card">
+      <h2>Investment & Inflation Assumptions</h2>
+      <div class="grid">
+        <div><label>Return before retirement <button type="button" class="info-btn" title="Hypothetical annual return assumption. Higher expected returns generally involve greater risk and volatility.">?</button></label><input id="preReturn" type="number" min="0" max="25" step=".1" value="7"></div>
+        <div><label>Return during retirement <button type="button" class="info-btn" title="Hypothetical annual return assumption during retirement. Actual returns can vary widely.">?</button></label><input id="postReturn" type="number" min="0" max="25" step=".1" value="4"></div>
+        <div><label>Expected inflation <button type="button" class="info-btn" title="Long-term annual inflation assumption.">?</button></label><select id="inflation"><option>2</option><option>2.5</option><option selected>3</option><option>3.5</option><option>4</option></select></div>
+      </div>
+      <div class="info"><strong>Return assumptions:</strong> Results are hypothetical. Future investment returns cannot be predicted with certainty; actual returns may vary, including periods of loss. The calculator does not recommend a particular investment or allocation.</div>
+    </div>
+
+    <div class="card">
+      <h2>Social Security</h2>
+      <div class="check"><input id="includeSS" type="checkbox" checked><label for="includeSS">Include estimated Social Security</label></div>
+      <div class="check" style="margin-top:10px"><input id="married" type="checkbox"><label for="married">Married</label></div>
+      <div id="spouseBlock" class="hidden" style="margin-top:15px">
+        <div class="check"><input id="bothWork" type="checkbox"><label for="bothWork">Both spouses work</label></div>
+        <div id="spouseFields" class="hidden" style="margin-top:15px">
+          <div class="grid">
+            <div><label>Spouse year born</label><input id="spBirth" type="number" min="1930" max="2010" value="1975"></div>
+            <div><label>Spouse retirement age</label><input id="spRetAge" type="number" min="50" max="80" step=".1"></div>
+            <div><label>Spouse annual income</label><input id="spIncome" type="number" min="0" step="1000" value="60000"></div>
+            <div><label>Spouse current retirement savings</label><input id="spSavings" type="number" min="0" step="1000" value="50000"></div>
+            <div><label>Spouse current retirement contribution</label><div class="range-row"><input id="spContribPct" type="range" min="0" max="100" step=".5" value="5"><span class="pill" id="spContribOut">5%</span></div><div class="hint">Annual: <span id="spContribAmt"></span></div></div>
+            <div><label>Spouse expected annual income increase</label><input id="spGrowth" type="number" min="0" max="20" step=".5" value="3"></div>
+          </div>
+        </div>
+      </div>
+      <div class="info"><strong>Estimate:</strong> Social Security is complex and normally depends on a worker's earnings history, highest 35 years of indexed earnings, benefit claiming age and other rules. This calculator uses a simplified planning estimate rather than an official benefit determination. For a personalized estimate, use your Social Security earnings record.</div>
+    </div>
+  </form>
+
+  <div class="calculate-wrap">
+    <button id="calculateBtn" type="button" class="calculate-btn">Calculate Retirement Safety Net</button>
+  </div>
+
+  <div class="card">
+    <h2>Your Results</h2>
+    <div class="results">
+      <div class="metric"><div class="k">Projected household income at retirement</div><div class="v money" id="rIncome">—</div></div>
+      <div class="metric"><div class="k">Retirement income target</div><div class="v money" id="rTarget">—</div></div>
+      <div class="metric"><div class="k">Estimated Social Security</div><div class="v money" id="rSS">—</div></div>
+      <div class="metric"><div class="k">Income to be funded</div><div class="v money" id="rGapIncome">—</div></div>
+      <div class="metric"><div class="k">Retirement safety net target</div><div class="v money" id="rNeed">—</div></div>
+      <div class="metric"><div class="k">Projected retirement savings</div><div class="v money" id="rProj">—</div></div>
+    </div>
+    <div id="status" class="status"></div>
+    <div class="info">
+      <strong>4% withdrawal assumption:</strong> The calculator uses a 4% planning assumption to translate the retirement income that must be funded by the portfolio into a retirement safety-net target. It is a hypothetical planning assumption, not a guarantee that money will last for life.
+      <br><br>
+      <strong>Planning horizon:</strong> The calculator uses age 102 as the fixed planning age. Years of retirement are calculated automatically from the retirement age.
+      <br><br>
+      <strong>Important:</strong> This tool is for education and planning discussion. It is not investment, tax, legal or individualized financial advice.
+    </div>
+  </div>
+
+  <div class="card small">
+    <strong>Calculation note:</strong> Pre-retirement savings are projected annually. Contributions are based on the selected percentage of projected income and grow as income grows. If spouses have different retirement ages, each spouse's savings are projected to their own retirement age and then carried forward at the during-retirement return assumption until the later spouse's retirement date. Social Security is estimated separately for working spouses.
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(Math.max(0,n||0));
+function fra(year){
+  if(year<=1937)return 65;
+  if(year<=1942)return 65+(year-1937)*2/12;
+  if(year<=1954)return 66;
+  if(year===1955)return 66+2/12;
+  if(year===1956)return 66+4/12;
+  if(year===1957)return 66.5;
+  if(year===1958)return 66+8/12;
+  if(year===1959)return 66+10/12;
+  return 67;
+}
+function setFRA(birthId,retId){
+  const y=+$(birthId).value||1975;
+  $(retId).value=(Math.round(fra(y)*10)/10).toFixed(1).replace('.0','');
+}
+function fvSavings(savings,income,pct,growth,ret,years){
+  let s=savings, inc=income, r=ret/100, g=growth/100, c=pct/100;
+  for(let y=0;y<years;y++){ s=s*(1+r)+inc*c; inc*=1+g; }
+  return s;
+}
+function ssEstimate(income,retAge){
+  // Simplified planning proxy: treat current annual earnings as a proxy for
+  // AIME, then apply the 2026 SSA PIA brackets. This is deliberately labeled
+  // an estimate; it is not an official SSA benefit calculation.
+  const aime=Math.min(Math.max(income/12,0),14358);
+  let pia=0;
+  pia += Math.min(aime,1286)*.90;
+  pia += Math.max(Math.min(aime,7749)-1286,0)*.32;
+  pia += Math.max(aime-7749,0)*.15;
+  const fraAge=67;
+  let factor=1;
+  if(retAge<fraAge){
+    const months=Math.round((fraAge-retAge)*12);
+    const first=Math.min(months,36), extra=Math.max(months-36,0);
+    factor -= first*(5/9/100)+extra*(5/12/100);
+  }else if(retAge>fraAge){
+    const months=Math.min(Math.round((retAge-fraAge)*12),36);
+    factor += months*(2/3/100);
+  }
+  return Math.max(0,pia*12*factor);
+}
+function update(){
+  const birth=+$('birth').value||1975;
+  if(document.activeElement!==$('retAge')) setFRA('birth','retAge');
+  $('contribPctOut').textContent=Number($('contribPct').value).toFixed(1).replace('.0','')+'%';
+  $('contribAmt').textContent=money((+$('income').value||0)*(+$('contribPct').value||0)/100);
+
+  $('spouseBlock').classList.toggle('hidden',!$('married').checked);
+  $('spouseFields').classList.toggle('hidden',!$('bothWork').checked || !$('married').checked);
+  if($('married').checked && $('bothWork').checked && !$('spRetAge').value) setFRA('spBirth','spRetAge');
+  if($('married').checked && $('bothWork').checked) {
+    $('spContribOut').textContent=Number($('spContribPct').value).toFixed(1).replace('.0','')+'%';
+    $('spContribAmt').textContent=money((+$('spIncome').value||0)*(+$('spContribPct').value||0)/100);
+  }
+
+  const income=+$('income').value||0, savings=+$('savings').value||0, pct=+$('contribPct').value||0;
+  const growth=+$('incomeGrowth').value||0, preR=+$('preReturn').value||0, postR=+$('postReturn').value||0;
+  const infl=+$('inflation').value||3, repl=+$('replacement').value||70;
+  const retAge=+$('retAge').value||67;
+  const years=Math.max(0,retAge-(new Date().getFullYear()-birth));
+  const projectedIncome=income*Math.pow(1+growth/100,years);
+  const target=projectedIncome*repl/100*Math.pow(1+infl/100,years);
+  let ss=0;
+  if($('includeSS').checked){
+    ss=ssEstimate(income,retAge);
+    if($('married').checked && !$('bothWork').checked) ss*=1.5;
+    if($('married').checked && $('bothWork').checked){
+      const si=+$('spIncome').value||0, sra=+$('spRetAge').value||67;
+      ss+=ssEstimate(si,sra);
+    }
+  }
+  // Approximate inflation-adjusted SS at retirement to align the target basis.
+  ss*=Math.pow(1+infl/100,years);
+  const fund=Math.max(0,target-ss);
+  const need=fund/.04;
+
+  let proj=fvSavings(savings,income,pct,growth,preR,years);
+  if($('married').checked && $('bothWork').checked){
+    const spBirth=+$('spBirth').value||1975, spAge=+$('spRetAge').value||67;
+    const spYears=Math.max(0,spAge-(new Date().getFullYear()-spBirth));
+    const spProj=fvSavings(+$('spSavings').value||0,+$('spIncome').value||0,+$('spContribPct').value||0,+$('spGrowth').value||0,preR,spYears);
+    const mainYears=years;
+    const spAtLater=spAge>retAge?spProj:spProj*Math.pow(1+postR/100,Math.max(0,retAge-spAge));
+    const mainAtLater=spAge>retAge?proj*Math.pow(1+postR/100,Math.max(0,spAge-retAge)):proj;
+    proj=mainAtLater+spAtLater;
+  }
+
+  const surplus=proj-need;
+  $('replacementOut').textContent=repl+'%';
+  $('rIncome').textContent=money(projectedIncome);
+  $('rTarget').textContent=money(target);
+  $('rSS').textContent=money(ss);
+  $('rGapIncome').textContent=money(fund);
+  $('rNeed').textContent=money(need);
+  $('rProj').textContent=money(proj);
+  const status=$('status');
+  if(surplus>=0){
+    status.className='status good';
+    status.textContent='Projected retirement savings exceed the estimated retirement safety net target by '+money(surplus)+'.';
+  }else{
+    // Solve for a constant annual contribution amount that closes the gap.
+    const n=Math.max(years,1), r=preR/100;
+    const factor=r===0?n:((Math.pow(1+r,n)-1)/r);
+    const annual=Math.abs(surplus)/factor;
+    status.className='status bad';
+    status.textContent='Estimated shortfall: '+money(Math.abs(surplus))+'. Additional amount needed per year: approximately '+money(annual)+'.';
+  }
+}
+const inputIds = ['birth','retAge','income','savings','contribPct','incomeGrowth','preReturn','postReturn','inflation','replacement','includeSS','married','bothWork','spBirth','spRetAge','spIncome','spSavings','spContribPct','spGrowth'];
+
+function refreshContributionDisplays(){
+  const pct = Number($('contribPct').value || 0);
+  $('contribPctOut').textContent = pct.toFixed(1).replace('.0','') + '%';
+  $('contribAmt').textContent = money((Number($('income').value) || 0) * pct / 100);
+
+  const spPct = Number($('spContribPct').value || 0);
+  $('spContribOut').textContent = spPct.toFixed(1).replace('.0','') + '%';
+  $('spContribAmt').textContent = money((Number($('spIncome').value) || 0) * spPct / 100);
+}
+
+function refreshReplacementDisplay(){
+  const pct = Number($('replacement').value || 0);
+  $('replacementOut').textContent = pct.toFixed(1).replace('.0','') + '%';
+}
+
+inputIds.forEach(id => {
+  const el = $(id);
+  if (!el) return;
+  el.addEventListener('input', function(){
+    refreshContributionDisplays();
+    refreshReplacementDisplay();
+    update();
+  });
+  el.addEventListener('change', function(){
+    refreshContributionDisplays();
+    refreshReplacementDisplay();
+    update();
+  });
+});
+
+$('birth').addEventListener('input', function(){
+  setFRA('birth','retAge');
+  update();
+});
+
+$('spBirth').addEventListener('input', function(){
+  if ($('married').checked && $('bothWork').checked) setFRA('spBirth','spRetAge');
+  update();
+});
+
+$('contribPct').addEventListener('input', function(){
+  refreshContributionDisplays();
+  update();
+});
+
+$('replacement').addEventListener('input', function(){
+  refreshReplacementDisplay();
+  update();
+});
+
+$('spContribPct').addEventListener('input', function(){
+  refreshContributionDisplays();
+  update();
+});
+
+$('calculateBtn').addEventListener('click', function(){
+  update();
+  $('rIncome').scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+refreshContributionDisplays();
+refreshReplacementDisplay();
+setFRA('birth','retAge');
+if ($('spBirth').value) setFRA('spBirth','spRetAge');
+update();
+</script>
+</body>
+</html>
