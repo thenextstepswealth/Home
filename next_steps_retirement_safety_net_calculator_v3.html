@@ -102,16 +102,17 @@ button.info-btn{border:1px solid #cbd2dc;background:#fff;border-radius:50%;width
     </div>
     <div id="status" class="status"></div>
     <div class="info">
-      <strong>4% withdrawal assumption:</strong> The calculator uses a 4% planning assumption to translate the retirement income that must be funded by the portfolio into a retirement safety-net target. It is a hypothetical planning assumption, not a guarantee that money will last for life.
+      <strong>Retirement safety-net calculation:</strong> The calculator estimates the amount needed at retirement by calculating the present value of the projected retirement-income shortfall over the planning horizon, using the selected return during retirement and inflation assumptions.
       <br><br>
-      <strong>Planning horizon:</strong> The calculator uses age 102 as the fixed planning age. Years of retirement are calculated automatically from the retirement age.
+      <strong>Planning horizon:</strong> The calculator uses age 102 as the fixed planning age. Retirement-income payments are calculated from the retirement age through age 102.
       <br><br>
       <strong>Important:</strong> This tool is for education and planning discussion. It is not investment, tax, legal or individualized financial advice.
     </div>
   </div>
 
+<div class="info"><strong>AARP-method benchmark:</strong> The calculation structure follows the retirement-income present-value approach reflected in the AARP Retirement Nest Egg Calculator. Exact Social Security estimates may differ because AARP's proprietary simplified benefit estimation is not fully published.</div>
   <div class="card small">
-    <strong>Calculation note:</strong> Pre-retirement savings are projected annually. Contributions are based on the selected percentage of projected income and grow as income grows. If spouses have different retirement ages, each spouse's savings are projected to their own retirement age and then carried forward at the during-retirement return assumption until the later spouse's retirement date. Social Security is estimated separately for working spouses.
+    <strong>Calculation note:</strong> Pre-retirement savings are projected annually using the selected return and contribution assumptions. Contributions are made through the year before retirement; the retirement year itself does not include a contribution. Retirement income is projected annually for the fixed age-102 planning horizon, with inflation applied to both retirement income and estimated Social Security. Social Security is estimated separately for working spouses.
   </div>
 </div>
 
@@ -134,8 +135,16 @@ function setFRA(birthId,retId){
   $(retId).value=(Math.round(fra(y)*10)/10).toFixed(1).replace('.0','');
 }
 function fvSavings(savings,income,pct,growth,ret,years){
+  // AARP timing: retirement is at the start of the retirement year.
+  // Contributions are made at the end of each year before retirement,
+  // so the retirement-year contribution is excluded.
+  const n=Math.max(0,years-1);
   let s=savings, inc=income, r=ret/100, g=growth/100, c=pct/100;
-  for(let y=0;y<years;y++){ s=s*(1+r)+inc*c; inc*=1+g; }
+  for(let y=1;y<=n;y++){
+    s=s*(1+r);
+    inc*=1+g;
+    s+=inc*c;
+  }
   return s;
 }
 function ssEstimate(income,retAge){
@@ -159,73 +168,125 @@ function ssEstimate(income,retAge){
   }
   return Math.max(0,pia*12*factor);
 }
+function retirementPV(annualIncome, annualSS, inflation, retirementReturn, retirementAge){
+  // AARP-style timing: the first retirement withdrawal occurs after
+  // one year of retirement growth. With a fixed planning age of 102,
+  // ages retirementAge through 102 are included.
+  const n=Math.max(0,102-Math.round(retirementAge)+1);
+  const inf=inflation/100, r=retirementReturn/100;
+  let pv=0;
+  for(let t=0;t<n;t++){
+    const income=(annualIncome*Math.pow(1+inf,t));
+    const ss=(annualSS*Math.pow(1+inf,t));
+    const withdrawal=Math.max(0,income-ss);
+    pv += withdrawal/Math.pow(1+r,t+1);
+  }
+  return pv;
+}
+
+function projectedRetirementIncome(income,growth,retirementAge,birth){
+  const currentYear=new Date().getFullYear();
+  const yearsToRetirement=Math.max(0,Math.round(retirementAge-(currentYear-birth)));
+  // Last working year's income is one growth step less than the
+  // number of years until retirement, matching AARP's displayed example.
+  const growthYears=Math.max(0,yearsToRetirement-1);
+  return income*Math.pow(1+growth/100,growthYears);
+}
+
 function update(){
   const birth=+$('birth').value||1975;
-  if(document.activeElement!==$('retAge')) setFRA('birth','retAge');
-  $('contribPctOut').textContent=Number($('contribPct').value).toFixed(1).replace('.0','')+'%';
-  $('contribAmt').textContent=money((+$('income').value||0)*(+$('contribPct').value||0)/100);
+  const income=+$('income').value||0;
+  const savings=+$('savings').value||0;
+  const pct=+$('contribPct').value||0;
+  const growth=+$('incomeGrowth').value||0;
+  const preR=+$('preReturn').value||0;
+  const postR=+$('postReturn').value||0;
+  const infl=+$('inflation').value||3;
+  const repl=+$('replacement').value||70;
+  const retAge=+$('retAge').value||67;
+  const currentYear=new Date().getFullYear();
+  const yearsToRetirement=Math.max(0,Math.round(retAge-(currentYear-birth)));
+
+  $('contribPctOut').textContent=Number(pct).toFixed(1).replace('.0','')+'%';
+  $('contribAmt').textContent=money(income*pct/100);
 
   $('spouseBlock').classList.toggle('hidden',!$('married').checked);
   $('spouseFields').classList.toggle('hidden',!$('bothWork').checked || !$('married').checked);
-  if($('married').checked && $('bothWork').checked && !$('spRetAge').value) setFRA('spBirth','spRetAge');
+
   if($('married').checked && $('bothWork').checked) {
-    $('spContribOut').textContent=Number($('spContribPct').value).toFixed(1).replace('.0','')+'%';
-    $('spContribAmt').textContent=money((+$('spIncome').value||0)*(+$('spContribPct').value||0)/100);
+    const spPct=+$('spContribPct').value||0;
+    $('spContribOut').textContent=Number(spPct).toFixed(1).replace('.0','')+'%';
+    $('spContribAmt').textContent=money((+$('spIncome').value||0)*spPct/100);
   }
 
-  const income=+$('income').value||0, savings=+$('savings').value||0, pct=+$('contribPct').value||0;
-  const growth=+$('incomeGrowth').value||0, preR=+$('preReturn').value||0, postR=+$('postReturn').value||0;
-  const infl=+$('inflation').value||3, repl=+$('replacement').value||70;
-  const retAge=+$('retAge').value||67;
-  const years=Math.max(0,retAge-(new Date().getFullYear()-birth));
-  const projectedIncome=income*Math.pow(1+growth/100,years);
-  const target=projectedIncome*repl/100*Math.pow(1+infl/100,years);
+  const projectedIncome=projectedRetirementIncome(income,growth,retAge,birth);
+  const target=projectedIncome*repl/100;
+
   let ss=0;
   if($('includeSS').checked){
     ss=ssEstimate(income,retAge);
     if($('married').checked && !$('bothWork').checked) ss*=1.5;
     if($('married').checked && $('bothWork').checked){
-      const si=+$('spIncome').value||0, sra=+$('spRetAge').value||67;
+      const si=+$('spIncome').value||0;
+      const sra=+$('spRetAge').value||67;
       ss+=ssEstimate(si,sra);
     }
   }
-  // Approximate inflation-adjusted SS at retirement to align the target basis.
-  ss*=Math.pow(1+infl/100,years);
-  const fund=Math.max(0,target-ss);
-  const need=fund/.04;
 
-  let proj=fvSavings(savings,income,pct,growth,preR,years);
+  // AARP-style retirement-income target is stated in the year immediately
+  // before retirement. The retirement-income stream is then inflation adjusted.
+  const need=retirementPV(target,ss,infl,postR,retAge);
+
+  // Project existing savings and current contributions to the start of
+  // the retirement year, using end-of-year contributions through age-1.
+  let proj=fvSavings(savings,income,pct,growth,preR,yearsToRetirement);
+
   if($('married').checked && $('bothWork').checked){
-    const spBirth=+$('spBirth').value||1975, spAge=+$('spRetAge').value||67;
-    const spYears=Math.max(0,spAge-(new Date().getFullYear()-spBirth));
-    const spProj=fvSavings(+$('spSavings').value||0,+$('spIncome').value||0,+$('spContribPct').value||0,+$('spGrowth').value||0,preR,spYears);
-    const mainYears=years;
-    const spAtLater=spAge>retAge?spProj:spProj*Math.pow(1+postR/100,Math.max(0,retAge-spAge));
-    const mainAtLater=spAge>retAge?proj*Math.pow(1+postR/100,Math.max(0,spAge-retAge)):proj;
-    proj=mainAtLater+spAtLater;
+    const spBirth=+$('spBirth').value||1975;
+    const spAge=+$('spRetAge').value||67;
+    const spYears=Math.max(0,Math.round(spAge-(currentYear-spBirth)));
+    const spProj=fvSavings(
+      +$('spSavings').value||0,
+      +$('spIncome').value||0,
+      +$('spContribPct').value||0,
+      +$('spGrowth').value||0,
+      preR,
+      spYears
+    );
+
+    // Carry the earlier retiree's balance forward at the retirement return
+    // until the later retirement date so the household is measured together.
+    const laterAge=Math.max(retAge,spAge);
+    const mainAtLater=proj*Math.pow(1+postR/100,Math.max(0,laterAge-retAge));
+    const spouseAtLater=spProj*Math.pow(1+postR/100,Math.max(0,laterAge-spAge));
+    proj=mainAtLater+spouseAtLater;
   }
 
   const surplus=proj-need;
-  $('replacementOut').textContent=repl+'%';
+
+  $('replacementOut').textContent=Number(repl).toFixed(1).replace('.0','')+'%';
   $('rIncome').textContent=money(projectedIncome);
   $('rTarget').textContent=money(target);
   $('rSS').textContent=money(ss);
-  $('rGapIncome').textContent=money(fund);
+  $('rGapIncome').textContent=money(Math.max(0,target-ss));
   $('rNeed').textContent=money(need);
   $('rProj').textContent=money(proj);
+
   const status=$('status');
   if(surplus>=0){
     status.className='status good';
     status.textContent='Projected retirement savings exceed the estimated retirement safety net target by '+money(surplus)+'.';
   }else{
-    // Solve for a constant annual contribution amount that closes the gap.
-    const n=Math.max(years,1), r=preR/100;
+    // Solve for a constant additional annual contribution made at the end
+    // of each pre-retirement year. This is a planning estimate.
+    const n=Math.max(yearsToRetirement-1,1), r=preR/100;
     const factor=r===0?n:((Math.pow(1+r,n)-1)/r);
     const annual=Math.abs(surplus)/factor;
     status.className='status bad';
     status.textContent='Estimated shortfall: '+money(Math.abs(surplus))+'. Additional amount needed per year: approximately '+money(annual)+'.';
   }
 }
+
 const inputIds = ['birth','retAge','income','savings','contribPct','incomeGrowth','preReturn','postReturn','inflation','replacement','includeSS','married','bothWork','spBirth','spRetAge','spIncome','spSavings','spContribPct','spGrowth'];
 
 function refreshContributionDisplays(){
@@ -258,12 +319,12 @@ inputIds.forEach(id => {
   });
 });
 
-$('birth').addEventListener('input', function(){
+$('birth').addEventListener('change', function(){
   setFRA('birth','retAge');
   update();
 });
 
-$('spBirth').addEventListener('input', function(){
+$('spBirth').addEventListener('change', function(){
   if ($('married').checked && $('bothWork').checked) setFRA('spBirth','spRetAge');
   update();
 });
