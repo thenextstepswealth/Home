@@ -1,0 +1,14 @@
+UPLOAD THESE FILES TO THE ROOT OF thenextstepswealth/Home:
+
+SIX_STEP_SECTION.html
+SIX_STEP_SECTION.css
+
+IMPORTANT:
+The current live index.html was successfully retrieved from GitHub. It is the
+existing homepage. The new Six-Step section should be inserted immediately
+after the introductory section and before Client Journey.
+
+The section uses the existing Assets/step-1.jpg through step-6.jpg and
+Assets/step-1.png through step-6.png files.
+
+Do not delete or replace the Assets folder.

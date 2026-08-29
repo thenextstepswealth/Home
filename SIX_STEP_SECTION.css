@@ -1,0 +1,32 @@
+/* NEXT STEPS — SIX-STEP HOMEPAGE SECTION */
+.six-step-home{padding:82px 6vw;background:#fff}
+.six-step-heading{margin-bottom:40px}
+.intro h2,.section h2,.six-step-heading h2{font-size:clamp(32px,4vw,52px);line-height:1.1;color:var(--navy);margin:8px 0 18px}
+.six-step-list{display:flex;flex-direction:column;gap:18px}
+.six-step-row{display:grid;grid-template-columns:minmax(250px,.92fr) minmax(380px,1.28fr) 210px;min-height:300px;border:1px solid #e0e6ef;background:#fff;overflow:hidden;box-shadow:0 10px 28px rgba(6,38,92,.07)}
+.six-step-image{min-height:300px;background:#e8edf4;overflow:hidden}
+.six-step-image img{display:block;width:100%;height:100%;min-height:300px;object-fit:cover;object-position:center;transition:transform .35s ease}
+.six-step-row:hover .six-step-image img{transform:scale(1.02)}
+.six-step-copy{padding:34px 38px;display:flex;flex-direction:column;justify-content:center;border-left:1px solid #e0e6ef;border-right:1px solid #e0e6ef}
+.six-step-number{font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;margin-bottom:6px}
+.six-step-copy h3{margin:0 0 8px;font-size:clamp(28px,3vw,42px);line-height:1.02;letter-spacing:-.025em}
+.six-step-copy h4{margin:0 0 10px;font-size:18px;line-height:1.35;color:var(--ink)}
+.six-step-copy p{margin:0;color:var(--muted);font-size:16px;line-height:1.55}
+.six-step-link{display:inline-block;width:max-content;margin-top:16px;text-decoration:none;font-weight:900}
+.six-step-icon{display:flex;align-items:center;justify-content:center;padding:20px;background:var(--navy)}
+.six-step-icon img{display:block;width:min(175px,90%);height:auto;aspect-ratio:1;object-fit:contain}
+.step-freedom .six-step-number,.step-freedom .six-step-link{color:#006b42}.step-secure .six-step-number,.step-secure .six-step-link{color:#0c7184}.step-build .six-step-number,.step-build .six-step-link{color:#d48800}.step-grow .six-step-number,.step-grow .six-step-link{color:#165fc2}.step-shift .six-step-number,.step-shift .six-step-link{color:#552d83}.step-thrive .six-step-number,.step-thrive .six-step-link{color:#77408b}
+.step-freedom .six-step-icon{background:#006b42}.step-secure .six-step-icon{background:#0c7184}.step-build .six-step-icon{background:#d48800}.step-grow .six-step-icon{background:#165fc2}.step-shift .six-step-icon{background:#552d83}.step-thrive .six-step-icon{background:#77408b}
+.six-step-cta{margin-top:34px}
+@media(max-width:900px){.six-step-row{grid-template-columns:1fr 1.35fr}.six-step-icon{display:none}}
+@media(max-width:800px){
+.six-step-home{padding:58px 20px}
+.six-step-row{grid-template-columns:1fr}
+.six-step-image,.six-step-image img{min-height:245px;height:245px}
+.six-step-copy{border-left:0;border-right:0;border-top:1px solid #e0e6ef;padding:28px 24px}
+.six-step-copy h3{font-size:32px}
+.six-step-copy h4{font-size:17px}
+.six-step-icon{display:flex;min-height:145px;padding:16px}
+.six-step-icon img{width:120px}
+.six-step-list{gap:14px}
+}
