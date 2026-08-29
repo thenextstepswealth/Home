@@ -7,9 +7,8 @@
 <meta name="description" content="The Six-Step Wealth-Building Journey.">
 <style>
 :root{
-  --navy:#06265c; --gold:#d99a12; --ink:#17233a; --muted:#536176;
-  --green:#306143; --teal:#3a7a86; --orange:#c58d36;
-  --blue:#3062a1; --purple:#60429e;
+  --navy:#06265c;--gold:#d99a12;--ink:#17233a;--muted:#536176;
+  --green:#306143;--teal:#3a7a86;--orange:#c58d36;--blue:#3062a1;--purple:#60429e
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -20,65 +19,136 @@ nav{position:sticky;top:0;z-index:20;background:rgba(6,38,92,.98);padding:14px 4
 .links a{color:#fff;text-decoration:none;font-size:14px;font-weight:700}
 .cta-nav{background:var(--gold);padding:10px 16px;border-radius:30px}
 .menu{display:none;background:none;border:0;color:#fff;font-size:26px}
-.page-intro{text-align:center;max-width:1050px;margin:0 auto;padding:70px 24px 48px}
+.page-intro{text-align:center;max-width:1000px;margin:0 auto;padding:72px 24px 48px}
 .eyebrow{color:var(--gold);font-size:13px;font-weight:900;letter-spacing:.18em;text-transform:uppercase}
 .page-intro h1{font-size:clamp(40px,5vw,64px);line-height:1.02;color:var(--navy);margin:10px 0 16px}
 .page-intro p{font-size:19px;line-height:1.7;color:var(--muted);max-width:900px;margin:0 auto}
 
-.viewer{max-width:1280px;margin:0 auto;padding:0 30px 80px}
+.viewer{max-width:1280px;margin:0 auto;padding:0 34px 70px}
 .step-view{display:none}
 .step-view.active{display:block}
 
+/* Visual introduction: image + title. The icon is intentionally reserved
+   for the bottom journey navigation so the reading area remains dominant. */
 .step-visual{
   display:grid;
-  grid-template-columns:minmax(180px,24%) minmax(0,1fr) minmax(150px,19%);
-  gap:clamp(28px,4vw,58px);
+  grid-template-columns:minmax(210px,28%) minmax(0,1fr);
+  gap:clamp(34px,5vw,72px);
   align-items:center;
-  padding:10px 0 38px;
+  padding:8px 0 44px;
   border-bottom:1px solid #e1e6ee;
 }
 .step-story{width:100%;aspect-ratio:9/10;overflow:hidden;border-radius:4px;background:#e9edf3}
 .step-story img{display:block;width:100%;height:100%;object-fit:cover}
 .step-heading{min-width:0}
-.step-label{color:var(--step-color);font-size:13px;font-weight:900;letter-spacing:.17em;text-transform:uppercase;margin-bottom:10px}
-.step-heading h2{color:var(--step-color);font-size:clamp(38px,4.3vw,64px);line-height:1.02;margin:0 0 18px}
-.step-heading h3{color:var(--ink);font-size:clamp(19px,1.65vw,25px);line-height:1.35;margin:0}
-.step-icon{width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center}
-.step-icon img{display:block;width:100%;height:100%;object-fit:contain}
+.step-label{color:var(--step-color);font-size:14px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;margin-bottom:12px}
+.step-heading h2{color:var(--step-color);font-size:clamp(48px,6vw,82px);line-height:.98;margin:0 0 18px;max-width:850px}
+.step-heading h3{color:var(--ink);font-size:clamp(20px,1.7vw,27px);line-height:1.35;margin:0;max-width:760px}
 
-.step-reading{max-width:950px;margin:0 auto;padding:48px 0 26px}
-.reading-section{margin:0 0 42px}
-.reading-section:last-child{margin-bottom:0}
-.reading-section h4{
-  color:var(--step-color);font-size:14px;font-weight:900;
-  letter-spacing:.16em;text-transform:uppercase;margin:0 0 13px
+/* Reading is the primary experience. */
+.step-reading{max-width:960px;margin:0 auto;padding:54px 0 20px}
+.step-reading p{margin:0}
+.step-lead{
+  font-size:clamp(20px,1.55vw,24px);
+  line-height:1.75;
+  color:var(--muted);
+  margin-bottom:38px!important
 }
-.reading-section p{font-size:clamp(17px,1.3vw,20px);line-height:1.8;margin:0;color:var(--ink)}
-.reading-section .description{font-size:clamp(19px,1.45vw,22px);color:var(--muted)}
-.topic-list{display:flex;flex-wrap:wrap;gap:9px;margin:0;padding:0;list-style:none}
-.topic-list li{
-  border:1px solid #d8dfe8;border-radius:22px;padding:7px 13px;
-  color:var(--ink);font-size:14px;line-height:1.25;background:#fff
+.reading-block{margin:0 0 42px}
+.reading-block h4{
+  color:var(--step-color);
+  font-size:14px;font-weight:900;letter-spacing:.15em;
+  text-transform:uppercase;margin:0 0 13px
 }
-.framework{
+.reading-block p{
+  color:var(--ink);
+  font-size:clamp(17px,1.25vw,20px);
+  line-height:1.8
+}
+.reading-block p + p{margin-top:18px}
+.framework-block{
   border-left:4px solid var(--step-color);
-  padding:4px 0 4px 24px;
+  padding:4px 0 4px 25px
 }
-.framework p{color:var(--muted)}
+.key-line{
+  font-size:clamp(24px,2vw,31px)!important;
+  line-height:1.4!important;
+  color:var(--step-color)!important;
+  font-weight:800
+}
+
+/* Journey navigation: all six approved icons remain visible.
+   The active Step becomes the focal point. */
+.step-journey{
+  max-width:1060px;
+  margin:48px auto 0;
+  padding:34px 0 8px;
+  border-top:1px solid #e1e6ee;
+}
+.journey-line{
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(6,1fr);
+  align-items:end;
+  gap:8px
+}
+.journey-line:before{
+  content:"";
+  position:absolute;
+  left:7%;
+  right:7%;
+  bottom:43px;
+  height:1px;
+  background:#cfd7e2;
+  z-index:0
+}
+.journey-item{
+  position:relative;
+  z-index:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-end;
+  min-width:0;
+  cursor:pointer;
+  background:none;
+  border:0;
+  padding:0;
+  font:inherit
+}
+.journey-icon{
+  width:72px;height:72px;
+  object-fit:contain;
+  transition:transform .2s ease,width .2s ease,height .2s ease
+}
+.journey-number{
+  margin-top:7px;
+  color:var(--muted);
+  font-size:12px;font-weight:900;letter-spacing:.08em
+}
+.journey-item.active .journey-icon{
+  width:132px;height:132px;
+  transform:translateY(2px)
+}
+.journey-item.active .journey-number{
+  color:var(--step-color)
+}
+.journey-caption{
+  text-align:center;color:var(--muted);
+  font-size:13px;font-weight:800;margin-top:14px
+}
+.journey-caption strong{color:var(--step-color)}
 
 .step-controls{
-  border-top:1px solid #e1e6ee;padding-top:26px;margin-top:38px;
-  display:flex;align-items:center;justify-content:space-between;gap:18px
+  display:flex;justify-content:space-between;align-items:center;
+  gap:20px;margin-top:28px
 }
 .control-button{
-  border:1px solid #d6dde7;background:#fff;color:var(--navy);font:inherit;
-  font-weight:800;padding:12px 20px;border-radius:28px;cursor:pointer;min-width:100px
+  border:1px solid #d6dde7;background:#fff;color:var(--navy);
+  font:inherit;font-weight:800;padding:11px 20px;border-radius:28px;cursor:pointer;min-width:100px
 }
 .control-button:disabled{opacity:.35;cursor:not-allowed}
-.step-dots{display:flex;align-items:center;justify-content:center;gap:9px;flex:1}
-.step-dot{width:42px;height:42px;border-radius:50%;border:1px solid #cfd7e2;background:#fff;color:var(--navy);font-weight:900;cursor:pointer}
-.step-dot.active{background:var(--step-color);color:#fff;border-color:var(--step-color)}
-.step-status{text-align:center;color:var(--muted);font-size:14px;font-weight:700;margin-top:14px}
+.step-status{text-align:center;color:var(--muted);font-size:14px;font-weight:700;flex:1}
 .back-home{text-align:center;padding:0 24px 80px}
 .back-home a{color:var(--navy);font-weight:800;text-decoration:none}
 
@@ -94,24 +164,33 @@ nav{position:sticky;top:0;z-index:20;background:rgba(6,38,92,.98);padding:14px 4
   .page-intro{padding:52px 20px 34px}
   .page-intro h1{font-size:clamp(34px,10vw,50px)}
   .page-intro p{font-size:17px}
-  .viewer{padding:0 18px 54px}
-  .step-visual{grid-template-columns:28% minmax(0,1fr) 21%;gap:11px;align-items:start;padding:8px 0 24px}
-  .step-story{aspect-ratio:9/10}
-  .step-heading{padding-top:1px}
-  .step-label{font-size:7px;letter-spacing:.08em;line-height:1.15;margin-bottom:4px}
-  .step-heading h2{font-size:clamp(18px,5.2vw,30px);line-height:1.02;margin-bottom:7px}
-  .step-heading h3{font-size:clamp(11px,2.9vw,15px);line-height:1.3}
-  .step-icon{aspect-ratio:1/1}
-  .step-reading{padding:32px 4px 20px}
-  .reading-section{margin-bottom:34px}
-  .reading-section h4{font-size:11px;letter-spacing:.12em}
-  .reading-section p{font-size:16px;line-height:1.7}
-  .reading-section .description{font-size:17px;line-height:1.7}
-  .topic-list{gap:7px}.topic-list li{font-size:12px;padding:6px 10px}
-  .framework{padding-left:17px}
-  .step-controls{gap:8px;margin-top:26px}
-  .control-button{min-width:76px;padding:10px 12px}
-  .step-dots{gap:5px}.step-dot{width:36px;height:36px}
+  .viewer{padding:0 18px 50px}
+
+  .step-visual{
+    grid-template-columns:34% minmax(0,1fr);
+    gap:14px;
+    align-items:center;
+    padding:6px 0 28px
+  }
+  .step-label{font-size:7px;letter-spacing:.08em;line-height:1.15;margin-bottom:5px}
+  .step-heading h2{font-size:clamp(23px,7.1vw,40px);line-height:1;margin-bottom:8px}
+  .step-heading h3{font-size:clamp(12px,3.3vw,17px);line-height:1.3}
+  .step-reading{padding:34px 4px 10px}
+  .step-lead{font-size:18px;line-height:1.65;margin-bottom:30px!important}
+  .reading-block{margin-bottom:32px}
+  .reading-block h4{font-size:10px;letter-spacing:.11em}
+  .reading-block p{font-size:16px;line-height:1.7}
+  .key-line{font-size:22px!important}
+
+  .step-journey{margin-top:38px;padding-top:26px}
+  .journey-line{gap:2px}
+  .journey-line:before{left:5%;right:5%;bottom:31px}
+  .journey-icon{width:43px;height:43px}
+  .journey-item.active .journey-icon{width:76px;height:76px}
+  .journey-number{font-size:9px;margin-top:4px}
+  .journey-caption{font-size:11px;margin-top:11px}
+  .step-controls{margin-top:22px;gap:8px}
+  .control-button{min-width:76px;padding:9px 12px}
 }
 </style>
 </head>
@@ -136,6 +215,7 @@ nav{position:sticky;top:0;z-index:20;background:rgba(6,38,92,.98);padding:14px 4
 
 <main class="viewer" id="step-viewer" aria-live="polite">
 
+
 <article class="step-view" data-step="1">
   <div class="step-visual">
     <div class="step-story"><img src="Assets/step1_freedom_1800x2000.png" alt="Step 1 — FREEDOM"></div>
@@ -144,23 +224,21 @@ nav{position:sticky;top:0;z-index:20;background:rgba(6,38,92,.98);padding:14px 4
       <h2>BREAK FREE</h2>
       <h3>Build your financial foundation.</h3>
     </div>
-    <div class="step-icon"><img src="Assets/Step_1_FREEDOM_WEBSITE_MASTER_LOCKED_COLOR_2048x2048.png" alt="Step 1 — FREEDOM icon"></div>
   </div>
   <div class="step-reading">
-    <section class="reading-section">
-      <h4>Official description</h4>
-      <p class="description">Eliminate debt, create positive cash flow, and get your financial house in order so you can start building wealth.</p>
-    </section>
-    <section class="reading-section">
-      <h4>Key topics</h4>
-      <ul class="topic-list">
-        <li>consumer debt</li><li>emergency fund</li><li>budgeting</li><li>cash flow</li><li>financial stability</li><li>financial confidence</li>
-      </ul>
-    </section>
-    <section class="reading-section framework">
+    <p class="step-lead">Eliminate debt, create positive cash flow, and get your financial house in order so you can start building wealth.</p>
+    <div class="reading-block">
+      <h4>Start Where You Are</h4>
+      <p>Wealth building is a journey rather than a single financial decision. Understand where you are → identify what matters most → determine your next step → take action → reassess as circumstances change → continue progressing.</p>
+    </div>
+    <div class="reading-block framework-block">
       <h4>Build Before You Accelerate</h4>
       <p>Establish the financial foundation before attempting to accelerate wealth building.</p>
-    </section>
+    </div>
+    <div class="reading-block">
+      <h4>Where to Focus</h4>
+      <p>Consumer debt; emergency fund; budgeting; cash flow; financial stability; financial confidence.</p>
+    </div>
   </div>
 </article>
 
@@ -172,21 +250,21 @@ nav{position:sticky;top:0;z-index:20;background:rgba(6,38,92,.98);padding:14px 4
       <h2>SECURE YOUR FUTURE</h2>
       <h3>Build a safety net retirement that lets you take bold steps toward growing your future wealth in the next step.</h3>
     </div>
-    <div class="step-icon"><img src="Assets/Step_2_SECURE_WEBSITE_MASTER_CLEANED_2048x2048.png" alt="Step 2 — SECURE icon"></div>
   </div>
   <div class="step-reading">
-    <section class="reading-section">
-      <h4>Official description</h4>
-      <p class="description">Calculate what you're likely to need in retirement, determine how much you need to contribute, and evaluate whether additional retirement contributions remain the best use of your next dollar as you pursue your broader wealth-building goals.</p>
-    </section>
-    <section class="reading-section framework">
+    <p class="step-lead">Calculate what you're likely to need in retirement, determine how much you need to contribute, and evaluate whether additional retirement contributions remain the best use of your next dollar as you pursue your broader wealth-building goals.</p>
+    <div class="reading-block framework-block">
       <h4>The Next Dollar</h4>
       <p>At every stage of the journey, consider where the next available dollar can potentially have the greatest impact toward your broader financial goals.</p>
-    </section>
-    <section class="reading-section">
+    </div>
+    <div class="reading-block">
       <h4>Next Dollar Framework</h4>
       <p>Where am I? → What am I trying to accomplish? → What financial priorities are competing for my next dollar? → What are the potential benefits, risks, and trade-offs? → Which option best aligns with my goals and circumstances? → Make the decision and continue evaluating over time.</p>
-    </section>
+    </div>
+    <div class="reading-block">
+      <h4>Retirement</h4>
+      <p>Retirement should provide a dependable safety net while allowing you to evaluate how additional contributions fit within your broader wealth-building goals.</p>
+    </div>
   </div>
 </article>
 
@@ -198,24 +276,21 @@ nav{position:sticky;top:0;z-index:20;background:rgba(6,38,92,.98);padding:14px 4
       <h2>DON’T BUILD A NEST EGG. BUILD A GOLDEN GOOSE.</h2>
       <h3>Build a substantial pool of productive capital.</h3>
     </div>
-    <div class="step-icon"><img src="Assets/Step_3_BUILD_WEBSITE_MASTER_CLEANED_2048x2048.png" alt="Step 3 — BUILD icon"></div>
   </div>
   <div class="step-reading">
-    <section class="reading-section">
-      <h4>Official description</h4>
-      <p class="description">Once your foundation and retirement are on track, consider directing available next dollars toward building an investment portfolio designed to harness the power of compounding.</p>
-    </section>
-    <section class="reading-section">
-      <h4>Approved Language &amp; Terminology</h4>
-      <div class="framework">
-        <p><strong>Golden Goose:</strong> A pool of productive capital designed to harness the power of compounding and potentially produce future wealth and/or income.</p>
-        <p><strong>Productive Capital:</strong> Capital positioned with the objective of generating future growth and/or income.</p>
-      </div>
-    </section>
-    <section class="reading-section framework">
+    <p class="step-lead">Once your foundation and retirement are on track, consider directing available next dollars toward building an investment portfolio designed to harness the power of compounding.</p>
+    <div class="reading-block">
+      <h4>The Golden Goose</h4>
+      <p class="key-line">A pool of productive capital designed to harness the power of compounding and potentially produce future wealth and/or income.</p>
+    </div>
+    <div class="reading-block">
+      <h4>Productive Capital</h4>
+      <p>Capital positioned with the objective of generating future growth and/or income.</p>
+    </div>
+    <div class="reading-block framework-block">
       <h4>Compounding</h4>
       <p>Give productive capital time to compound and understand how compounding can contribute to long-term wealth building.</p>
-    </section>
+    </div>
   </div>
 </article>
 
@@ -227,21 +302,21 @@ nav{position:sticky;top:0;z-index:20;background:rgba(6,38,92,.98);padding:14px 4
       <h2>GIVE YOUR GOOSE WINGS</h2>
       <h3>Optimize your Golden Goose for long-term growth.</h3>
     </div>
-    <div class="step-icon"><img src="Assets/Step_4_GROW_WEBSITE_MASTER_2048x2048.png" alt="Step 4 — GROW icon"></div>
   </div>
   <div class="step-reading">
-    <section class="reading-section">
-      <h4>Official description</h4>
-      <p class="description">Learn how to evaluate investments, historical performance, risk, fees, diversification, taxes, and compounding so you can make informed decisions about the factors that can influence how your wealth grows.</p>
-    </section>
-    <section class="reading-section">
-      <h4>Investment Education Framework</h4>
-      <p>Approved Topics: Historical performance; risk; volatility; fees; diversification; taxes; compounding; time horizon; investment objectives; investment characteristics; evaluating investments; comparing characteristics; understanding trade-offs.</p>
-    </section>
-    <section class="reading-section framework">
-      <h4>Educational Approach</h4>
-      <p>Teach individuals how to evaluate and understand investments rather than automatically directing them toward a particular security, fund, allocation, or strategy.</p>
-    </section>
+    <p class="step-lead">Learn how to evaluate investments, historical performance, risk, fees, diversification, taxes, and compounding so you can make informed decisions about the factors that can influence how your wealth grows.</p>
+    <div class="reading-block">
+      <h4>Understand Before You Act</h4>
+      <p>Education should focus on understanding before action. Teach individuals how to evaluate and understand investments rather than automatically directing them toward a particular security, fund, allocation, or strategy.</p>
+    </div>
+    <div class="reading-block">
+      <h4>Investment Education</h4>
+      <p>Historical performance; risk; volatility; fees; diversification; taxes; compounding; time horizon; investment objectives; investment characteristics; evaluating investments; comparing characteristics; understanding trade-offs.</p>
+    </div>
+    <div class="reading-block framework-block">
+      <h4>Evaluating Investments</h4>
+      <p>Learn how to evaluate investments and compare characteristics while understanding the trade-offs involved.</p>
+    </div>
   </div>
 </article>
 
@@ -253,23 +328,21 @@ nav{position:sticky;top:0;z-index:20;background:rgba(6,38,92,.98);padding:14px 4
       <h2>TEACH YOUR GOOSE TO SOAR</h2>
       <h3>Learn when to shift your strategy and let compounding do more of the work.</h3>
     </div>
-    <div class="step-icon"><img src="Assets/Step_5_SHIFT_WEBSITE_MASTER_2048x2048.png" alt="Step 5 — SHIFT icon"></div>
   </div>
   <div class="step-reading">
-    <section class="reading-section">
-      <h4>Official description</h4>
-      <p class="description">Once your Golden Goose is on track to produce the Golden Eggs you'll need by the time you're ready to use them, learn how and when to consider shifting your strategy and let compounding do more of the work.</p>
-    </section>
-    <section class="reading-section">
-      <h4>Approved Language &amp; Terminology</h4>
-      <div class="framework">
-        <p><strong>Golden Eggs:</strong> The future income, benefits, or financial resources generated by the Golden Goose.</p>
-      </div>
-    </section>
-    <section class="reading-section framework">
+    <p class="step-lead">Once your Golden Goose is on track to produce the Golden Eggs you'll need by the time you're ready to use them, learn how and when to consider shifting your strategy and let compounding do more of the work.</p>
+    <div class="reading-block">
+      <h4>Golden Eggs</h4>
+      <p class="key-line">The future income, benefits, or financial resources generated by the Golden Goose.</p>
+    </div>
+    <div class="reading-block framework-block">
       <h4>Wealth Is a Journey</h4>
       <p>As financial position, goals, and circumstances change, the priorities that deserve attention may change as well.</p>
-    </section>
+    </div>
+    <div class="reading-block">
+      <h4>The Next Dollar</h4>
+      <p>Continue evaluating where the next available dollar can potentially have the greatest impact toward your broader financial goals as circumstances change.</p>
+    </div>
   </div>
 </article>
 
@@ -281,27 +354,54 @@ nav{position:sticky;top:0;z-index:20;background:rgba(6,38,92,.98);padding:14px 4
       <h2>LIVE YOUR BEST LIFE</h2>
       <h3>Enjoy your wealth and build a lasting legacy.</h3>
     </div>
-    <div class="step-icon"><img src="Assets/Step_6_THRIVE_WEBSITE_MASTER_FIXED_2048x2048.png" alt="Step 6 — THRIVE icon"></div>
   </div>
   <div class="step-reading">
-    <section class="reading-section">
-      <h4>Official description</h4>
-      <p class="description">Use the income from your Golden Goose alongside your earned income to live the life you want today, while continuing to strengthen your retirement strategy and build a legacy for generations to come.</p>
-    </section>
-    <section class="reading-section framework">
+    <p class="step-lead">Use the income from your Golden Goose alongside your earned income to live the life you want today, while continuing to strengthen your retirement strategy and build a legacy for generations to come.</p>
+    <div class="reading-block framework-block">
       <h4>Intentional Wealth</h4>
       <p>Wealth should ultimately serve the life, goals, values, and legacy a person wants to create.</p>
-    </section>
-    <section class="reading-section">
-      <h4>Approved Language &amp; Terminology</h4>
-      <div class="framework">
-        <p><strong>Golden Eggs:</strong> The future income, benefits, or financial resources generated by the Golden Goose.</p>
-        <p><strong>Golden Goose:</strong> A pool of productive capital designed to harness the power of compounding and potentially produce future wealth and/or income.</p>
-      </div>
-    </section>
+    </div>
+    <div class="reading-block">
+      <h4>Golden Eggs</h4>
+      <p>The future income, benefits, or financial resources generated by the Golden Goose.</p>
+    </div>
+    <div class="reading-block">
+      <h4>The Journey Continues</h4>
+      <p>Wealth is a journey. Continue progressing, reassessing as circumstances change, and applying the framework to new decisions and new stages of life.</p>
+    </div>
   </div>
 </article>
 
+
+<div class="step-journey" aria-label="Six-Step journey navigation">
+  <div class="journey-line">
+    <button class="journey-item" data-go="1" aria-label="Go to Step 1">
+      <img class="journey-icon" src="Assets/Step_1_FREEDOM_WEBSITE_MASTER_LOCKED_COLOR_2048x2048.png" alt="">
+      <span class="journey-number">01</span>
+    </button>
+    <button class="journey-item" data-go="2" aria-label="Go to Step 2">
+      <img class="journey-icon" src="Assets/Step_2_SECURE_WEBSITE_MASTER_CLEANED_2048x2048.png" alt="">
+      <span class="journey-number">02</span>
+    </button>
+    <button class="journey-item" data-go="3" aria-label="Go to Step 3">
+      <img class="journey-icon" src="Assets/Step_3_BUILD_WEBSITE_MASTER_CLEANED_2048x2048.png" alt="">
+      <span class="journey-number">03</span>
+    </button>
+    <button class="journey-item" data-go="4" aria-label="Go to Step 4">
+      <img class="journey-icon" src="Assets/Step_4_GROW_WEBSITE_MASTER_2048x2048.png" alt="">
+      <span class="journey-number">04</span>
+    </button>
+    <button class="journey-item" data-go="5" aria-label="Go to Step 5">
+      <img class="journey-icon" src="Assets/Step_5_SHIFT_WEBSITE_MASTER_2048x2048.png" alt="">
+      <span class="journey-number">05</span>
+    </button>
+    <button class="journey-item" data-go="6" aria-label="Go to Step 6">
+      <img class="journey-icon" src="Assets/Step_6_THRIVE_WEBSITE_MASTER_FIXED_2048x2048.png" alt="">
+      <span class="journey-number">06</span>
+    </button>
+  </div>
+  <div class="journey-caption">Step <strong id="journey-current">1</strong> of 6</div>
+</div>
 <div class="step-controls">
 <button type="button" class="control-button" id="prev">Previous</button>
 <div class="step-dots" aria-label="Six-Step navigation">
@@ -323,24 +423,26 @@ nav{position:sticky;top:0;z-index:20;background:rgba(6,38,92,.98);padding:14px 4
 (function(){
   const root=document.getElementById('step-viewer');
   const views=[...root.querySelectorAll('.step-view')];
-  const dots=[...root.querySelectorAll('.step-dot')];
+  const journey=[...root.querySelectorAll('.journey-item')];
   const prev=document.getElementById('prev');
   const next=document.getElementById('next');
   const status=document.getElementById('status');
+  const currentLabel=document.getElementById('journey-current');
   let current=0;
 
   function show(index, updateHash=true){
     current=Math.max(0,Math.min(views.length-1,index));
     views.forEach((v,i)=>v.classList.toggle('active',i===current));
-    dots.forEach((d,i)=>d.classList.toggle('active',i===current));
+    journey.forEach((item,i)=>item.classList.toggle('active',i===current));
     prev.disabled=current===0;
     next.disabled=current===views.length-1;
     status.textContent='Step '+(current+1)+' of '+views.length;
+    currentLabel.textContent=current+1;
     if(updateHash) history.replaceState(null,'','#step-'+(current+1));
     window.scrollTo({top:0,behavior:'smooth'});
   }
 
-  dots.forEach((d,i)=>d.addEventListener('click',()=>show(i)));
+  journey.forEach((item,i)=>item.addEventListener('click',()=>show(i)));
   prev.addEventListener('click',()=>show(current-1));
   next.addEventListener('click',()=>show(current+1));
 
