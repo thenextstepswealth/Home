@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Six Steps — The Next Steps Wealth-Building Journey</title>
+<meta name="description" content="Explore the Six-Step Wealth-Building Journey one step at a time.">
+<style>
+:root{--navy:#06265c;--gold:#d99a12;--ink:#17233a;--muted:#536176;--light:#f5f7fa}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:#fff;line-height:1.6}
+nav{position:sticky;top:0;z-index:20;background:rgba(6,38,92,.98);padding:14px 4vw;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{color:#fff;font-weight:900;letter-spacing:.07em;text-decoration:none}
+.links{display:flex;align-items:center;gap:22px}
+.links a{color:#fff;text-decoration:none;font-size:14px;font-weight:700}
+.cta-nav{background:var(--gold);padding:10px 16px;border-radius:30px}
+.menu{display:none;background:none;border:0;color:#fff;font-size:26px}
+.page-intro{text-align:center;max-width:900px;margin:0 auto;padding:72px 24px 42px}
+.eyebrow{color:var(--gold);font-size:14px;font-weight:900;letter-spacing:.18em;text-transform:uppercase}
+.page-intro h1{font-size:clamp(40px,5vw,64px);line-height:1.02;color:var(--navy);margin:10px 0 16px}
+.page-intro p{font-size:19px;line-height:1.7;color:var(--muted);max-width:820px;margin:0 auto}
+.viewer{max-width:1320px;margin:0 auto;padding:0 28px 70px}
+.step-view{display:none;grid-template-columns:minmax(250px,30%) minmax(0,1fr) minmax(180px,24%);gap:clamp(24px,4vw,58px);align-items:center;padding:24px 0 34px}
+.step-view.active{display:grid}
+.step-story{width:100%;aspect-ratio:9 / 10;overflow:hidden;border-radius:4px;background:#e9edf3}
+.step-story img{display:block;width:100%;height:100%;object-fit:cover}
+.step-content{min-width:0}
+.step-label{color:var(--step-color);font-size:13px;font-weight:900;letter-spacing:.17em;text-transform:uppercase;margin-bottom:8px}
+.step-content h2{color:var(--step-color);font-size:clamp(34px,4vw,58px);line-height:1.02;margin:0 0 14px}
+.step-content h3{color:var(--ink);font-size:clamp(19px,1.7vw,25px);line-height:1.3;margin:0 0 16px}
+.step-content p{color:var(--muted);font-size:18px;line-height:1.65;margin:0;max-width:760px}
+.step-icon{width:100%;aspect-ratio:1 / 1;display:flex;align-items:center;justify-content:center}
+.step-icon img{display:block;width:100%;height:100%;object-fit:contain}
+.step-controls{border-top:1px solid #e1e6ee;padding-top:26px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.control-button{border:1px solid #d6dde7;background:#fff;color:var(--navy);font:inherit;font-weight:800;padding:12px 20px;border-radius:28px;cursor:pointer;min-width:100px}
+.control-button:disabled{opacity:.35;cursor:not-allowed}
+.step-dots{display:flex;align-items:center;justify-content:center;gap:9px;flex:1}
+.step-dot{width:42px;height:42px;border-radius:50%;border:1px solid #cfd7e2;background:#fff;color:var(--navy);font-weight:900;cursor:pointer}
+.step-dot.active{background:var(--step-color);color:#fff;border-color:var(--step-color)}
+.step-status{text-align:center;color:var(--muted);font-size:14px;font-weight:700;margin-top:14px}
+.back-home{text-align:center;padding:0 24px 80px}
+.back-home a{color:var(--navy);font-weight:800;text-decoration:none}
+@media(max-width:800px){
+nav{padding:12px 18px}.links{display:none}.menu{display:block}
+.page-intro{padding:52px 20px 30px}
+.page-intro h1{font-size:clamp(34px,10vw,50px)}
+.page-intro p{font-size:17px}
+.viewer{padding:0 18px 52px}
+.step-view{grid-template-columns:1fr;gap:20px;padding:12px 0 24px}
+.step-story{max-height:none;width:100%;aspect-ratio:9 / 10}
+.step-content{order:2}
+.step-icon{order:3;width:min(42vw,190px);margin:0 auto}
+.step-content h2{font-size:clamp(30px,8vw,44px)}
+.step-content h3{font-size:17px}
+.step-content p{font-size:16px}
+.step-controls{gap:8px}
+.control-button{min-width:76px;padding:10px 12px}
+.step-dots{gap:5px}
+.step-dot{width:36px;height:36px}
+}
+</style>
+</head>
+<body>
+<nav>
+<a class="brand" href="index.html">THE NEXT STEPS</a>
+<div class="links">
+<a href="index.html#challenge">The Challenge</a>
+<a href="index.html#journey">The Journey</a>
+<a href="index.html#coaching">Coaching</a>
+<a href="index.html#contact">Contact</a>
+<a class="cta-nav" href="mailto:coaching@thenextstepswealth.com">Get Started</a>
+</div>
+<button class="menu" aria-label="Open menu">☰</button>
+</nav>
+
+<header class="page-intro">
+<div class="eyebrow">THE SIX-STEP WEALTH-BUILDING JOURNEY</div>
+<h1>Six Steps. One Journey.</h1>
+<p>Explore each step of the journey and see how the pieces fit together.</p>
+</header>
+
+<main class="viewer" id="step-viewer" aria-live="polite">
+
+    <article class="step-view" data-step="1" style="--step-color:#306143">
+      <div class="step-story"><img src="Assets/step1_freedom_1800x2000.png" alt="Step 1 — FREEDOM story image"></div>
+      <div class="step-content">
+        <div class="step-label">STEP 1 · FREEDOM</div>
+        <h2>BREAK FREE</h2>
+        <h3>Build your financial foundation.</h3>
+        <p>Eliminate debt, create positive cash flow, and get your financial house in order so you can start building wealth.</p>
+      </div>
+      <div class="step-icon"><img src="Assets/Step_1_FREEDOM_WEBSITE_MASTER_LOCKED_COLOR_2048x2048.png" alt="Step 1 — FREEDOM icon"></div>
+    </article>
+    <article class="step-view" data-step="2" style="--step-color:#3a7a86">
+      <div class="step-story"><img src="Assets/step2_secure_1800x2000.png" alt="Step 2 — SECURE story image"></div>
+      <div class="step-content">
+        <div class="step-label">STEP 2 · SECURE</div>
+        <h2>SECURE YOUR FUTURE</h2>
+        <h3>Build a safety net retirement that lets you take bold steps towards growing your future wealth in the next step.</h3>
+        <p>Calculate what you’re likely to need in retirement, determine how much you need to contribute, and avoid overfunding retirement if it can be better used to accelerate overall wealth-building.</p>
+      </div>
+      <div class="step-icon"><img src="Assets/Step_2_SECURE_WEBSITE_MASTER_CLEANED_2048x2048.png" alt="Step 2 — SECURE icon"></div>
+    </article>
+    <article class="step-view" data-step="3" style="--step-color:#c58d36">
+      <div class="step-story"><img src="Assets/step3_build_1800x2000_upscaled.png" alt="Step 3 — BUILD story image"></div>
+      <div class="step-content">
+        <div class="step-label">STEP 3 · BUILD</div>
+        <h2>DON’T BUILD A NEST EGG. BUILD A GOLDEN GOOSE.</h2>
+        <h3>Build a substantial pool of productive capital.</h3>
+        <p>Once your foundation and retirement are on track, focus your available next dollars on building an investment portfolio designed to harness the power of compounding.</p>
+      </div>
+      <div class="step-icon"><img src="Assets/Step_3_BUILD_WEBSITE_MASTER_CLEANED_2048x2048.png" alt="Step 3 — BUILD icon"></div>
+    </article>
+    <article class="step-view" data-step="4" style="--step-color:#3062a1">
+      <div class="step-story"><img src="Assets/step4_grow_1800x2000.png" alt="Step 4 — GROW story image"></div>
+      <div class="step-content">
+        <div class="step-label">STEP 4 · GROW</div>
+        <h2>GIVE YOUR GOOSE WINGS</h2>
+        <h3>Optimize your Golden Goose for long-term growth.</h3>
+        <p>Learn how to evaluate investments, historical performance, risk, fees, diversification, taxes, and compounding so you can make informed decisions about how to potentially increase the rate at which your wealth grows.</p>
+      </div>
+      <div class="step-icon"><img src="Assets/Step_4_GROW_WEBSITE_MASTER_2048x2048.png" alt="Step 4 — GROW icon"></div>
+    </article>
+    <article class="step-view" data-step="5" style="--step-color:#60429e">
+      <div class="step-story"><img src="Assets/step5_shift_enhanced_1800x2000.png" alt="Step 5 — SHIFT story image"></div>
+      <div class="step-content">
+        <div class="step-label">STEP 5 · SHIFT</div>
+        <h2>TEACH YOUR GOOSE TO SOAR</h2>
+        <h3>Learn when to shift your strategy and let compounding do more of the work.</h3>
+        <p>Once your Golden Goose is on track to reach your target by your chosen retirement age, reduce what you need to contribute and redirect more of your income toward retirement, tax-advantaged accounts, and other wealth-building opportunities.</p>
+      </div>
+      <div class="step-icon"><img src="Assets/Step_5_SHIFT_WEBSITE_MASTER_2048x2048.png" alt="Step 5 — SHIFT icon"></div>
+    </article>
+    <article class="step-view" data-step="6" style="--step-color:#60429e">
+      <div class="step-story"><img src="Assets/step6_thrive_story_1800x2000.png" alt="Step 6 — THRIVE story image"></div>
+      <div class="step-content">
+        <div class="step-label">STEP 6 · THRIVE</div>
+        <h2>LIVE YOUR BEST LIFE</h2>
+        <h3>Enjoy your wealth and build a lasting legacy.</h3>
+        <p>Use the income from your Golden Goose alongside your earned income to live the life you want today, while continuing to strengthen your retirement strategy and build a legacy for generations to come.</p>
+      </div>
+      <div class="step-icon"><img src="Assets/Step_6_THRIVE_WEBSITE_MASTER_FIXED_2048x2048.png" alt="Step 6 — THRIVE icon"></div>
+    </article>
+<div class="step-controls">
+<button type="button" class="control-button" id="prev">Previous</button>
+<div class="step-dots" aria-label="Six-Step navigation"><button type="button" class="step-dot" data-go="1" aria-label="View Step 1">1</button><button type="button" class="step-dot" data-go="2" aria-label="View Step 2">2</button><button type="button" class="step-dot" data-go="3" aria-label="View Step 3">3</button><button type="button" class="step-dot" data-go="4" aria-label="View Step 4">4</button><button type="button" class="step-dot" data-go="5" aria-label="View Step 5">5</button><button type="button" class="step-dot" data-go="6" aria-label="View Step 6">6</button></div>
+<button type="button" class="control-button" id="next">Next</button>
+</div>
+<div class="step-status" id="status">Step 1 of 6</div>
+</main>
+
+<div class="back-home"><a href="index.html">← Back to the Next Steps home page</a></div>
+
+<script>
+(function(){
+  const root=document.getElementById('step-viewer');
+  const views=[...root.querySelectorAll('.step-view')];
+  const dots=[...root.querySelectorAll('.step-dot')];
+  const prev=document.getElementById('prev');
+  const next=document.getElementById('next');
+  const status=document.getElementById('status');
+  let current=0;
+
+  function show(index){
+    current=Math.max(0,Math.min(views.length-1,index));
+    views.forEach((view,i)=>view.classList.toggle('active',i===current));
+    dots.forEach((dot,i)=>dot.classList.toggle('active',i===current));
+    prev.disabled=current===0;
+    next.disabled=current===views.length-1;
+    status.textContent=`Step ${current+1} of ${views.length}`;
+    root.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  prev.addEventListener('click',()=>show(current-1));
+  next.addEventListener('click',()=>show(current+1));
+  dots.forEach((dot,i)=>dot.addEventListener('click',()=>show(i)));
+  document.addEventListener('keydown',(event)=>{
+    if(event.key==='ArrowLeft') show(current-1);
+    if(event.key==='ArrowRight') show(current+1);
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>
