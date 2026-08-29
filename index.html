@@ -60,17 +60,20 @@ nav{width:100%;padding:12px 16px}.hero-title,.hero-title img,.hero-mountain,.int
   line-height:1.65;
 }
 
-/* The intended composition is ALWAYS:
-   IMAGE | TEXT | ICON
-   including on narrow/mobile screens. */
+/* IMAGE | TEXT | ICON
+   Image and icon keep their native aspect ratios.
+   Their displayed height is approximately 30% smaller than v6. */
 .six-step-home .six-step-row{
+  --step-height:clamp(105px,15.4vw,224px);
   display:grid;
-  grid-template-columns:30% 50% 20%;
+  grid-template-columns:calc(var(--step-height) * .9) minmax(0,1fr) var(--step-height);
+  align-items:stretch;
   width:100%;
-  min-height:300px;
+  min-height:var(--step-height);
 }
 .six-step-home .six-step-story{
-  min-height:300px;
+  width:calc(var(--step-height) * .9);
+  height:var(--step-height);
   overflow:hidden;
   background:#e9edf3;
 }
@@ -78,7 +81,6 @@ nav{width:100%;padding:12px 16px}.hero-title,.hero-title img,.hero-mountain,.int
   display:block;
   width:100%;
   height:100%;
-  min-height:300px;
   object-fit:cover;
   object-position:center;
 }
@@ -86,111 +88,115 @@ nav{width:100%;padding:12px 16px}.hero-title,.hero-title img,.hero-mountain,.int
   display:flex;
   flex-direction:column;
   justify-content:center;
-  padding:30px clamp(22px,3.2vw,50px);
+  min-width:0;
+  padding:20px clamp(18px,2.8vw,42px);
   background:#fff;
 }
 .six-step-home .six-step-number-label{
   color:var(--step-color);
-  font-size:11px;
+  font-size:10px;
   font-weight:900;
-  letter-spacing:.17em;
+  letter-spacing:.16em;
   text-transform:uppercase;
-  margin-bottom:6px;
+  margin-bottom:5px;
 }
 .six-step-home .six-step-copy h3{
   color:var(--step-color);
-  font-size:clamp(25px,2.55vw,40px);
+  font-size:clamp(23px,2.3vw,36px);
   line-height:1.04;
-  margin:0 0 9px;
+  margin:0 0 7px;
 }
 .six-step-home .six-step-copy h4{
   color:var(--ink);
-  font-size:clamp(16px,1.35vw,20px);
-  line-height:1.3;
-  margin:0 0 9px;
+  font-size:clamp(15px,1.25vw,18px);
+  line-height:1.28;
+  margin:0 0 7px;
 }
 .six-step-home .six-step-copy p{
   color:var(--muted);
-  font-size:15px;
-  line-height:1.45;
+  font-size:14px;
+  line-height:1.4;
   max-width:680px;
   margin:0;
 }
+
+/* Icon panel and icon artwork are exactly the same HEIGHT
+   as the story image while retaining the icon's 1:1 ratio. */
 .six-step-home .six-step-icon-panel{
   display:flex;
   align-items:center;
   justify-content:center;
-  min-height:300px;
-  padding:22px;
-  background:var(--step-color);
+  width:var(--step-height);
+  height:var(--step-height);
+  padding:7px;
+  background:var(--step-panel-color);
 }
 .six-step-home .six-step-icon-panel img{
   display:block;
-  width:min(70%,170px);
-  height:auto;
-  max-height:220px;
+  width:var(--step-height);
+  height:var(--step-height);
+  max-width:100%;
+  max-height:100%;
   object-fit:contain;
 }
 
 /* Approved Step color associations */
-.six-step-home .step-freedom{--step-color:#17633f}
-.six-step-home .step-secure{--step-color:#177c88}
-.six-step-home .step-build{--step-color:#d08a18}
-.six-step-home .step-grow{--step-color:#1763a5}
-.six-step-home .step-shift{--step-color:#6541a4}
-.six-step-home .step-thrive{--step-color:#7548a8}
+.six-step-home .step-freedom{--step-color:#17633f;--step-panel-color:#17633f}
+.six-step-home .step-secure{--step-color:#397f8d;--step-panel-color:#397f8d}
+.six-step-home .step-build{--step-color:#c58a2d;--step-panel-color:#c58a2d}
+.six-step-home .step-grow{--step-color:#35639a;--step-panel-color:#35639a}
+.six-step-home .step-shift{--step-color:#6541a4;--step-panel-color:#6541a4}
+.six-step-home .step-thrive{--step-color:#7548a8;--step-panel-color:#7548a8}
 
 @media(max-width:800px){
-  /* Keep the three-column composition on mobile.
-     It scales down rather than stacking. */
-  .six-step-home .six-step-intro{
-    padding:50px 18px 30px;
-  }
-  .six-step-home .six-step-intro h2{
-    font-size:clamp(29px,8vw,42px);
-  }
-  .six-step-home .six-step-intro p{
-    font-size:16px;
-  }
+  .six-step-home .six-step-intro{padding:50px 18px 30px}
+  .six-step-home .six-step-intro h2{font-size:clamp(29px,8vw,42px)}
+  .six-step-home .six-step-intro p{font-size:16px}
+
+  /* Approximately 30% smaller than v6 while preserving
+     IMAGE | TEXT | ICON on mobile. */
   .six-step-home .six-step-row{
-    grid-template-columns:29% 51% 20%;
-    min-height:0;
+    --step-height:clamp(101px,26.6vw,154px);
+    grid-template-columns:calc(var(--step-height) * .9) minmax(0,1fr) var(--step-height);
+    min-height:var(--step-height);
   }
   .six-step-home .six-step-story{
-    min-height:0;
+    width:calc(var(--step-height) * .9);
+    height:var(--step-height);
   }
   .six-step-home .six-step-story img{
-    min-height:0;
-    aspect-ratio:3 / 4;
+    width:100%;
+    height:100%;
     object-fit:cover;
   }
   .six-step-home .six-step-copy{
-    padding:18px 14px;
+    padding:10px 9px;
   }
   .six-step-home .six-step-number-label{
-    font-size:8px;
-    letter-spacing:.11em;
-    margin-bottom:4px;
+    font-size:7px;
+    letter-spacing:.09em;
+    margin-bottom:3px;
   }
   .six-step-home .six-step-copy h3{
-    font-size:clamp(19px,5vw,30px);
-    margin-bottom:6px;
+    font-size:clamp(16px,4.4vw,25px);
+    margin-bottom:4px;
   }
   .six-step-home .six-step-copy h4{
-    font-size:clamp(13px,3.1vw,17px);
-    margin-bottom:6px;
+    font-size:clamp(11px,2.8vw,15px);
+    margin-bottom:4px;
   }
   .six-step-home .six-step-copy p{
-    font-size:clamp(11px,2.7vw,15px);
-    line-height:1.38;
+    font-size:clamp(9px,2.35vw,13px);
+    line-height:1.3;
   }
   .six-step-home .six-step-icon-panel{
-    min-height:0;
-    padding:14px 8px;
+    width:var(--step-height);
+    height:var(--step-height);
+    padding:5px;
   }
   .six-step-home .six-step-icon-panel img{
-    width:min(78%,105px);
-    max-height:145px;
+    width:var(--step-height);
+    height:var(--step-height);
   }
 }
 
