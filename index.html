@@ -36,16 +36,85 @@ nav{padding:12px 18px}.links{display:none}.menu{display:block}.hero-mountain{min
 nav{width:100%;padding:12px 16px}.hero-title,.hero-title img,.hero-mountain,.intro,.challenge,.journey,.coaching,.final,footer{width:100%;max-width:none}.hero-title img{height:auto;display:block}.hero-mountain{min-height:420px;background-position:center}.hero-overlay{width:100%;max-width:none;padding:48px 22px}.hero-overlay h1{font-size:clamp(36px,11vw,54px)}.hero-overlay p{font-size:18px}.intro{padding:55px 20px}.intro h2{font-size:clamp(30px,8vw,44px)}.intro p{font-size:17px}.challenge{padding:55px 20px}.challenge-inner{width:100%;max-width:none}.challenge h2{font-size:clamp(30px,8vw,46px)}.challenge p{font-size:17px}.journey{padding:55px 12px}.section-head{width:100%;max-width:none;padding:0 8px;margin-bottom:25px}.section-head h2{font-size:clamp(32px,8vw,48px)}.section-head p{font-size:17px}.journey-placeholder{width:100%;max-width:none;height:auto;display:block;margin:0}.coaching{padding:55px 20px}.coaching .section-head{padding:0}.benefit{width:100%}.final{padding:60px 20px}footer{padding-left:20px;padding-right:20px}.contact{padding:55px 20px}.contact-links{flex-direction:column;align-items:stretch}.contact-links a{text-align:center}
 }
 
+
+/* Six-Step homepage row system */
+.journey{padding:78px 4vw 86px}
+.journey .section-head{max-width:980px;margin:0 auto 42px;text-align:center}
+.six-step-table{max-width:1240px;margin:0 auto}
+.six-step-row{display:grid;grid-template-columns:minmax(190px,24%) minmax(0,1fr) minmax(150px,20%);align-items:center;column-gap:clamp(28px,4vw,58px);padding:32px 0;border-top:1px solid #e1e6ee}
+.six-step-row:last-child{border-bottom:1px solid #e1e6ee}
+.six-step-story{width:100%;aspect-ratio:9/10;overflow:hidden;border-radius:4px;background:#eef1f5}
+.six-step-story img{display:block;width:100%;height:100%;object-fit:cover}
+.six-step-info{min-width:0}
+.six-step-label{color:var(--step-color);font-size:12px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}
+.six-step-info h3{color:var(--step-color);font-size:clamp(27px,3vw,45px);line-height:1.02;margin:0 0 11px}
+.six-step-info h4{color:var(--ink);font-size:clamp(16px,1.45vw,21px);line-height:1.35;margin:0 0 13px}
+.six-step-info p{color:var(--muted);font-size:clamp(14px,1.1vw,17px);line-height:1.65;margin:0 0 15px}
+.six-step-explore{color:var(--navy);font-size:13px;font-weight:900;text-decoration:none}
+.six-step-icon{width:100%;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center}
+.six-step-icon img{display:block;width:100%;height:100%;object-fit:contain}
+.six-step-row.step-1{--step-color:#306143}.six-step-row.step-2{--step-color:#3a7a86}.six-step-row.step-3{--step-color:#c58d36}.six-step-row.step-4{--step-color:#3062a1}.six-step-row.step-5{--step-color:#60429e}.six-step-row.step-6{--step-color:#60429e}
+@media(max-width:800px){
+.journey{padding:52px 16px 64px}.journey .section-head{margin-bottom:26px}
+.six-step-row{grid-template-columns:28% minmax(0,1fr) 22%;column-gap:10px;padding:24px 0}
+.six-step-label{font-size:7px;letter-spacing:.07em;line-height:1.15;margin-bottom:4px}
+.six-step-info h3{font-size:clamp(18px,5.2vw,29px);line-height:1.03;margin-bottom:6px}
+.six-step-info h4{font-size:clamp(11px,2.9vw,15px);line-height:1.3;margin-bottom:7px}
+.six-step-info p{font-size:clamp(9px,2.45vw,13px);line-height:1.45;margin-bottom:7px}
+.six-step-explore{font-size:9px}
+}
+
+.mobile-menu{display:none}
+@media(max-width:800px){
+  .mobile-menu{
+    position:fixed;
+    top:58px;
+    right:14px;
+    z-index:30;
+    width:min(230px,calc(100vw - 28px));
+    padding:10px;
+    background:#fff;
+    border:1px solid #dfe5ec;
+    border-radius:12px;
+    box-shadow:0 14px 35px rgba(0,0,0,.16);
+  }
+  .mobile-menu.open{display:flex;flex-direction:column}
+  .mobile-menu a{
+    color:#06265c;
+    text-decoration:none;
+    font-size:14px;
+    font-weight:800;
+    padding:12px 13px;
+    border-radius:8px;
+  }
+  .mobile-menu a:hover{background:#f4f6f9}
+  .mobile-menu .mobile-menu-cta{
+    margin-top:4px;
+    background:#d99a12;
+    color:#fff;
+    text-align:center;
+  }
+  body.menu-open{overflow:hidden}
+}
+
 </style>
 </head>
 <body>
 <nav>
 <a class="brand" href="index.html">THE NEXT STEPS</a>
 <div class="links">
-<a href="#challenge">The Challenge</a><a href="six-steps.html">The Journey</a><a href="#coaching">Coaching</a><a href="about.html">About</a><a href="#contact">Contact</a><a href="mailto:coaching@thenextstepswealth.com" class="cta-nav">Get Started</a>
+<a href="#challenge">The Challenge</a><a href="#journey">The Journey</a><a href="#coaching">Coaching</a><a href="about.html">About</a><a href="#contact">Contact</a><a href="mailto:coaching@thenextstepswealth.com" class="cta-nav">Get Started</a>
 </div>
-<button class="menu" aria-label="Open menu">☰</button>
+<button class="menu" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">☰</button>
 </nav>
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <a href="#challenge">The Challenge</a>
+  <a href="#journey">The Journey</a>
+  <a href="#coaching">Coaching</a>
+  <a href="#contact">Contact</a>
+  <a class="mobile-menu-cta" href="mailto:coaching@thenextstepswealth.com">Get Started</a>
+</div>
+
 
 <section class="hero-title"><img src="Assets/hero-title.jpg" alt="The Next Steps Wealth Building Journey"></section>
 <section class="hero-mountain">
@@ -64,6 +133,44 @@ nav{width:100%;padding:12px 16px}.hero-title,.hero-title img,.hero-mountain,.int
 
 
 
+
+
+
+<section class="journey" id="journey">
+<div class="section-head"><div class="eyebrow">THE SIX-STEP WEALTH-BUILDING JOURNEY</div><h2>Six-Step Wealth-Building Journey</h2><p>Understand where you are → identify what matters most → determine your next step → take action → reassess as circumstances change → continue progressing.</p></div>
+<div class="six-step-table">
+<article class="six-step-row step-1">
+<div class="six-step-story"><img src="Assets/step1_freedom_1800x2000.png" alt="Step 1 — FREEDOM"></div>
+<div class="six-step-info"><div class="six-step-label">STEP 1 · FREEDOM</div><h3>BREAK FREE</h3><h4>Build your financial foundation.</h4><p>Eliminate debt, create positive cash flow, and get your financial house in order so you can start building wealth.</p><a class="six-step-explore" href="six-steps.html#step-1">Explore Step 1 →</a></div>
+<div class="six-step-icon"><img src="Assets/Step_1_FREEDOM_WEBSITE_MASTER_LOCKED_COLOR_2048x2048.png" alt="Step 1 — FREEDOM icon"></div>
+</article>
+<article class="six-step-row step-2">
+<div class="six-step-story"><img src="Assets/step2_secure_1800x2000.png" alt="Step 2 — SECURE"></div>
+<div class="six-step-info"><div class="six-step-label">STEP 2 · SECURE</div><h3>SECURE YOUR FUTURE</h3><h4>Build a safety net retirement that lets you take bold steps toward growing your future wealth in the next step.</h4><p>Calculate what you're likely to need in retirement, determine how much you need to contribute, and evaluate whether additional retirement contributions remain the best use of your next dollar as you pursue your broader wealth-building goals.</p><a class="six-step-explore" href="six-steps.html#step-2">Explore Step 2 →</a></div>
+<div class="six-step-icon"><img src="Assets/Step_2_SECURE_WEBSITE_MASTER_CLEANED_2048x2048.png" alt="Step 2 — SECURE icon"></div>
+</article>
+<article class="six-step-row step-3">
+<div class="six-step-story"><img src="Assets/step3_build_1800x2000_upscaled.png" alt="Step 3 — BUILD"></div>
+<div class="six-step-info"><div class="six-step-label">STEP 3 · BUILD</div><h3>DON’T BUILD A NEST EGG. BUILD A GOLDEN GOOSE.</h3><h4>Build a substantial pool of productive capital.</h4><p>Once your foundation and retirement are on track, consider directing available next dollars toward building an investment portfolio designed to harness the power of compounding.</p><a class="six-step-explore" href="six-steps.html#step-3">Explore Step 3 →</a></div>
+<div class="six-step-icon"><img src="Assets/Step_3_BUILD_WEBSITE_MASTER_CLEANED_2048x2048.png" alt="Step 3 — BUILD icon"></div>
+</article>
+<article class="six-step-row step-4">
+<div class="six-step-story"><img src="Assets/step4_grow_1800x2000.png" alt="Step 4 — GROW"></div>
+<div class="six-step-info"><div class="six-step-label">STEP 4 · GROW</div><h3>GIVE YOUR GOOSE WINGS</h3><h4>Optimize your Golden Goose for long-term growth.</h4><p>Learn how to evaluate investments, historical performance, risk, fees, diversification, taxes, and compounding so you can make informed decisions about the factors that can influence how your wealth grows.</p><a class="six-step-explore" href="six-steps.html#step-4">Explore Step 4 →</a></div>
+<div class="six-step-icon"><img src="Assets/Step_4_GROW_WEBSITE_MASTER_2048x2048.png" alt="Step 4 — GROW icon"></div>
+</article>
+<article class="six-step-row step-5">
+<div class="six-step-story"><img src="Assets/step5_shift_enhanced_1800x2000.png" alt="Step 5 — SHIFT"></div>
+<div class="six-step-info"><div class="six-step-label">STEP 5 · SHIFT</div><h3>TEACH YOUR GOOSE TO SOAR</h3><h4>Learn when to shift your strategy and let compounding do more of the work.</h4><p>Once your Golden Goose is on track to produce the Golden Eggs you'll need by the time you're ready to use them, learn how and when to consider shifting your strategy and let compounding do more of the work.</p><a class="six-step-explore" href="six-steps.html#step-5">Explore Step 5 →</a></div>
+<div class="six-step-icon"><img src="Assets/Step_5_SHIFT_WEBSITE_MASTER_2048x2048.png" alt="Step 5 — SHIFT icon"></div>
+</article>
+<article class="six-step-row step-6">
+<div class="six-step-story"><img src="Assets/step6_thrive_story_1800x2000.png" alt="Step 6 — THRIVE"></div>
+<div class="six-step-info"><div class="six-step-label">STEP 6 · THRIVE</div><h3>LIVE YOUR BEST LIFE</h3><h4>Enjoy your wealth and build a lasting legacy.</h4><p>Use the income from your Golden Goose alongside your earned income to live the life you want today, while continuing to strengthen your retirement strategy and build a legacy for generations to come.</p><a class="six-step-explore" href="six-steps.html#step-6">Explore Step 6 →</a></div>
+<div class="six-step-icon"><img src="Assets/Step_6_THRIVE_WEBSITE_MASTER_FIXED_2048x2048.png" alt="Step 6 — THRIVE icon"></div>
+</article>
+</div>
+</section>
 <section class="challenge" id="challenge">
 <div class="challenge-inner">
 <div class="eyebrow">THE CHALLENGE</div>
@@ -102,5 +209,53 @@ nav{width:100%;padding:12px 16px}.hero-title,.hero-title img,.hero-mountain,.int
 <a class="button" href="mailto:coaching@thenextstepswealth.com">Start Your Journey</a>
 </section>
 <footer>© 2026 The Next Steps Wealth-Building Journey</footer>
+
+<script>
+(function(){
+  const toggle=document.getElementById('menuToggle');
+  const menu=document.getElementById('mobileMenu');
+  if(!toggle || !menu) return;
+
+  function closeMenu(){
+    menu.classList.remove('open');
+    menu.setAttribute('aria-hidden','true');
+    toggle.setAttribute('aria-expanded','false');
+    toggle.setAttribute('aria-label','Open menu');
+    toggle.textContent='☰';
+    document.body.classList.remove('menu-open');
+  }
+
+  function openMenu(){
+    menu.classList.add('open');
+    menu.setAttribute('aria-hidden','false');
+    toggle.setAttribute('aria-expanded','true');
+    toggle.setAttribute('aria-label','Close menu');
+    toggle.textContent='×';
+    document.body.classList.add('menu-open');
+  }
+
+  toggle.addEventListener('click',function(){
+    menu.classList.contains('open') ? closeMenu() : openMenu();
+  });
+
+  menu.querySelectorAll('a').forEach(function(link){
+    link.addEventListener('click',closeMenu);
+  });
+
+  document.addEventListener('click',function(event){
+    if(!menu.classList.contains('open')) return;
+    if(!menu.contains(event.target) && event.target !== toggle) closeMenu();
+  });
+
+  document.addEventListener('keydown',function(event){
+    if(event.key==='Escape') closeMenu();
+  });
+
+  window.addEventListener('resize',function(){
+    if(window.innerWidth>800) closeMenu();
+  });
+})();
+</script>
+
 </body>
 </html>
