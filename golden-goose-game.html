@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Golden Goose Game</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(#f7f2e7, #e7f0e6);
+    color: #173b2b;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  .game-wrap {
+    width: min(760px, 100%);
+    padding: 18px 12px 24px;
+  }
+  h1 {
+    text-align: center;
+    margin: 4px 0 4px;
+    font-size: clamp(28px, 7vw, 46px);
+    letter-spacing: .03em;
+  }
+  .subtitle {
+    text-align: center;
+    margin: 0 0 12px;
+    color: #52635a;
+    font-size: 14px;
+  }
+  .hud {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-weight: 700;
+  }
+  .hud span {
+    background: rgba(255,255,255,.75);
+    border: 1px solid #c8d2c9;
+    border-radius: 10px;
+    padding: 8px 12px;
+    flex: 1;
+    text-align: center;
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 2px solid #6b806f;
+    border-radius: 16px;
+    background: #dcebd9;
+    touch-action: none;
+  }
+  .controls {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 12px;
+  }
+  button {
+    min-width: 110px;
+    min-height: 48px;
+    border: 0;
+    border-radius: 12px;
+    background: #245d43;
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  button:active { transform: translateY(1px); }
+  .message {
+    text-align: center;
+    min-height: 24px;
+    margin-top: 10px;
+    font-weight: 700;
+  }
+  .instructions {
+    text-align: center;
+    color: #52635a;
+    font-size: 13px;
+    margin-top: 6px;
+  }
+</style>
+</head>
+<body>
+<div class="game-wrap">
+  <h1>GOLDEN GOOSE</h1>
+  <div class="subtitle">Catch the Golden Eggs!</div>
+
+  <div class="hud" aria-live="polite">
+    <span>Eggs: <b id="score">0</b></span>
+    <span>Missed: <b id="missed">0</b> / 5</span>
+  </div>
+
+  <canvas id="game" width="720" height="520" aria-label="Golden Goose catching game"></canvas>
+
+  <div class="controls">
+    <button id="left" type="button">← Left</button>
+    <button id="right" type="button">Right →</button>
+  </div>
+
+  <div class="message" id="message">Move the basket and catch the eggs!</div>
+  <div class="instructions">Use the arrow keys, buttons, or drag the basket with your finger.</div>
+</div>
+
+<script>
+(() => {
+  const canvas = document.getElementById("game");
+  const ctx = canvas.getContext("2d");
+  const scoreEl = document.getElementById("score");
+  const missedEl = document.getElementById("missed");
+  const messageEl = document.getElementById("message");
+  const leftBtn = document.getElementById("left");
+  const rightBtn = document.getElementById("right");
+
+  const W = canvas.width, H = canvas.height;
+  let score = 0, missed = 0, running = true, last = 0, spawnTimer = 0;
+  let gooseX = W / 2;
+  let gooseTarget = W / 2;
+  let gooseTimer = 0;
+  const eggs = [];
+  const basket = { x: W / 2 - 58, y: H - 72, w: 116, h: 42, speed: 420 };
+  const keys = { left: false, right: false };
+
+  function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+  function resetGame() {
+    score = 0;
+    missed = 0;
+    eggs.length = 0;
+    basket.x = W / 2 - basket.w / 2;
+    gooseX = W / 2;
+    gooseTarget = W / 2;
+    gooseTimer = 0;
+    spawnTimer = 0;
+    running = true;
+    scoreEl.textContent = score;
+    missedEl.textContent = missed;
+    messageEl.textContent = "Move the basket and catch the eggs!";
+  }
+
+  function chooseGooseTarget() {
+    // Keep the goose within a comfortable area near the top.
+    gooseTarget = 100 + Math.random() * (W - 200);
+  }
+
+  function spawnEgg() {
+    // IMPORTANT: eggs always originate directly beneath the goose.
+    eggs.push({
+      x: gooseX,
+      y: 118,
+      r: 14,
+      vy: 125 + Math.random() * 55 + Math.min(score * 3, 90),
+      wobble: Math.random() * Math.PI * 2
+    });
+  }
+
+  function drawBackground() {
+    const sky = ctx.createLinearGradient(0, 0, 0, H);
+    sky.addColorStop(0, "#bcdcc1");
+    sky.addColorStop(0.65, "#e8efd9");
+    sky.addColorStop(0.66, "#9fbd91");
+    sky.addColorStop(1, "#77966c");
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.fillStyle = "#f3c95f";
+    ctx.beginPath();
+    ctx.arc(W - 70, 60, 30, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "rgba(255,255,255,.65)";
+    [[90,70],[180,110],[520,95]].forEach(([x,y]) => {
+      ctx.beginPath();
+      ctx.arc(x, y, 20, 0, Math.PI * 2);
+      ctx.arc(x + 22, y - 7, 25, 0, Math.PI * 2);
+      ctx.arc(x + 48, y, 18, 0, Math.PI * 2);
+      ctx.fill();
+    });
+  }
+
+  function drawGoose() {
+    const x = gooseX, y = 68;
+    ctx.save();
+    ctx.translate(x, y);
+
+    const gold = ctx.createLinearGradient(-55, -35, 50, 42);
+    gold.addColorStop(0, "#fff0a0");
+    gold.addColorStop(0.30, "#f2cf55");
+    gold.addColorStop(0.72, "#d9a62e");
+    gold.addColorStop(1, "#9b6716");
+
+    ctx.fillStyle = gold;
+    ctx.beginPath();
+    ctx.ellipse(0, 25, 58, 34, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.ellipse(3, -14, 23, 51, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.arc(3, -57, 29, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#fff6c9";
+    ctx.beginPath();
+    ctx.ellipse(-4, -30, 13, 31, -0.10, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#bd841d";
+    ctx.beginPath();
+    ctx.ellipse(-31, 20, 38, 18, -0.28, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#e4b73f";
+    ctx.beginPath();
+    ctx.ellipse(-31, 14, 34, 13, -0.30, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = "#93641a";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(-57, 16);
+    ctx.quadraticCurveTo(-34, 29, -8, 15);
+    ctx.stroke();
+
+    ctx.fillStyle = "#dc8a24";
+    ctx.beginPath();
+    ctx.moveTo(25, -59);
+    ctx.lineTo(61, -49);
+    ctx.lineTo(25, -37);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = "#3a2a16";
+    ctx.beginPath();
+    ctx.arc(12, -65, 4.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#d4a126";
+    ctx.beginPath();
+    ctx.moveTo(-27, -82);
+    ctx.lineTo(-17, -103);
+    ctx.lineTo(-4, -87);
+    ctx.lineTo(9, -105);
+    ctx.lineTo(20, -82);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = "#8d651b";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.strokeStyle = "#c77a21";
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(-18, 53); ctx.lineTo(-21, 62);
+    ctx.moveTo(18, 53); ctx.lineTo(21, 62);
+    ctx.stroke();
+
+    ctx.restore();
+
+    ctx.fillStyle = "#6d5220";
+    ctx.font = "bold 15px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("THE GOLDEN GOOSE", gooseX, 126);
+  }
+
+  function drawEgg(e) {
+    ctx.save();
+    ctx.translate(e.x + Math.sin(e.wobble) * 3, e.y);
+    ctx.rotate(Math.sin(e.wobble) * 0.07);
+
+    const grad = ctx.createLinearGradient(-10, -17, 11, 18);
+    grad.addColorStop(0, "#fff3a8");
+    grad.addColorStop(.45, "#e7bd42");
+    grad.addColorStop(1, "#a87318");
+
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.moveTo(0, -18);
+    ctx.bezierCurveTo(10, -14, 14, -3, 13, 6);
+    ctx.bezierCurveTo(12, 16, 7, 21, 0, 22);
+    ctx.bezierCurveTo(-8, 21, -13, 15, -13, 6);
+    ctx.bezierCurveTo(-13, -3, -8, -14, 0, -18);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = "#8f6a20";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    ctx.fillStyle = "rgba(255,255,255,.55)";
+    ctx.beginPath();
+    ctx.ellipse(-5, -8, 3, 7, -.25, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+  }
+
+  function drawPerson() {
+    const cx = basket.x + basket.w / 2;
+    const base = basket.y - 2;
+
+    ctx.fillStyle = "#3a2a22";
+    ctx.fillRect(cx - 14, base - 108, 28, 18);
+    ctx.fillStyle = "#e5b88c";
+    ctx.fillRect(cx - 13, base - 91, 26, 24);
+
+    ctx.fillStyle = "#222";
+    ctx.fillRect(cx - 7, base - 83, 4, 4);
+    ctx.fillRect(cx + 4, base - 83, 4, 4);
+
+    ctx.fillStyle = "#2f5f91";
+    ctx.fillRect(cx - 18, base - 67, 36, 38);
+
+    ctx.fillStyle = "#e5b88c";
+    ctx.fillRect(cx - 28, base - 58, 10, 10);
+    ctx.fillRect(cx + 18, base - 58, 10, 10);
+
+    ctx.fillStyle = "#333";
+    ctx.fillRect(cx - 15, base - 29, 12, 29);
+    ctx.fillRect(cx + 3, base - 29, 12, 29);
+
+    ctx.fillStyle = "#b77b2b";
+    ctx.beginPath();
+    ctx.moveTo(basket.x, basket.y);
+    ctx.lineTo(basket.x + basket.w, basket.y);
+    ctx.lineTo(basket.x + basket.w - 13, basket.y + basket.h);
+    ctx.lineTo(basket.x + 13, basket.y + basket.h);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.strokeStyle = "#704717";
+    ctx.lineWidth = 4;
+    ctx.stroke();
+
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.arc(cx, basket.y + 5, basket.w * .36, Math.PI, 0);
+    ctx.stroke();
+  }
+
+  function drawGameOver() {
+    ctx.fillStyle = "rgba(20,48,35,.78)";
+    ctx.fillRect(0, 0, W, H);
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#fff";
+    ctx.font = "bold 42px Arial";
+    ctx.fillText("GAME OVER", W / 2, H / 2 - 25);
+    ctx.font = "bold 24px Arial";
+    ctx.fillText("Golden Eggs Caught: " + score, W / 2, H / 2 + 18);
+    ctx.font = "18px Arial";
+    ctx.fillText("Tap the game to play again", W / 2, H / 2 + 58);
+  }
+
+  function update(dt) {
+    if (!running) return;
+
+    let direction = 0;
+    if (keys.left) direction -= 1;
+    if (keys.right) direction += 1;
+    basket.x = clamp(basket.x + direction * basket.speed * dt, 0, W - basket.w);
+
+    // The goose slowly moves to a new position, then lays an egg there.
+    gooseTimer -= dt;
+    if (gooseTimer <= 0) {
+      chooseGooseTarget();
+      gooseTimer = 1.1 + Math.random() * 1.0;
+    }
+
+    gooseX += (gooseTarget - gooseX) * Math.min(1, dt * 1.6);
+
+    spawnTimer -= dt;
+    const interval = Math.max(0.62, 1.15 - score * 0.012);
+    if (spawnTimer <= 0) {
+      spawnEgg();
+      spawnTimer = interval;
+    }
+
+    for (let i = eggs.length - 1; i >= 0; i--) {
+      const e = eggs[i];
+      e.y += e.vy * dt;
+      e.wobble += dt * 5;
+
+      const caught =
+        e.y + e.r >= basket.y &&
+        e.y - e.r <= basket.y + basket.h &&
+        e.x >= basket.x &&
+        e.x <= basket.x + basket.w;
+
+      if (caught) {
+        eggs.splice(i, 1);
+        score++;
+        scoreEl.textContent = score;
+        messageEl.textContent = "Golden Egg caught!";
+      } else if (e.y - e.r > H) {
+        eggs.splice(i, 1);
+        missed++;
+        missedEl.textContent = missed;
+
+        if (missed >= 5) {
+          running = false;
+          messageEl.textContent = "The goose needs more Golden Eggs!";
+        }
+      }
+    }
+  }
+
+  function draw() {
+    drawBackground();
+    drawGoose();
+    eggs.forEach(drawEgg);
+    drawPerson();
+    if (!running) drawGameOver();
+  }
+
+  function loop(t) {
+    const dt = Math.min((t - last) / 1000 || 0, 0.035);
+    last = t;
+    update(dt);
+    draw();
+    requestAnimationFrame(loop);
+  }
+
+  function setKey(name, value) {
+    keys[name] = value;
+  }
+
+  window.addEventListener("keydown", e => {
+    if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") {
+      e.preventDefault(); setKey("left", true);
+    }
+    if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") {
+      e.preventDefault(); setKey("right", true);
+    }
+    if (!running && (e.key === "Enter" || e.key === " ")) resetGame();
+  });
+
+  window.addEventListener("keyup", e => {
+    if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") setKey("left", false);
+    if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") setKey("right", false);
+  });
+
+  function holdButton(btn, name) {
+    const start = e => { e.preventDefault(); setKey(name, true); };
+    const end = e => { e.preventDefault(); setKey(name, false); };
+    btn.addEventListener("pointerdown", start);
+    ["pointerup","pointercancel","pointerleave"].forEach(ev => btn.addEventListener(ev, end));
+  }
+
+  holdButton(leftBtn, "left");
+  holdButton(rightBtn, "right");
+
+  canvas.addEventListener("pointerdown", e => {
+    if (!running) { resetGame(); return; }
+    moveBasketToPointer(e);
+  });
+
+  canvas.addEventListener("pointermove", e => {
+    if (e.buttons) moveBasketToPointer(e);
+  });
+
+  function moveBasketToPointer(e) {
+    const r = canvas.getBoundingClientRect();
+    const px = (e.clientX - r.left) * W / r.width;
+    basket.x = clamp(px - basket.w / 2, 0, W - basket.w);
+  }
+
+  chooseGooseTarget();
+  draw();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>
