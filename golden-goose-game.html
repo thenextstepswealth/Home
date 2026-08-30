@@ -2,594 +2,121 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Golden Goose Game</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Golden Goose</title>
 <style>
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
-    background: linear-gradient(#f7f2e7, #e7f0e6);
-    color: #173b2b;
-    display: flex;
-    justify-content: center;
-    min-height: 100vh;
-  }
-  .game-wrap {
-    width: min(760px, 100%);
-    padding: 18px 12px 24px;
-  }
-  h1 {
-    text-align: center;
-    margin: 4px 0 4px;
-    font-size: clamp(28px, 7vw, 46px);
-    letter-spacing: .03em;
-  }
-  .subtitle {
-    text-align: center;
-    margin: 0 0 12px;
-    color: #52635a;
-    font-size: 14px;
-  }
-  .hud {
-    display: flex;
-    justify-content: space-between;
-    gap: 8px;
-    margin-bottom: 10px;
-    font-weight: 700;
-  }
-  .hud span {
-    background: rgba(255,255,255,.75);
-    border: 1px solid #c8d2c9;
-    border-radius: 10px;
-    padding: 8px 12px;
-    flex: 1;
-    text-align: center;
-  }
-  canvas {
-    display: block;
-    width: 100%;
-    height: auto;
-    border: 2px solid #6b806f;
-    border-radius: 16px;
-    background: #dcebd9;
-    touch-action: none;
-  }
-  .controls {
-    display: flex;
-    justify-content: center;
-    gap: 14px;
-    margin-top: 12px;
-  }
-  button {
-    min-width: 110px;
-    min-height: 48px;
-    border: 0;
-    border-radius: 12px;
-    background: #245d43;
-    color: white;
-    font-size: 18px;
-    font-weight: 700;
-    cursor: pointer;
-    touch-action: manipulation;
-  }
-  button:active { transform: translateY(1px); }
-  .message {
-    text-align: center;
-    min-height: 24px;
-    margin-top: 10px;
-    font-weight: 700;
-  }
-  .instructions {
-    text-align: center;
-    color: #52635a;
-    font-size: 13px;
-    margin-top: 6px;
-  }
+*{box-sizing:border-box}body{margin:0;background:#10291f;font-family:Arial,sans-serif;display:flex;justify-content:center;color:#fff}
+.wrap{width:min(900px,100%);padding:12px}.title{text-align:center;font-size:clamp(30px,7vw,52px);font-weight:900;letter-spacing:.04em;margin:4px 0;color:#f4cf59;text-shadow:0 3px 0 #573b0c,0 0 18px #e8b93e}
+.hud{display:flex;gap:8px;margin:8px 0}.hud div{flex:1;text-align:center;padding:8px 10px;border:2px solid #8b6721;border-radius:10px;background:linear-gradient(#3e2b13,#17130d);font-weight:800}.hud b{color:#ffe071;font-size:20px}
+canvas{width:100%;height:auto;display:block;border:3px solid #9b772c;border-radius:14px;box-shadow:0 8px 28px #0008;touch-action:none;background:#63a5d8}
+.controls{display:flex;justify-content:center;gap:10px;margin-top:10px}.controls button{min-height:48px;min-width:140px;border:2px solid #c89c3b;border-radius:12px;background:linear-gradient(#4c3920,#21180d);color:#fff;font-size:17px;font-weight:900;cursor:pointer}.help{text-align:center;font-size:13px;color:#c9d7cf;margin:8px 0}
 </style>
 </head>
 <body>
-<div class="game-wrap">
-  <h1>GOLDEN GOOSE</h1>
-  <div class="subtitle">Catch the Golden Eggs!</div>
-
-  <div class="hud" aria-live="polite">
-    <span>Eggs: <b id="score">0</b></span>
-    <span>Missed: <b id="missed">0</b> / 5</span>
-  </div>
-
-  <canvas id="game" width="720" height="520" aria-label="Golden Goose catching game"></canvas>
-
-  <div class="controls">
-    <button id="left" type="button">← Left</button>
-    <button id="right" type="button">Right →</button>
-  </div>
-
-  <div class="message" id="message">Move the basket and catch the eggs!</div>
-  <div class="instructions">Use the arrow keys, buttons, or drag the basket with your finger.</div>
+<div class="wrap">
+<h1 class="title">GOLDEN GOOSE</h1>
+<div class="hud"><div>SCORE <b id="score">0</b></div><div>GOLDEN EGGS <b id="eggs">0</b></div><div>MISSED <b id="missed">0</b> / 5</div></div>
+<canvas id="game" width="900" height="620"></canvas>
+<div class="controls"><button id="left">← MOVE LEFT</button><button id="right">MOVE RIGHT →</button></div>
+<div class="help">Catch the Golden Eggs. Use ← →, A/D, the buttons, or drag the catcher.</div>
 </div>
-
 <script>
-(() => {
-  const canvas = document.getElementById("game");
-  const ctx = canvas.getContext("2d");
-  const scoreEl = document.getElementById("score");
-  const missedEl = document.getElementById("missed");
-  const messageEl = document.getElementById("message");
-  const leftBtn = document.getElementById("left");
-  const rightBtn = document.getElementById("right");
-
-  const W = canvas.width, H = canvas.height;
-  let score = 0, missed = 0, running = true, last = 0, spawnTimer = 0;
-  let gooseX = W / 2;
-  let gooseTarget = W / 2;
-  let gooseTimer = 0;
-  const eggs = [];
-  const basket = { x: W / 2 - 58, y: H - 72, w: 116, h: 42, speed: 420 };
-  const keys = { left: false, right: false };
-
-  function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
-
-  function resetGame() {
-    score = 0;
-    missed = 0;
-    eggs.length = 0;
-    basket.x = W / 2 - basket.w / 2;
-    gooseX = W / 2;
-    gooseTarget = W / 2;
-    gooseTimer = 0;
-    spawnTimer = 0;
-    running = true;
-    scoreEl.textContent = score;
-    missedEl.textContent = missed;
-    messageEl.textContent = "Move the basket and catch the eggs!";
-  }
-
-  function chooseGooseTarget() {
-    // Keep the goose within a comfortable area near the top.
-    gooseTarget = 100 + Math.random() * (W - 200);
-  }
-
-  function spawnEgg() {
-    // IMPORTANT: eggs always originate directly beneath the goose.
-    eggs.push({
-      x: gooseX,
-      y: 118,
-      r: 14,
-      vy: 125 + Math.random() * 55 + Math.min(score * 3, 90),
-      wobble: Math.random() * Math.PI * 2
-    });
-  }
-
-  function drawBackground() {
-    const sky = ctx.createLinearGradient(0, 0, 0, H);
-    sky.addColorStop(0, "#bcdcc1");
-    sky.addColorStop(0.65, "#e8efd9");
-    sky.addColorStop(0.66, "#9fbd91");
-    sky.addColorStop(1, "#77966c");
-    ctx.fillStyle = sky;
-    ctx.fillRect(0, 0, W, H);
-
-    ctx.fillStyle = "#f3c95f";
-    ctx.beginPath();
-    ctx.arc(W - 70, 60, 30, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "rgba(255,255,255,.65)";
-    [[90,70],[180,110],[520,95]].forEach(([x,y]) => {
-      ctx.beginPath();
-      ctx.arc(x, y, 20, 0, Math.PI * 2);
-      ctx.arc(x + 22, y - 7, 25, 0, Math.PI * 2);
-      ctx.arc(x + 48, y, 18, 0, Math.PI * 2);
-      ctx.fill();
-    });
-  }
-
-  function drawGoose() {
-    const x = gooseX, y = 70;
-    ctx.save();
-    ctx.translate(x, y);
-
-    // More realistic metallic-gold goose: layered gradients, feather forms,
-    // specular highlights, dimensional shading and a sculpted silhouette.
-    ctx.shadowColor = "rgba(70,45,8,.28)";
-    ctx.shadowBlur = 10;
-    ctx.shadowOffsetY = 6;
-
-    const body = ctx.createRadialGradient(-18, 0, 5, 12, 25, 65);
-    body.addColorStop(0, "#fff9d2");
-    body.addColorStop(.18, "#ffe77a");
-    body.addColorStop(.42, "#e7b938");
-    body.addColorStop(.72, "#b77b16");
-    body.addColorStop(1, "#6f4610");
-
-    ctx.fillStyle = body;
-    ctx.beginPath();
-    ctx.ellipse(0, 27, 61, 36, -0.04, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Neck.
-    const neck = ctx.createLinearGradient(-18, -65, 22, 20);
-    neck.addColorStop(0, "#fff9c9");
-    neck.addColorStop(.25, "#f6d65c");
-    neck.addColorStop(.55, "#d59b25");
-    neck.addColorStop(1, "#85540f");
-    ctx.fillStyle = neck;
-    ctx.beginPath();
-    ctx.ellipse(5, -15, 24, 56, -0.04, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Head.
-    const head = ctx.createRadialGradient(-8, -68, 3, 8, -53, 32);
-    head.addColorStop(0, "#fffbdc");
-    head.addColorStop(.25, "#f5d968");
-    head.addColorStop(.62, "#c99120");
-    head.addColorStop(1, "#70450d");
-    ctx.fillStyle = head;
-    ctx.beginPath();
-    ctx.arc(7, -56, 30, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Face highlight.
-    ctx.fillStyle = "rgba(255,251,215,.8)";
-    ctx.beginPath();
-    ctx.ellipse(-2, -63, 12, 21, -.18, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Layered wing.
-    ctx.fillStyle = "#8c5a11";
-    ctx.beginPath();
-    ctx.ellipse(-34, 22, 42, 20, -.26, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "#d39c25";
-    ctx.beginPath();
-    ctx.ellipse(-33, 16, 39, 17, -.28, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "#f0c84c";
-    ctx.beginPath();
-    ctx.ellipse(-29, 10, 32, 12, -.28, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Feather grooves.
-    ctx.strokeStyle = "rgba(106,67,12,.65)";
-    ctx.lineWidth = 2;
-    for (let i = 0; i < 5; i++) {
-      ctx.beginPath();
-      ctx.moveTo(-54 + i * 9, 13 - i * 1.2);
-      ctx.quadraticCurveTo(-40 + i * 7, 24, -22 + i * 5, 17);
-      ctx.stroke();
-    }
-
-    // Beak.
-    const beak = ctx.createLinearGradient(24, -62, 60, -40);
-    beak.addColorStop(0, "#ffd05b");
-    beak.addColorStop(.45, "#e99021");
-    beak.addColorStop(1, "#8f4c12");
-    ctx.fillStyle = beak;
-    ctx.beginPath();
-    ctx.moveTo(27, -59);
-    ctx.quadraticCurveTo(44, -56, 62, -48);
-    ctx.quadraticCurveTo(45, -39, 27, -37);
-    ctx.closePath();
-    ctx.fill();
-
-    // Beak line.
-    ctx.strokeStyle = "#8a4d16";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(31, -48);
-    ctx.quadraticCurveTo(45, -47, 59, -48);
-    ctx.stroke();
-
-    // Eye with catchlight.
-    ctx.fillStyle = "#17130b";
-    ctx.beginPath();
-    ctx.arc(15, -66, 5.5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.fillStyle = "#fff";
-    ctx.beginPath();
-    ctx.arc(17, -68, 1.7, 0, Math.PI * 2);
-    ctx.fill();
-
-    // Crown.
-    const crown = ctx.createLinearGradient(-25, -105, 20, -78);
-    crown.addColorStop(0, "#fff09a");
-    crown.addColorStop(.35, "#e8c246");
-    crown.addColorStop(1, "#8f5b12");
-    ctx.fillStyle = crown;
-    ctx.beginPath();
-    ctx.moveTo(-28,-83);
-    ctx.lineTo(-19,-105);
-    ctx.lineTo(-5,-89);
-    ctx.lineTo(7,-107);
-    ctx.lineTo(20,-83);
-    ctx.quadraticCurveTo(0,-77,-28,-83);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = "rgba(255,246,170,.85)";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(-20,-98);
-    ctx.lineTo(-6,-87);
-    ctx.moveTo(7,-100);
-    ctx.lineTo(15,-87);
-    ctx.stroke();
-
-    // Feet.
-    ctx.strokeStyle = "#d37d1b";
-    ctx.lineWidth = 5;
-    ctx.lineCap = "round";
-    ctx.beginPath();
-    ctx.moveTo(-19, 57); ctx.lineTo(-22, 65); ctx.lineTo(-29, 66);
-    ctx.moveTo(19, 57); ctx.lineTo(22, 65); ctx.lineTo(29, 66);
-    ctx.stroke();
-
-    ctx.restore();
-
-    ctx.fillStyle = "#6d5220";
-    ctx.font = "bold 15px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText("THE GOLDEN GOOSE", gooseX, 132);
-  }
-
-  function drawEgg(e) {
-    ctx.save();
-    ctx.translate(e.x + Math.sin(e.wobble) * 3, e.y);
-    ctx.rotate(Math.sin(e.wobble) * 0.07);
-
-    const grad = ctx.createLinearGradient(-10, -17, 11, 18);
-    grad.addColorStop(0, "#fff3a8");
-    grad.addColorStop(.45, "#e7bd42");
-    grad.addColorStop(1, "#a87318");
-
-    ctx.fillStyle = grad;
-    ctx.beginPath();
-    ctx.moveTo(0, -18);
-    ctx.bezierCurveTo(10, -14, 14, -3, 13, 6);
-    ctx.bezierCurveTo(12, 16, 7, 21, 0, 22);
-    ctx.bezierCurveTo(-8, 21, -13, 15, -13, 6);
-    ctx.bezierCurveTo(-13, -3, -8, -14, 0, -18);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = "#8f6a20";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    ctx.fillStyle = "rgba(255,255,255,.55)";
-    ctx.beginPath();
-    ctx.ellipse(-5, -8, 3, 7, -.25, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.restore();
-  }
-
-  function drawPerson() {
-    const cx = basket.x + basket.w / 2;
-    const base = basket.y - 2;
-
-    // More human-looking arcade character with pixel-inspired construction.
-    // The proportions and shading are intentionally simple enough to read at game scale.
-    ctx.save();
-
-    // Hair.
-    ctx.fillStyle = "#30231d";
-    ctx.beginPath();
-    ctx.arc(cx, base - 94, 18, Math.PI, Math.PI * 2);
-    ctx.fill();
-    ctx.fillRect(cx - 18, base - 96, 36, 12);
-
-    // Face.
-    const skin = ctx.createLinearGradient(cx - 13, base - 92, cx + 13, base - 67);
-    skin.addColorStop(0, "#f3cda7");
-    skin.addColorStop(1, "#b8754d");
-    ctx.fillStyle = skin;
-    ctx.fillRect(cx - 13, base - 91, 26, 25);
-    ctx.fillStyle = "#e8b78e";
-    ctx.fillRect(cx + 8, base - 86, 6, 12);
-
-    // Eyes.
-    ctx.fillStyle = "#30231d";
-    ctx.fillRect(cx - 8, base - 82, 4, 3);
-    ctx.fillRect(cx + 5, base - 82, 4, 3);
-
-    // Neck.
-    ctx.fillStyle = "#d99b70";
-    ctx.fillRect(cx - 7, base - 68, 14, 10);
-
-    // Shirt / torso.
-    const shirt = ctx.createLinearGradient(cx - 20, base - 66, cx + 20, base - 28);
-    shirt.addColorStop(0, "#477da8");
-    shirt.addColorStop(.5, "#315b83");
-    shirt.addColorStop(1, "#1e3c5b");
-    ctx.fillStyle = shirt;
-    ctx.fillRect(cx - 19, base - 66, 38, 38);
-
-    // Arms reaching toward basket.
-    ctx.fillStyle = "#d99b70";
-    ctx.fillRect(cx - 31, base - 58, 12, 10);
-    ctx.fillRect(cx + 19, base - 58, 12, 10);
-    ctx.fillStyle = "#315b83";
-    ctx.fillRect(cx - 23, base - 63, 8, 17);
-    ctx.fillRect(cx + 15, base - 63, 8, 17);
-
-    // Pants and shoes.
-    ctx.fillStyle = "#30343a";
-    ctx.fillRect(cx - 16, base - 29, 13, 29);
-    ctx.fillRect(cx + 3, base - 29, 13, 29);
-    ctx.fillStyle = "#1c252b";
-    ctx.fillRect(cx - 19, base - 3, 16, 6);
-    ctx.fillRect(cx + 3, base - 3, 16, 6);
-
-    // Basket with woven-style horizontal bands.
-    const basketGrad = ctx.createLinearGradient(0, basket.y, 0, basket.y + basket.h);
-    basketGrad.addColorStop(0, "#d39a45");
-    basketGrad.addColorStop(.45, "#a86d25");
-    basketGrad.addColorStop(1, "#704313");
-    ctx.fillStyle = basketGrad;
-    ctx.beginPath();
-    ctx.moveTo(basket.x, basket.y);
-    ctx.lineTo(basket.x + basket.w, basket.y);
-    ctx.lineTo(basket.x + basket.w - 13, basket.y + basket.h);
-    ctx.lineTo(basket.x + 13, basket.y + basket.h);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = "#6a4218";
-    ctx.lineWidth = 3;
-    ctx.stroke();
-
-    ctx.strokeStyle = "rgba(255,210,120,.5)";
-    ctx.lineWidth = 2;
-    for (let yy = basket.y + 10; yy < basket.y + basket.h; yy += 9) {
-      ctx.beginPath();
-      ctx.moveTo(basket.x + 5, yy);
-      ctx.lineTo(basket.x + basket.w - 5, yy);
-      ctx.stroke();
-    }
-
-    // Basket handle.
-    ctx.strokeStyle = "#704717";
-    ctx.lineWidth = 5;
-    ctx.beginPath();
-    ctx.arc(cx, basket.y + 5, basket.w * .36, Math.PI, 0);
-    ctx.stroke();
-
-    ctx.restore();
-  }
-
-  function drawGameOver() {
-    ctx.fillStyle = "rgba(20,48,35,.78)";
-    ctx.fillRect(0, 0, W, H);
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#fff";
-    ctx.font = "bold 42px Arial";
-    ctx.fillText("GAME OVER", W / 2, H / 2 - 25);
-    ctx.font = "bold 24px Arial";
-    ctx.fillText("Golden Eggs Caught: " + score, W / 2, H / 2 + 18);
-    ctx.font = "18px Arial";
-    ctx.fillText("Tap the game to play again", W / 2, H / 2 + 58);
-  }
-
-  function update(dt) {
-    if (!running) return;
-
-    let direction = 0;
-    if (keys.left) direction -= 1;
-    if (keys.right) direction += 1;
-    basket.x = clamp(basket.x + direction * basket.speed * dt, 0, W - basket.w);
-
-    // The goose slowly moves to a new position, then lays an egg there.
-    gooseTimer -= dt;
-    if (gooseTimer <= 0) {
-      chooseGooseTarget();
-      gooseTimer = 1.1 + Math.random() * 1.0;
-    }
-
-    gooseX += (gooseTarget - gooseX) * Math.min(1, dt * 1.6);
-
-    spawnTimer -= dt;
-    const interval = Math.max(0.62, 1.15 - score * 0.012);
-    if (spawnTimer <= 0) {
-      spawnEgg();
-      spawnTimer = interval;
-    }
-
-    for (let i = eggs.length - 1; i >= 0; i--) {
-      const e = eggs[i];
-      e.y += e.vy * dt;
-      e.wobble += dt * 5;
-
-      const caught =
-        e.y + e.r >= basket.y &&
-        e.y - e.r <= basket.y + basket.h &&
-        e.x >= basket.x &&
-        e.x <= basket.x + basket.w;
-
-      if (caught) {
-        eggs.splice(i, 1);
-        score++;
-        scoreEl.textContent = score;
-        messageEl.textContent = "Golden Egg caught!";
-      } else if (e.y - e.r > H) {
-        eggs.splice(i, 1);
-        missed++;
-        missedEl.textContent = missed;
-
-        if (missed >= 5) {
-          running = false;
-          messageEl.textContent = "The goose needs more Golden Eggs!";
-        }
-      }
-    }
-  }
-
-  function draw() {
-    drawBackground();
-    drawGoose();
-    eggs.forEach(drawEgg);
-    drawPerson();
-    if (!running) drawGameOver();
-  }
-
-  function loop(t) {
-    const dt = Math.min((t - last) / 1000 || 0, 0.035);
-    last = t;
-    update(dt);
-    draw();
-    requestAnimationFrame(loop);
-  }
-
-  function setKey(name, value) {
-    keys[name] = value;
-  }
-
-  window.addEventListener("keydown", e => {
-    if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") {
-      e.preventDefault(); setKey("left", true);
-    }
-    if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") {
-      e.preventDefault(); setKey("right", true);
-    }
-    if (!running && (e.key === "Enter" || e.key === " ")) resetGame();
-  });
-
-  window.addEventListener("keyup", e => {
-    if (e.key === "ArrowLeft" || e.key.toLowerCase() === "a") setKey("left", false);
-    if (e.key === "ArrowRight" || e.key.toLowerCase() === "d") setKey("right", false);
-  });
-
-  function holdButton(btn, name) {
-    const start = e => { e.preventDefault(); setKey(name, true); };
-    const end = e => { e.preventDefault(); setKey(name, false); };
-    btn.addEventListener("pointerdown", start);
-    ["pointerup","pointercancel","pointerleave"].forEach(ev => btn.addEventListener(ev, end));
-  }
-
-  holdButton(leftBtn, "left");
-  holdButton(rightBtn, "right");
-
-  canvas.addEventListener("pointerdown", e => {
-    if (!running) { resetGame(); return; }
-    moveBasketToPointer(e);
-  });
-
-  canvas.addEventListener("pointermove", e => {
-    if (e.buttons) moveBasketToPointer(e);
-  });
-
-  function moveBasketToPointer(e) {
-    const r = canvas.getBoundingClientRect();
-    const px = (e.clientX - r.left) * W / r.width;
-    basket.x = clamp(px - basket.w / 2, 0, W - basket.w);
-  }
-
-  chooseGooseTarget();
-  draw();
-  requestAnimationFrame(loop);
+(()=>{const c=document.getElementById('game'),x=c.getContext('2d'),W=c.width,H=c.height;
+let score=0,caught=0,missed=0,over=false,last=0,spawn=0,gooseX=450,gooseTarget=450,gooseT=1,shake=0,flash=0;
+const keys={l:false,r:false},eggs=[],particles=[];
+const player={x:450,w:120,y:540,h:52,speed:520};
+
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function reset(){score=caught=missed=0;eggs.length=0;particles.length=0;over=false;player.x=450;gooseX=450;gooseTarget=450;spawn=0;document.getElementById('score').textContent=0;document.getElementById('eggs').textContent=0;document.getElementById('missed').textContent=0}
+function target(){gooseTarget=125+Math.random()*650}
+function egg(){eggs.push({x:gooseX+(Math.random()*12-6),y:135,vy:190+Math.random()*65+Math.min(score,300)*.15,r:16,rot:Math.random()*.4-0.2})}
+function burst(px,py){for(let i=0;i<18;i++)particles.push({x:px,y:py,vx:(Math.random()-.5)*180,vy:(Math.random()-.8)*180,life:.55+Math.random()*.4})}
+function sky(){
+ let g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#3b83bd');g.addColorStop(.58,'#8fc9e8');g.addColorStop(1,'#b8d99b');x.fillStyle=g;x.fillRect(0,0,W,H);
+ x.fillStyle='#ffe27a';x.beginPath();x.arc(770,72,43,0,7);x.fill();
+ // clouds
+ x.fillStyle='rgba(255,255,255,.72)';[[100,80,45],[360,110,55],[630,125,42]].forEach(q=>{x.beginPath();x.arc(q[0],q[1],q[2],0,7);x.arc(q[0]+45,q[1]-12,q[2]*.75,0,7);x.arc(q[0]+85,q[1],q[2]*.55,0,7);x.fill()});
+ // mountains
+ x.fillStyle='#6d8e9b';x.beginPath();x.moveTo(0,390);x.lineTo(130,235);x.lineTo(245,390);x.lineTo(380,210);x.lineTo(535,390);x.lineTo(680,245);x.lineTo(900,390);x.closePath();x.fill();
+ x.fillStyle='#e9f0e9';x.beginPath();x.moveTo(130,235);x.lineTo(104,273);x.lineTo(135,263);x.lineTo(155,285);x.lineTo(180,265);x.lineTo(245,390);x.closePath();x.fill();
+ x.fillStyle='#4f794e';x.beginPath();x.moveTo(0,370);x.quadraticCurveTo(210,315,420,380);x.quadraticCurveTo(670,320,900,370);x.lineTo(900,620);x.lineTo(0,620);x.closePath();x.fill();
+ // lake
+ x.fillStyle='#6eb7c6';x.beginPath();x.moveTo(470,405);x.quadraticCurveTo(680,380,900,425);x.lineTo(900,520);x.lineTo(470,520);x.closePath();x.fill();
+ // fence
+ x.strokeStyle='#8a5b31';x.lineWidth=10;for(let yy of [465,500]){x.beginPath();x.moveTo(0,yy);x.lineTo(W,yy);x.stroke()}for(let xx=35;xx<W;xx+=115){x.beginPath();x.moveTo(xx,445);x.lineTo(xx,535);x.stroke()}
+}
+function goose(){
+ x.save();x.translate(gooseX,98);let bob=Math.sin(performance.now()/380)*4;x.translate(0,bob);
+ // shadow
+ x.shadowColor='#5b390b99';x.shadowBlur=14;x.shadowOffsetY=9;
+ let gold=x.createRadialGradient(-18,-20,4,10,15,75);gold.addColorStop(0,'#fffbd5');gold.addColorStop(.18,'#ffe66b');gold.addColorStop(.42,'#e5b62f');gold.addColorStop(.72,'#a9680f');gold.addColorStop(1,'#56320a');
+ x.fillStyle=gold;
+ // body
+ x.beginPath();x.ellipse(0,35,70,39,-.06,0,7);x.fill();
+ // neck
+ x.beginPath();x.ellipse(10,-2,27,60,-.03,0,7);x.fill();
+ // head
+ x.beginPath();x.arc(16,-55,33,0,7);x.fill();
+ // wing layers
+ x.fillStyle='#7f4d0b';x.beginPath();x.ellipse(-39,30,48,22,-.3,0,7);x.fill();
+ x.fillStyle='#c18719';x.beginPath();x.ellipse(-37,23,43,18,-.3,0,7);x.fill();
+ x.fillStyle='#f0c54b';x.beginPath();x.ellipse(-33,16,36,14,-.3,0,7);x.fill();
+ // feather strokes
+ x.strokeStyle='#8c5a12';x.lineWidth=2;for(let i=0;i<6;i++){x.beginPath();x.moveTo(-62+i*10,18-i);x.quadraticCurveTo(-45+i*7,31,-19+i*5,20);x.stroke()}
+ // face highlight
+ x.fillStyle='rgba(255,249,190,.78)';x.beginPath();x.ellipse(3,-62,13,23,-.2,0,7);x.fill();
+ // beak
+ let beak=x.createLinearGradient(38,-63,75,-40);beak.addColorStop(0,'#ffd65c');beak.addColorStop(.5,'#e58d1f');beak.addColorStop(1,'#87440e');x.fillStyle=beak;x.beginPath();x.moveTo(39,-62);x.quadraticCurveTo(59,-58,75,-49);x.quadraticCurveTo(58,-38,39,-38);x.closePath();x.fill();
+ x.strokeStyle='#75400e';x.lineWidth=2;x.beginPath();x.moveTo(43,-49);x.lineTo(72,-49);x.stroke();
+ // eye
+ x.fillStyle='#15110a';x.beginPath();x.arc(25,-65,6,0,7);x.fill();x.fillStyle='#fff';x.beginPath();x.arc(27,-67,2,0,7);x.fill();
+ // crown
+ let cr=x.createLinearGradient(-25,-108,25,-78);cr.addColorStop(0,'#fff0a0');cr.addColorStop(.35,'#e7bc3c');cr.addColorStop(1,'#85510e');x.fillStyle=cr;x.beginPath();x.moveTo(-18,-83);x.lineTo(-10,-108);x.lineTo(4,-89);x.lineTo(17,-109);x.lineTo(29,-82);x.quadraticCurveTo(4,-76,-18,-83);x.closePath();x.fill();
+ // metallic highlights
+ x.strokeStyle='rgba(255,255,225,.9)';x.lineWidth=3;x.beginPath();x.moveTo(-4,-31);x.quadraticCurveTo(5,-20,7,-2);x.stroke();x.beginPath();x.moveTo(-23,5);x.quadraticCurveTo(-5,-4,17,3);x.stroke();
+ x.restore();
+}
+function drawEgg(e){x.save();x.translate(e.x,e.y);x.rotate(e.rot);let g=x.createRadialGradient(-5,-9,2,5,6,25);g.addColorStop(0,'#fffbd0');g.addColorStop(.18,'#ffe85f');g.addColorStop(.45,'#e5b42b');g.addColorStop(.75,'#a7660e');g.addColorStop(1,'#59330a');x.fillStyle=g;x.shadowColor='#ffd84d99';x.shadowBlur=10;x.beginPath();x.moveTo(0,-22);x.bezierCurveTo(12,-17,18,-3,16,9);x.bezierCurveTo(14,23,7,28,0,29);x.bezierCurveTo(-9,28,-16,20,-16,8);x.bezierCurveTo(-16,-5,-9,-17,0,-22);x.closePath();x.fill();x.strokeStyle='#f9df72';x.lineWidth=2;x.stroke();x.fillStyle='rgba(255,255,255,.8)';x.beginPath();x.ellipse(-6,-10,3,9,-.3,0,7);x.fill();x.restore()}
+function person(){
+ const cx=player.x,base=player.y;
+ // shadow
+ x.fillStyle='rgba(20,35,20,.3)';x.beginPath();x.ellipse(cx,base+55,65,10,0,0,7);x.fill();
+ // legs
+ x.fillStyle='#303944';x.fillRect(cx-23,base-28,20,35);x.fillRect(cx+3,base-28,20,35);
+ x.fillStyle='#3b2416';x.fillRect(cx-28,base+2,27,9);x.fillRect(cx+2,base+2,29,9);
+ // torso
+ let shirt=x.createLinearGradient(cx-27,base-85,cx+27,base-25);shirt.addColorStop(0,'#5d8fb6');shirt.addColorStop(1,'#274967');x.fillStyle=shirt;x.fillRect(cx-27,base-82,54,56);
+ // arms
+ x.fillStyle='#c98963';x.fillRect(cx-43,base-72,17,43);x.fillRect(cx+26,base-72,17,43);
+ // head
+ x.fillStyle='#dca27a';x.beginPath();x.arc(cx,base-101,22,0,7);x.fill();
+ x.fillStyle='#3b2a20';x.beginPath();x.arc(cx,base-108,22,Math.PI,7);x.fill();
+ // cap
+ x.fillStyle='#d9e2e5';x.fillRect(cx-18,base-122,36,10);x.fillStyle='#58758c';x.fillRect(cx+7,base-114,17,7);
+ // basket
+ let bg=x.createLinearGradient(0,base-30,0,base+25);bg.addColorStop(0,'#e0aa51');bg.addColorStop(.5,'#a96d24');bg.addColorStop(1,'#69400f');x.fillStyle=bg;x.beginPath();x.moveTo(cx-62,base-25);x.lineTo(cx+62,base-25);x.lineTo(cx+48,base+27);x.lineTo(cx-48,base+27);x.closePath();x.fill();x.strokeStyle='#623a12';x.lineWidth=4;x.stroke();x.strokeStyle='rgba(255,214,130,.55)';x.lineWidth=2;for(let yy=base-12;yy<base+25;yy+=9){x.beginPath();x.moveTo(cx-55,yy);x.lineTo(cx+55,yy);x.stroke()}x.strokeStyle='#704717';x.lineWidth=6;x.beginPath();x.arc(cx,base-20,40,Math.PI,0);x.stroke();
+}
+function drawParticles(dt){for(let i=particles.length-1;i>=0;i--){let p=particles[i];p.life-=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=240*dt;if(p.life<=0){particles.splice(i,1);continue}x.fillStyle=`rgba(255,215,70,${Math.max(0,p.life)})`;x.fillRect(p.x,p.y,4,4)}}
+function update(dt){
+ if(over)return;
+ let d=(keys.l?-1:0)+(keys.r?1:0);player.x=clamp(player.x+d*player.speed*dt,70,W-70);
+ gooseT-=dt;if(gooseT<=0){target();gooseT=1.2+Math.random()*1.2}
+ gooseX+=(gooseTarget-gooseX)*Math.min(1,dt*1.8);
+ spawn-=dt;if(spawn<=0){egg();spawn=Math.max(.48,1.05-score*.006)}
+ for(let i=eggs.length-1;i>=0;i--){let e=eggs[i];e.y+=e.vy*dt;e.rot+=Math.sin(e.y*.02)*dt*.4;
+  if(e.y+e.r>=player.y-25&&e.y-e.r<=player.y+25&&Math.abs(e.x-player.x)<70){eggs.splice(i,1);caught++;score+=10;shake=.15;flash=.3;burst(e.x,e.y);document.getElementById('score').textContent=score;document.getElementById('eggs').textContent=caught}
+  else if(e.y-e.r>H){eggs.splice(i,1);missed++;document.getElementById('missed').textContent=missed;if(missed>=5)over=true}
+ }
+}
+function draw(dt){sky();goose();eggs.forEach(drawEgg);person();drawParticles(dt);if(flash>0){x.fillStyle=`rgba(255,225,80,${flash*.22})`;x.fillRect(0,0,W,H);flash-=dt}if(shake>0){shake-=dt}if(over){x.fillStyle='rgba(12,25,17,.76)';x.fillRect(0,0,W,H);x.fillStyle='#ffe36b';x.textAlign='center';x.font='900 54px Arial';x.fillText('GAME OVER',W/2,275);x.fillStyle='#fff';x.font='700 26px Arial';x.fillText('Golden Eggs: '+caught,W/2,320);x.font='18px Arial';x.fillText('Tap the game to play again',W/2,360)}}
+function loop(t){let dt=Math.min((t-last)/1000||0,.033);last=t;update(dt);draw(dt);requestAnimationFrame(loop)}
+function setKey(k,v){keys[k]=v}
+function hold(btn,k){btn.addEventListener('pointerdown',e=>{e.preventDefault();setKey(k,true)});['pointerup','pointercancel','pointerleave'].forEach(v=>btn.addEventListener(v,e=>{e.preventDefault();setKey(k,false)}))}
+hold(document.getElementById('left'),'l');hold(document.getElementById('right'),'r');
+window.addEventListener('keydown',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a'){e.preventDefault();keys.l=true}if(e.key==='ArrowRight'||e.key.toLowerCase()==='d'){e.preventDefault();keys.r=true}if(over&&(e.key==='Enter'||e.key===' '))reset()});
+window.addEventListener('keyup',e=>{if(e.key==='ArrowLeft'||e.key.toLowerCase()==='a')keys.l=false;if(e.key==='ArrowRight'||e.key.toLowerCase()==='d')keys.r=false});
+c.addEventListener('pointerdown',e=>{if(over){reset();return}move(e)});c.addEventListener('pointermove',e=>{if(e.buttons)move(e)});function move(e){let r=c.getBoundingClientRect();player.x=cl((e.clientX-r.left)*W/r.width,70,W-70)}
+requestAnimationFrame(loop);
 })();
 </script>
 </body>
