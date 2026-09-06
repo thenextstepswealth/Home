@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Next Step Assessment | Next Steps Wealth-Building Journey</title>
+<style>
+:root {
+  --navy:#17324d;
+  --gold:#c9a227;
+  --cream:#f7f4ec;
+  --text:#263746;
+  --muted:#667583;
+  --line:#d9dee2;
+  --white:#fff;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; font-family:Arial, Helvetica, sans-serif; color:var(--text);
+  background:var(--cream); line-height:1.55;
+}
+.container { max-width:850px; margin:0 auto; padding:28px 20px 60px; }
+header { text-align:center; margin-bottom:28px; }
+.eyebrow { text-transform:uppercase; letter-spacing:.12em; font-size:.78rem; color:var(--gold); font-weight:700; }
+h1 { margin:7px 0 8px; color:var(--navy); font-size:clamp(2rem,5vw,3rem); }
+header p { max-width:680px; margin:0 auto; color:var(--muted); }
+.card {
+  background:var(--white); border:1px solid var(--line); border-radius:14px;
+  padding:28px; box-shadow:0 4px 18px rgba(23,50,77,.06);
+}
+.progress-wrap { margin-bottom:22px; }
+.progress-label { display:flex; justify-content:space-between; color:var(--muted); font-size:.88rem; margin-bottom:7px; }
+.progress { height:8px; background:#e8ebed; border-radius:99px; overflow:hidden; }
+.progress-bar { height:100%; width:0; background:var(--gold); transition:width .25s; }
+.question { display:none; }
+.question.active { display:block; }
+.question h2 { color:var(--navy); font-size:1.45rem; margin-top:0; }
+.question p.help { color:var(--muted); margin-top:-5px; }
+label.option {
+  display:block; border:1px solid var(--line); border-radius:10px; padding:13px 15px;
+  margin:10px 0; cursor:pointer; transition:.15s;
+}
+label.option:hover { border-color:var(--gold); }
+input[type=radio] { margin-right:10px; }
+input[type=number], input[type=text] {
+  width:100%; padding:12px; border:1px solid var(--line); border-radius:8px;
+  font-size:1rem; margin-top:7px;
+}
+.field { margin:16px 0; }
+.field label { font-weight:700; display:block; }
+.buttons { display:flex; gap:10px; margin-top:25px; }
+button {
+  border:0; border-radius:8px; padding:12px 20px; font-weight:700; cursor:pointer;
+  font-size:1rem;
+}
+.next { background:var(--navy); color:white; margin-left:auto; }
+.back { background:#e8ebed; color:var(--text); }
+button:disabled { opacity:.45; cursor:not-allowed; }
+.note {
+  background:#f5f1df; border-left:4px solid var(--gold); padding:14px 16px;
+  margin:18px 0; border-radius:5px;
+}
+#results { display:none; }
+.result-box { border-top:4px solid var(--gold); padding-top:20px; }
+.result-box h2 { color:var(--navy); }
+.resource {
+  border:1px solid var(--line); border-radius:10px; padding:15px; margin:12px 0;
+}
+.resource h3 { margin:0 0 5px; color:var(--navy); }
+.disclaimer { font-size:.86rem; color:var(--muted); margin-top:25px; }
+.hidden { display:none !important; }
+@media(max-width:600px) {
+  .card { padding:20px; }
+  .buttons { flex-wrap:wrap; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <div class="eyebrow">Next Steps Wealth-Building Journey</div>
+  <h1>Quick-Start Next Step Assessment</h1>
+  <p>Start where you are. Answer a few questions to identify areas you may want to explore next in your wealth-building journey.</p>
+</header>
+
+<div class="card" id="assessment">
+  <div class="progress-wrap">
+    <div class="progress-label"><span id="progressText">Question 1</span><span id="progressPct">0%</span></div>
+    <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+  </div>
+
+  <form id="form">
+    <section class="question active" data-key="debt">
+      <h2>Do you currently have consumer debt?</h2>
+      <p class="help">Think about debt such as credit cards, personal loans, or other consumer debt.</p>
+      <label class="option"><input type="radio" name="debt" value="yes">Yes</label>
+      <label class="option"><input type="radio" name="debt" value="no">No</label>
+      <label class="option"><input type="radio" name="debt" value="unsure">I'm not sure</label>
+    </section>
+
+    <section class="question" data-key="direction" id="qDirection">
+      <h2>Compared with approximately 6–12 months ago, what has happened to your consumer-debt balance?</h2>
+      <label class="option"><input type="radio" name="direction" value="lower">Lower</label>
+      <label class="option"><input type="radio" name="direction" value="same">About the same</label>
+      <label class="option"><input type="radio" name="direction" value="higher">Higher</label>
+      <label class="option"><input type="radio" name="direction" value="unsure">I'm not sure</label>
+    </section>
+
+    <section class="question" data-key="debtAmounts" id="qDebtAmounts">
+      <h2>About how much consumer debt do you currently owe?</h2>
+      <div class="field"><label>Current balance ($)
+        <input type="number" name="balance" min="0" step="100" placeholder="Optional"></label></div>
+      <div class="field"><label>About how much are you paying toward that debt each month? ($)
+        <input type="number" name="payment" min="0" step="25" placeholder="Optional"></label></div>
+      <p class="help">These amounts are used only to help frame your results. You do not need to enter exact figures.</p>
+    </section>
+
+    <section class="question" data-key="cashflow">
+      <h2>After your regular expenses and debt payments, do you typically have money left over?</h2>
+      <label class="option"><input type="radio" name="cashflow" value="yes">Yes, consistently</label>
+      <label class="option"><input type="radio" name="cashflow" value="sometimes">Sometimes</label>
+      <label class="option"><input type="radio" name="cashflow" value="no">Rarely or no</label>
+      <label class="option"><input type="radio" name="cashflow" value="unsure">I'm not sure</label>
+    </section>
+
+    <section class="question" data-key="budget">
+      <h2>Do you have a budgeting or spending plan that helps you understand where your money is going?</h2>
+      <label class="option"><input type="radio" name="budget" value="yes">Yes, and I use it consistently</label>
+      <label class="option"><input type="radio" name="budget" value="sometimes">I have one, but I don't use it consistently</label>
+      <label class="option"><input type="radio" name="budget" value="no">No</label>
+      <label class="option"><input type="radio" name="budget" value="unsure">I'm not sure</label>
+    </section>
+
+    <section class="question" data-key="emergency">
+      <h2>How would you describe your emergency savings?</h2>
+      <label class="option"><input type="radio" name="emergency" value="strong">I have savings set aside for unexpected expenses</label>
+      <label class="option"><input type="radio" name="emergency" value="some">I have some savings, but I'm not confident it would cover an unexpected expense</label>
+      <label class="option"><input type="radio" name="emergency" value="little">I have little or no emergency savings</label>
+      <label class="option"><input type="radio" name="emergency" value="unsure">I'm not sure what I would need</label>
+    </section>
+
+    <section class="question" data-key="retireContrib">
+      <h2>Are you currently contributing to retirement savings?</h2>
+      <label class="option"><input type="radio" name="retireContrib" value="none">No</label>
+      <label class="option"><input type="radio" name="retireContrib" value="some">Yes, I contribute some amount</label>
+      <label class="option"><input type="radio" name="retireContrib" value="substantial">Yes, I contribute substantially</label>
+      <label class="option"><input type="radio" name="retireContrib" value="unsure">I'm not sure</label>
+    </section>
+
+    <section class="question" data-key="retireInvestigated">
+      <h2>Have you actually investigated whether your retirement savings and contributions are likely to support what you want in retirement?</h2>
+      <p class="help">Contributing to retirement is one thing. Understanding whether your retirement position is reasonably on track is another.</p>
+      <label class="option"><input type="radio" name="retireInvestigated" value="yes">Yes, I've calculated or investigated it</label>
+      <label class="option"><input type="radio" name="retireInvestigated" value="partly">I've looked at it, but I'm not confident I understand it</label>
+      <label class="option"><input type="radio" name="retireInvestigated" value="no">No, I haven't really investigated it</label>
+      <label class="option"><input type="radio" name="retireInvestigated" value="unsure">I'm not sure</label>
+    </section>
+
+    <section class="question" data-key="retireOnTrack">
+      <h2>Based on what you've investigated, how would you describe your retirement position?</h2>
+      <label class="option"><input type="radio" name="retireOnTrack" value="ontrack">It appears reasonably on track for what I want</label>
+      <label class="option"><input type="radio" name="retireOnTrack" value="uncertain">I'm uncertain</label>
+      <label class="option"><input type="radio" name="retireOnTrack" value="needs">It may need additional attention</label>
+    </section>
+
+    <section class="question" data-key="investing">
+      <h2>Are you currently building an investment portfolio beyond money set aside for immediate needs?</h2>
+      <label class="option"><input type="radio" name="investing" value="no">No</label>
+      <label class="option"><input type="radio" name="investing" value="yes">Yes</label>
+      <label class="option"><input type="radio" name="investing" value="unsure">I'm not sure</label>
+    </section>
+
+    <section class="question" data-key="confidence">
+      <h2>How confident are you in understanding your overall financial position and deciding what deserves attention next?</h2>
+      <label class="option"><input type="radio" name="confidence" value="high">Very confident</label>
+      <label class="option"><input type="radio" name="confidence" value="moderate">Somewhat confident</label>
+      <label class="option"><input type="radio" name="confidence" value="low">Not very confident</label>
+      <label class="option"><input type="radio" name="confidence" value="unsure">I'm not sure</label>
+    </section>
+
+    <div class="buttons">
+      <button type="button" class="back" id="backBtn">Back</button>
+      <button type="button" class="next" id="nextBtn">Next</button>
+    </div>
+  </form>
+</div>
+
+<div class="card" id="results">
+  <div class="result-box">
+    <div class="eyebrow">Your Next Steps</div>
+    <h2 id="resultTitle"></h2>
+    <div id="resultBody"></div>
+    <div id="resources"></div>
+    <p class="disclaimer">This quick-start assessment is educational. It is not a full financial analysis, financial plan, or personalized investment recommendation. Your circumstances, goals, priorities, and trade-offs deserve consideration before making financial decisions.</p>
+  </div>
+  <div class="buttons"><button type="button" class="back" id="restartBtn">Start Again</button></div>
+</div>
+</div>
+
+<script>
+const questions = [...document.querySelectorAll('.question')];
+let index = 0;
+let history = [];
+
+function value(name) {
+  const el = document.querySelector('input[name="'+name+'"]:checked');
+  return el ? el.value : '';
+}
+function currentAnswered() {
+  const q = questions[index];
+  const radios = q.querySelectorAll('input[type=radio]');
+  if (radios.length) return !!q.querySelector('input[type=radio]:checked');
+  return true; // amount fields are optional
+}
+function showQuestion(i) {
+  questions.forEach((q,n)=>q.classList.toggle('active',n===i));
+  const pct = Math.round((i / questions.length) * 100);
+  document.getElementById('progressText').textContent = 'Question ' + (i+1) + ' of ' + questions.length;
+  document.getElementById('progressPct').textContent = pct + '%';
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('backBtn').disabled = i===0;
+  document.getElementById('nextBtn').textContent = i===questions.length-1 ? 'See My Results' : 'Next';
+}
+function skipDebtDetails() {
+  return value('debt') !== 'yes';
+}
+function next() {
+  if (!currentAnswered()) { alert('Please select an answer before continuing.'); return; }
+  history.push(index);
+
+  if (index===0 && skipDebtDetails()) index=3;
+  else index++;
+
+  showQuestion(index);
+}
+function back() {
+  if (!history.length) return;
+  index = history.pop();
+  showQuestion(index);
+}
+function assess() {
+  const debt=value('debt'), direction=value('direction'), cashflow=value('cashflow');
+  const budget=value('budget'), emergency=value('emergency');
+  const investigated=value('retireInvestigated'), ontrack=value('retireOnTrack');
+  const investing=value('investing'), confidence=value('confidence');
+
+  let foundationIssue = false;
+  let foundationStrength = 0;
+
+  if (debt==='yes') {
+    if (direction==='higher' || direction==='same') foundationIssue=true;
+    if (direction==='lower') foundationStrength++;
+  } else if (debt==='no') foundationStrength++;
+
+  if (cashflow==='no' || cashflow==='unsure') foundationIssue=true;
+  if (cashflow==='yes') foundationStrength++;
+  if (budget==='no' || budget==='unsure') foundationIssue=true;
+  if (budget==='yes') foundationStrength++;
+  if (emergency==='little' || emergency==='unsure') foundationIssue=true;
+  if (emergency==='strong') foundationStrength++;
+  if (confidence==='low') foundationIssue=true;
+
+  const retirementNeedsAttention =
+    investigated==='no' || investigated==='partly' || investigated==='unsure' ||
+    ontrack==='needs' || ontrack==='uncertain' || ontrack==='';
+
+  let title, body, resources=[];
+
+  if (foundationIssue && (debt==='yes' || cashflow!=='yes' || budget!=='yes' || emergency==='little' || emergency==='unsure')) {
+    title='Step One may deserve attention first.';
+    body='<p>Your answers suggest that part of your financial foundation may deserve attention before you focus on accelerating wealth building.</p>' +
+         '<div class="note"><strong>BREAK FREE — FREEDOM</strong><br>Build your financial foundation.</div>' +
+         '<p>Areas worth exploring may include consumer debt, cash flow, budgeting, emergency savings, financial stability, and financial confidence.</p>';
+    if (debt==='yes' && (direction==='same' || direction==='higher')) {
+      body += '<p>Your debt direction may be especially important to examine. The goal is to understand what is driving the balance and whether there are ways to make progress.</p>';
+      resources.push(['Debt payoff education','Explore the potential benefits and trade-offs of approaches such as the Debt Snowball and Debt Avalanche.']);
+    }
+    if (emergency==='little' || emergency==='unsure') resources.push(['Emergency savings','Explore how emergency savings fits into building a stronger financial foundation.']);
+    if (budget==='no' || budget==='unsure' || cashflow!=='yes') resources.push(['Budgeting & cash flow','Explore ways to better understand where your money is going and what remains available after regular expenses.']);
+  } else if (retirementNeedsAttention) {
+    title='You may be ready to explore Step Two.';
+    body='<p>Your foundation appears to have several positive elements, but your retirement position has not yet been fully investigated—or you are not yet confident about what the numbers mean.</p>' +
+         '<div class="note"><strong>SECURE YOUR FUTURE — SECURE</strong><br>Build a safety net retirement that lets you take bold steps toward growing your future wealth in the next step.</div>' +
+         '<p>A useful next step may be to calculate what you are likely to need in retirement, determine how much you need to contribute, and evaluate whether additional retirement contributions remain the best use of your next dollar.</p>';
+    resources.push(['Retirement calculation','Use the Next Steps retirement calculator to investigate whether your current position and contributions are likely to support what you want in retirement.']);
+  } else {
+    title='You may be ready to explore what comes next.';
+    body='<p>Based on your answers, your foundation and retirement appear to have been investigated. A potential Next Step to explore may be building productive capital—provided your retirement position remains on track.</p>' +
+         '<div class="note"><strong>DON’T BUILD A NEST EGG. BUILD A GOLDEN GOOSE.</strong><br>Build a substantial pool of productive capital.</div>' +
+         '<p>A Golden Goose is a pool of productive capital designed to harness the power of compounding and potentially produce future wealth and/or income.</p>';
+    resources.push(['Explore Step Three','Learn about building a substantial pool of productive capital and how the Next Dollar framework can help you evaluate competing priorities.']);
+    if (investing==='yes') {
+      resources.push(['Explore Step Four','If you are already building an investment portfolio, you may also want to explore how historical performance, risk, volatility, fees, diversification, taxes, time horizon, and compounding can influence long-term growth.']);
+    }
+  }
+
+  document.getElementById('assessment').style.display='none';
+  document.getElementById('results').style.display='block';
+  document.getElementById('resultTitle').textContent=title;
+  document.getElementById('resultBody').innerHTML=body;
+  document.getElementById('resources').innerHTML=resources.map(r=>'<div class="resource"><h3>'+r[0]+'</h3><p>'+r[1]+'</p></div>').join('');
+}
+document.getElementById('nextBtn').addEventListener('click',()=>index===questions.length-1 ? assess() : next());
+document.getElementById('backBtn').addEventListener('click',back);
+document.getElementById('restartBtn').addEventListener('click',()=>location.reload());
+showQuestion(0);
+</script>
+</body>
+</html>
