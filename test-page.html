@@ -55,18 +55,20 @@ nav{position:sticky;top:0;z-index:20;background:rgba(6,38,92,.98);padding:14px 4
 .challenge-inner{max-width:1000px;margin:auto;text-align:center}
 .challenge h2{font-size:clamp(34px,4.5vw,56px);margin:8px 0 16px}
 .challenge p{font-size:19px;color:#dce6f5;max-width:800px;margin:auto}
-.challenge-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:38px}
+.challenge-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;margin-top:34px}
 .challenge-card{border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:28px;background:rgba(255,255,255,.06)}
-.challenge-card h3{margin:0 0 8px;color:#f1c35a}
-.challenge-principles{display:flex;justify-content:center;flex-wrap:wrap;gap:12px;margin-top:24px}
-.challenge-principles span{padding:9px 15px;border:1px solid rgba(255,255,255,.25);border-radius:999px;color:#f1c35a;font-weight:800;font-size:13px}
+.challenge-card h3{margin:0 0 10px;color:#f1c35a;font-size:24px}
+.challenge-card p{color:#dce6f5;font-size:16px;line-height:1.6}
+.challenge-lead{font-size:22px!important;color:#fff!important;margin-top:22px!important}
+.challenge-next{margin-top:38px}
+.challenge-next p{font-size:20px;font-weight:800;color:#fff;margin:0 0 16px}
 
 .journey{background:var(--light);padding:78px 4vw 86px}
 .journey .section-head{max-width:980px;margin:0 auto 42px;text-align:center}
 .section-head h2{font-size:clamp(36px,5vw,60px);color:var(--navy);margin:8px 0 12px}
 .section-head p{color:var(--muted);font-size:18px}
 .six-step-table{max-width:1240px;margin:0 auto}
-.six-step-row{display:grid;grid-template-columns:minmax(190px,24%) minmax(0,1fr) minmax(150px,20%);align-items:center;column-gap:clamp(28px,4vw,58px);padding:32px 0;border-top:1px solid #e1e6ee;cursor:pointer}
+.six-step-row{display:grid;grid-template-columns:minmax(190px,24%) minmax(0,1fr) minmax(150px,20%);align-items:center;column-gap:clamp(28px,4vw,58px);padding:28px 0;border-top:1px solid #e1e6ee;cursor:pointer}
 .six-step-row:last-child{border-bottom:1px solid #e1e6ee}
 .six-step-row:focus-visible{outline:3px solid var(--gold);outline-offset:5px}
 .six-step-story{width:100%;aspect-ratio:9/10;overflow:hidden;border-radius:4px;background:#eef1f5}
@@ -85,6 +87,11 @@ nav{position:sticky;top:0;z-index:20;background:rgba(6,38,92,.98);padding:14px 4
 .six-step-row.step-4{--step-color:#3062a1}
 .six-step-row.step-5{--step-color:#60429e}
 .six-step-row.step-6{--step-color:#60429e}
+.journey-end{text-align:center;max-width:700px;margin:42px auto 0;padding-top:34px;border-top:1px solid #e1e6ee}
+.journey-end h3{color:var(--navy);font-size:26px;margin:0 0 7px}
+.journey-end p{color:var(--muted);margin:0 0 14px;font-size:16px}
+.journey-end a{color:var(--navy);font-size:13px;font-weight:900;text-decoration:none}
+.journey-end a:hover{text-decoration:underline}
 
 .coaching{padding:80px 6vw;background:#fff}
 .coaching-grid{max-width:1050px;margin:auto;display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
@@ -133,8 +140,12 @@ nav{width:100%;padding:12px 16px}
 .challenge h2{font-size:clamp(30px,8vw,46px)}
 .challenge p{font-size:17px}
 .challenge-grid{grid-template-columns:1fr}
-.challenge-principles{gap:8px}
-.challenge-principles span{font-size:11px;padding:8px 11px}
+.challenge-lead{font-size:19px!important}
+.challenge-grid{gap:12px}
+.challenge-card{padding:22px 18px}
+.challenge-card h3{font-size:21px}
+.challenge-card p{font-size:14px}
+.challenge-next{margin-top:30px}
 
 .journey{padding:52px 16px 64px}
 .journey .section-head{width:100%;max-width:none;padding:0 8px;margin-bottom:26px}
@@ -146,6 +157,10 @@ nav{width:100%;padding:12px 16px}
 .six-step-info h4{font-size:clamp(11px,2.9vw,15px);line-height:1.3;margin-bottom:7px}
 .six-step-info p{font-size:clamp(9px,2.45vw,13px);line-height:1.45;margin-bottom:7px}
 .six-step-explore{font-size:9px}
+
+.journey-end{margin-top:28px;padding-top:24px}
+.journey-end h3{font-size:22px}
+.journey-end p{font-size:14px}
 
 .coaching{padding:55px 20px}
 .coaching-grid{grid-template-columns:1fr}
@@ -239,10 +254,24 @@ body.menu-open{overflow:hidden}
 <div class="challenge-inner">
 <div class="eyebrow">THE CHALLENGE</div>
 <h2>Start Where You Are</h2>
-<p>Understand where you are, identify what matters most, and determine your next step.</p>
-<div class="challenge-principles">
-<span>The Next Dollar</span>
-<span>Understand Before You Act</span>
+<p class="challenge-lead"><strong>Your next step depends on where you are today.</strong></p>
+<p>Before deciding what to do with your money, it helps to understand your current financial position, what you're trying to accomplish, and what priorities are competing for your next dollar.</p>
+<p>The Next Steps approach starts with understanding—not with a predetermined financial solution.</p>
+
+<div class="challenge-grid">
+<article class="challenge-card">
+<h3>The Next Dollar</h3>
+<p>At every stage of your journey, you may have competing priorities for your available money. The Next Dollar Framework helps you consider where that next dollar may have the greatest potential impact based on your goals and circumstances.</p>
+</article>
+<article class="challenge-card">
+<h3>Understand Before You Act</h3>
+<p>Financial decisions involve potential benefits, risks, trade-offs, and consequences. The goal isn't simply to take action—it's to understand your options well enough to make informed decisions.</p>
+</article>
+</div>
+
+<div class="challenge-next">
+<p>So, where do you go from here?</p>
+<a class="button" href="six-steps.html">Explore the Six-Step Wealth-Building Journey →</a>
 </div>
 </div>
 </section>
@@ -250,8 +279,8 @@ body.menu-open{overflow:hidden}
 <section class="journey" id="journey">
 <div class="section-head">
 <div class="eyebrow">THE SIX-STEP WEALTH-BUILDING JOURNEY</div>
-<h2>Six-Step Wealth-Building Journey</h2>
-<p>Understand where you are → identify what matters most → determine your next step → take action → reassess as circumstances change → continue progressing.</p>
+<h2>A progression for building wealth with purpose.</h2>
+<p>The Six-Step Wealth-Building Journey provides a common framework to help you understand where you are, identify what matters most, determine your next step, and continue progressing as your circumstances change.</p>
 </div>
 
 <div class="six-step-table">
@@ -262,7 +291,7 @@ body.menu-open{overflow:hidden}
 <div class="six-step-label">STEP 1 · FREEDOM</div>
 <h3>BREAK FREE</h3>
 <h4>Build your financial foundation.</h4>
-<p>Eliminate debt, create positive cash flow, and get your financial house in order so you can start building wealth.</p>
+<p>Eliminate debt, improve cash flow, and get your financial house in order.</p>
 <a class="six-step-explore" href="six-steps.html#step-1">Explore Step 1 →</a>
 </div>
 <div class="six-step-icon"><img src="Assets/Step_1_FREEDOM_WEBSITE_MASTER_LOCKED_COLOR_2048x2048.png" alt="Step 1 — FREEDOM icon"></div>
@@ -274,7 +303,7 @@ body.menu-open{overflow:hidden}
 <div class="six-step-label">STEP 2 · SECURE</div>
 <h3>SECURE YOUR FUTURE</h3>
 <h4>Build a safety net retirement that lets you take bold steps toward growing your future wealth in the next step.</h4>
-<p>Calculate what you're likely to need in retirement, determine how much you need to contribute, and evaluate whether additional retirement contributions remain the best use of your next dollar as you pursue your broader wealth-building goals.</p>
+<p>Determine what you'll need for retirement and how much you need to contribute.</p>
 <a class="six-step-explore" href="six-steps.html#step-2">Explore Step 2 →</a>
 </div>
 <div class="six-step-icon"><img src="Assets/Step_2_SECURE_WEBSITE_MASTER_CLEANED_2048x2048.png" alt="Step 2 — SECURE icon"></div>
@@ -286,7 +315,7 @@ body.menu-open{overflow:hidden}
 <div class="six-step-label">STEP 3 · BUILD</div>
 <h3>DON’T BUILD A NEST EGG. BUILD A GOLDEN GOOSE.</h3>
 <h4>Build a substantial pool of productive capital.</h4>
-<p>Once your foundation and retirement are on track, consider directing available next dollars toward building an investment portfolio designed to harness the power of compounding.</p>
+<p>Direct available next dollars toward building productive capital and harnessing compounding.</p>
 <a class="six-step-explore" href="six-steps.html#step-3">Explore Step 3 →</a>
 </div>
 <div class="six-step-icon"><img src="Assets/Step_3_BUILD_WEBSITE_MASTER_CLEANED_2048x2048.png" alt="Step 3 — BUILD icon"></div>
@@ -298,7 +327,7 @@ body.menu-open{overflow:hidden}
 <div class="six-step-label">STEP 4 · GROW</div>
 <h3>GIVE YOUR GOOSE WINGS</h3>
 <h4>Optimize your Golden Goose for long-term growth.</h4>
-<p>Learn how to evaluate investments, historical performance, risk, fees, diversification, taxes, and compounding so you can make informed decisions about the factors that can influence how your wealth grows.</p>
+<p>Understand the factors that can influence how your wealth grows.</p>
 <a class="six-step-explore" href="six-steps.html#step-4">Explore Step 4 →</a>
 </div>
 <div class="six-step-icon"><img src="Assets/Step_4_GROW_WEBSITE_MASTER_2048x2048.png" alt="Step 4 — GROW icon"></div>
@@ -310,7 +339,7 @@ body.menu-open{overflow:hidden}
 <div class="six-step-label">STEP 5 · SHIFT</div>
 <h3>TEACH YOUR GOOSE TO SOAR</h3>
 <h4>Learn when to shift your strategy and let compounding do more of the work.</h4>
-<p>Once your Golden Goose is on track to produce the Golden Eggs you'll need by the time you're ready to use them, learn how and when to consider shifting your strategy and let compounding do more of the work.</p>
+<p>Recognize when your strategy may need to change as your goals and circumstances evolve.</p>
 <a class="six-step-explore" href="six-steps.html#step-5">Explore Step 5 →</a>
 </div>
 <div class="six-step-icon"><img src="Assets/Step_5_SHIFT_WEBSITE_MASTER_2048x2048.png" alt="Step 5 — SHIFT icon"></div>
@@ -322,12 +351,18 @@ body.menu-open{overflow:hidden}
 <div class="six-step-label">STEP 6 · THRIVE</div>
 <h3>LIVE YOUR BEST LIFE</h3>
 <h4>Enjoy your wealth and build a lasting legacy.</h4>
-<p>Use the income from your Golden Goose alongside your earned income to live the life you want today, while continuing to strengthen your retirement strategy and build a legacy for generations to come.</p>
+<p>Use your wealth to live the life you want today while continuing to build for tomorrow.</p>
 <a class="six-step-explore" href="six-steps.html#step-6">Explore Step 6 →</a>
 </div>
 <div class="six-step-icon"><img src="Assets/Step_6_THRIVE_WEBSITE_MASTER_FIXED_2048x2048.png" alt="Step 6 — THRIVE icon"></div>
 </article>
 
+</div>
+
+<div class="journey-end">
+<h3>Your next step is personal.</h3>
+<p>Explore the full Six-Step Wealth-Building Journey to learn more about each stage.</p>
+<a href="six-steps.html">Explore the Six Steps →</a>
 </div>
 </section>
 
