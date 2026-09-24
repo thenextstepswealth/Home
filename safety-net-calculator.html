@@ -84,7 +84,7 @@ input[type="range"]{accent-color:var(--ns-blue);min-height:40px;width:100%}
   border:2px solid var(--ns-blue);background:var(--ns-blue-soft)
 }
 .status.good{background:var(--ns-green-soft);border-left:5px solid var(--ns-green);border-radius:9px;padding:14px;font-weight:650}
-.status.bad{background:var(--ns-red-soft);border-left:5px solid var(--ns-red);border-radius:9px;padding:14px;font-weight:650}
+.status.bad{background:var(--ns-red-soft);border-left:5px solid var(--ns-red);border-radius:9px;padding:14px;font-weight:650}.status .status-title{display:block;font-size:1.2rem;font-weight:800;margin-bottom:4px}.status .status-detail{display:block;font-size:1rem;font-weight:650;line-height:1.45}
 
 /* Social Security is an editable estimate, not a fixed answer. */
 #ssEstimateInput{font-size:18px;font-weight:700;border:2px solid var(--ns-blue)}
@@ -200,15 +200,18 @@ input[type="range"]{accent-color:var(--ns-blue);min-height:40px;width:100%}
 
   <div id="spouseFields" class="grid hidden" style="margin-top:14px">
     <div><label for="spBirth">Spouse birth year</label><input id="spBirth" type="number" min="1900" max="2100" value="1975"></div>
-    <div><label for="spRetAge">Spouse retirement age</label><input id="spRetAge" type="number" min="50" max="90" step=".5" value="67"></div>
-    <div><label for="spIncome">Spouse current annual income</label><input id="spIncome" type="number" min="0" step="1000" value="0"></div>
+    <div><label for="spRetAge">Spouse retirement age <span class="hint">(planning age)</span></label><input id="spRetAge" type="number" min="50" max="90" step=".5" value="67"></div>
     <div><label for="spSavings">Spouse current retirement savings</label><input id="spSavings" type="number" min="0" step="1000" value="0"></div>
-    <div>
-      <label for="spContribPct">Spouse current retirement contribution</label>
-      <input id="spContribPct" type="range" min="0" max="100" step=".5" value="5">
-      <div class="small"><span id="spContribOut">5%</span> · <span id="spContribAmt">$0</span> per year</div>
-    </div>
     <div><label for="spSSInput">Spouse estimated annual Social Security benefit <span class="hint">(auto-populated)</span></label><input id="spSSInput" type="number" min="0" step="100" inputmode="decimal"></div>
+    <div id="spouseWorkInputs" class="grid" style="grid-column:1/-1;margin:0;padding:0;border:0">
+      <div><label for="spIncome">Spouse current annual income</label><input id="spIncome" type="number" min="0" step="1000" value="0"></div>
+      <div>
+        <label for="spContribPct">Spouse current retirement contribution</label>
+        <input id="spContribPct" type="range" min="0" max="100" step=".5" value="5">
+        <div class="small"><span id="spContribOut">5%</span> · <span id="spContribAmt">$0</span> per year</div>
+      </div>
+    </div>
+    <div class="small" style="grid-column:1/-1">If your spouse is not currently working, the Social Security estimate defaults to 50% of the primary person's estimated benefit. If your spouse has their own Social Security estimate, enter that amount instead.</div>
   </div>
 </div>
 
@@ -241,8 +244,8 @@ input[type="range"]{accent-color:var(--ns-blue);min-height:40px;width:100%}
           <span><strong>T. Rowe Price — 75%</strong><span class="small option-detail">T. Rowe Price’s research found that 75% may be a good starting point for estimating the percentage of preretirement income needed at retirement. Their analysis also notes that the appropriate percentage can vary based on individual circumstances. (T. Rowe Price)</span></span>
         </label>
         <label class="planning-option">
-          <input type="radio" name="retirementTargetChoice" value="80" data-label="Vanguard — 75%–85%" checked>
-          <span><strong>Vanguard — 75%–85%</strong><span class="small option-detail">Vanguard reports that financial planners often advise targeting income that replaces 75%–85% of current salary in retirement. (Vanguard Investor)<br><strong>Using 80% for this calculation</strong></span></span>
+          <input type="radio" name="retirementTargetChoice" value="85" data-label="Vanguard — 85%" checked>
+          <span><strong>Vanguard — 85%</strong><span class="small option-detail">Vanguard reports that financial planners often advise targeting income that replaces 75%–85% of current salary in retirement. (Vanguard Investor)<br><strong>Using 85% for this calculation</strong></span></span>
         </label>
         <label class="planning-option">
           <input type="radio" name="retirementTargetChoice" value="80" data-label="Fidelity — 80%">
@@ -280,7 +283,7 @@ input[type="range"]{accent-color:var(--ns-blue);min-height:40px;width:100%}
         <summary style="cursor:pointer;font-weight:700;color:var(--ns-blue)">Where do these planning reference points come from?</summary>
         <div style="margin-top:10px;line-height:1.55">
           <p><strong>T. Rowe Price:</strong> Their February 2025 research identifies 75% as a starting point for considering an income replacement rate at retirement. (T. Rowe Price)</p>
-          <p><strong>Vanguard:</strong> Vanguard reports that financial planners often advise targeting income that replaces 75%–85% of current salary in retirement. (Vanguard Investor)</p>
+          <p><strong>Vanguard:</strong> Vanguard reports that financial planners often advise targeting income that replaces 75%–85% of current salary in retirement. This calculator uses 85% when the Vanguard option is selected. (Vanguard Investor)</p>
           <p><strong>Fidelity:</strong> Fidelity describes 80% as a starting point for estimating retirement spending and emphasizes that individuals should adjust the assumption based on their own circumstances and anticipated lifestyle. (Fidelity)</p>
           <p style="margin-bottom:0">These are general planning reference points from outside organizations, not recommendations from Next Steps. Your circumstances may call for a different assumption.</p>
         </div>
@@ -338,15 +341,18 @@ input[type="range"]{accent-color:var(--ns-blue);min-height:40px;width:100%}
     <div class="info result-guidance" style="margin-top:12px"><strong>How to use this:</strong> Adjust your current contribution percentage to see how increasing or decreasing your contributions changes your projected surplus or shortfall.</div>
     <div class="info" style="margin-top:12px"><strong>This is a retirement safety net—not a final retirement number.</strong> Reaching this target does not mean you should stop saving for retirement. It is a planning checkpoint to help you evaluate whether your <strong>Next Dollar</strong> may have another important job, including building your <strong>Golden Goose</strong>. Continue to review and adjust your plan as your circumstances and goals change.</div>
     <div class="info">
-      <strong>Retirement safety-net calculation:</strong> The annual income shortfall is multiplied by 17 to create the estimated retirement safety-net target. The 17× benchmark comes from a historical analysis of 71 possible 30-year S&amp;P 500 total-return periods from 1926–1955 through 1996–2025.
-      <br><br>
-      <strong>Important:</strong> The 17× result is a historical backtest, not a guarantee or prediction of future results. The historical analysis found that a starting portfolio equal to 17× the annual withdrawal requirement did not run out of money during any of the 71 tested 30-year periods under the assumptions used.
-      <br><br>
       <strong>Important:</strong> This tool is for education and planning discussion. It is not investment, tax, legal or individualized financial advice.
     </div>
   </div>
   <div class="card small">
-    <strong>Calculation note:</strong> Pre-retirement savings are projected annually using the selected return and current contribution assumptions. Income is held constant in today’s dollars for this safety-net calculation. Current savings receive a full year of growth for each year until retirement; contributions are made through the year before retirement, and the retirement year itself does not include a contribution. The retirement income target and Social Security comparison are expressed in today’s dollars. The safety-net target is the resulting annual income shortfall multiplied by 17. For households with different retirement ages, the calculator uses a simplified transition approach by projecting each spouse separately and carrying the earlier retiree’s projected balance forward until the later retirement age. Social Security is shown as an editable simplified planning estimate. Users should replace the auto-populated estimate with the annual amount shown in their SSA account when available.</div>
+    <strong>Retirement safety-net calculation:</strong> The annual income shortfall is multiplied by 17 to create the estimated retirement safety-net target. The 17× benchmark came from a reverse historical stress test using a fixed annual withdrawal and S&amp;P 500 total returns. Using a $40,000 annual withdrawal, the starting amount was adjusted until it equaled 17× the annual withdrawal requirement and survived every complete 30-year period available from 1926 through 2025 (71 periods). This is a historical benchmark, not a guarantee or prediction of future results. Taxes, fees, diversification, and individual circumstances were not modeled.
+  </div>
+  <div class="card small">
+    <strong>Planning horizon:</strong> The calculator projects current savings and contributions through the selected retirement age using the assumptions entered. Results are expressed in today’s dollars. For households with different retirement ages, the calculator uses a simplified transition approach by projecting each spouse separately and carrying the earlier retiree’s projected balance forward until the later retirement age.
+  </div>
+  <div class="card small">
+    <strong>Calculation note:</strong> Pre-retirement savings are projected annually using the selected return and current contribution assumptions. Contributions are included for each full pre-retirement year represented by the selected retirement age. Social Security is shown as an editable simplified planning estimate. For a more personalized planning number, users should replace the auto-populated estimate with the annual amount shown in their <em>my Social Security</em> account when available. The non-working spouse default is 50% of the primary person's estimated benefit and can be replaced with the spouse's own estimate.
+  </div>
   <div class="card small"><strong>Important:</strong> This calculator is an educational planning tool, not investment, tax, legal, or individualized financial advice. Results are hypothetical and depend on the assumptions you enter. They are not guarantees of future income, investment performance, or Social Security benefits.</div>
 
 <script>
@@ -373,31 +379,35 @@ function fvSavings(savings,income,pct,ret,years,extraAnnual=0){
   const inc=Math.max(0,Number(income)||0);
   const r=(Number(ret)||0)/100, c=(Number(pct)||0)/100;
   const extra=Math.max(0,Number(extraAnnual)||0);
+  // n represents the number of full pre-retirement years available for contributions.
+  // Contributions are modeled at the end of each pre-retirement year.
   for(let y=1;y<=n;y++){
     s*=1+r;
-    if(y<n){
-      s+=inc*c+extra;
-    }
+    s+=inc*c+extra;
   }
   return s;
 }
 
-function ssEstimate(income,retAge,yearsWorked=35){
+function ssEstimate(income,retAge,birthYear,yearsWorked=35){
   // Simplified planning estimate only. It is intentionally labeled as such
   // and should be replaced by the user's my Social Security estimate when available.
   const annualIncome=Math.max(0,Number(income)||0);
   const workFactor=Math.min(1,Math.max(0,Number(yearsWorked)||0)/35);
   const incomeFactor=Math.min(1,annualIncome/184500);
   let benefit=49824*(0.55*incomeFactor+0.45*workFactor);
-  const fra=67;
-  if(retAge<fra){
-    const months=Math.round((fra-retAge)*12), first=Math.min(months,36), extra=Math.max(0,months-36);
+  const fra=fraForYear(birthYear);
+  const claimAge=Math.min(70,Math.max(62,Number(retAge)||fra));
+  if(claimAge<fra){
+    const months=Math.round((fra-claimAge)*12), first=Math.min(months,36), extra=Math.max(0,months-36);
     benefit*=1-first*(5/9/100)-extra*(5/12/100);
-  } else if(retAge>fra){
-    benefit*=1+Math.min(36,Math.round((retAge-fra)*12))*(2/3/100);
+  } else if(claimAge>fra){
+    const months=Math.min(36,Math.round((claimAge-fra)*12));
+    benefit*=1+months*(2/3/100);
   }
   return Math.min(Math.max(0,benefit),49824);
 }
+
+function fraForYear(year){ return fra(Number(year)||1975); }
 
 function safetyNetTarget(annualIncomeGap){
   // Historical Next Steps benchmark: 17× the annual withdrawal requirement.
@@ -443,19 +453,26 @@ function update(){
   if($('contribPctOut')) $('contribPctOut').textContent=Number(pct).toFixed(1).replace('.0','')+'%';
   if($('contribAmt')) $('contribAmt').textContent=money(income*pct/100);
   if($('spouseChoice')) $('spouseChoice').classList.toggle('hidden',!married);
-  if($('spouseFields')) $('spouseFields').classList.toggle('hidden',!bothWork||!married);
+  if($('spouseFields')) $('spouseFields').classList.toggle('hidden',!married);
+  if($('spouseWorkInputs')) $('spouseWorkInputs').classList.toggle('hidden',!bothWork);
 
   const projectedIncome=projectedRetirementIncome(income);
   let householdIncome=projectedIncome;
   let proj=fvSavings(savings,income,pct,preR,yearsToRetirement);
 
-  let spProjected=0, spYears=0, spAge=0, spIncome=0;
-  if(married && bothWork && $('spIncome')&&$('spRetAge')&&$('spBirth')&&$('spSavings')&&$('spContribPct')){
-    spIncome=+$('spIncome').value||0; spAge=+$('spRetAge').value||67; const spBirth=+$('spBirth').value||1975;
-    spProjected=projectedRetirementIncome(spIncome);
-    householdIncome+=spProjected;
+  let spProjected=0, spYears=0, spAge=0, spIncome=0, spBirth=1975, spProj=0;
+  if(married && $('spRetAge')&&$('spBirth')&&$('spSavings')){
+    spAge=+$('spRetAge').value||67; spBirth=+$('spBirth').value||1975;
+    const spSavings=+$('spSavings').value||0;
+    if(bothWork && $('spIncome')&&$('spContribPct')){
+      spIncome=+$('spIncome').value||0;
+      spProjected=projectedRetirementIncome(spIncome);
+      householdIncome+=spProjected;
+      spProj=fvSavings(spSavings,spIncome,+$('spContribPct').value||0,preR,Math.max(0,Math.round(spAge-(currentYear-spBirth))));
+    }else{
+      spProj=spSavings;
+    }
     spYears=Math.max(0,Math.round(spAge-(currentYear-spBirth)));
-    const spProj=fvSavings(+$('spSavings').value||0,spIncome,+$('spContribPct').value||0,preR,spYears);
     const laterAge=Math.max(retAge,spAge);
     proj=proj*Math.pow(1+postR/100,Math.max(0,laterAge-retAge))
         +spProj*Math.pow(1+postR/100,Math.max(0,laterAge-spAge));
@@ -469,16 +486,15 @@ function update(){
   // Social Security is also kept in today's dollars so the comparison uses one dollar basis.
   let ss=0;
   const includeSS=!!($('includeSS')&&$('includeSS').checked);
-  const autoSS=ssEstimate(income,retAge,35);
+  const autoSS=ssEstimate(income,retAge,birth,35);
   updateSSEstimateField(autoSS);
   if(includeSS){
     ss=Number($('ssEstimateInput')?.value)||0;
-    if(married&&!bothWork) ss=Math.min(ss*1.5,49824*1.5);
-    if(married&&bothWork&&$('spIncome')&&$('spRetAge')){
+    if(married&&$('spSSInput')){
       const spouseField=$('spSSInput');
-      const spAuto=ssEstimate(spIncome,+$('spRetAge').value||67,35);
+      const spAuto=bothWork ? ssEstimate(spIncome,spAge,spBirth,35) : autoSS*0.5;
       if(spouseField&&!spouseField.dataset.edited) spouseField.value=Math.round(spAuto);
-      ss+=spouseField?(Number(spouseField.value)||0):spAuto;
+      ss+=Number(spouseField.value)||0;
     }
   }
 
@@ -499,16 +515,16 @@ function update(){
   if(status){
     if(surplus>=0){
       status.className='status good';
-      status.textContent='ON TRACK — Your projected retirement savings are above your estimated retirement safety-net target by '+money(surplus)+'.';
+      status.innerHTML='<span class="status-title">ON TRACK</span><span class="status-detail">Your projected retirement savings are above your estimated retirement safety-net target by '+money(surplus)+'.</span>';
     }else{
       status.className='status bad';
-      status.textContent='SHORTFALL — Your projected retirement savings are below your estimated retirement safety-net target by '+money(Math.abs(surplus))+'. Additional amount needed per year, using the same projection assumptions: '+money(additionalPerYear)+'.';
+      status.innerHTML='<span class="status-title">ESTIMATED SHORTFALL</span><span class="status-detail">Additional amount needed per year: '+money(additionalPerYear)+'. Your projected retirement savings are below your estimated retirement safety-net target by '+money(Math.abs(surplus))+'.</span>';
     }
   }
 
   // Simple Next Dollar comparison scenarios for the primary contributor.
-  const scenario1=fvSavings(savings,income,pct+1,preR,yearsToRetirement);
-  const scenario2=fvSavings(savings,income,pct+2,preR,yearsToRetirement);
+  const scenario1=fvSavings(savings,income,Math.min(100,pct+1),preR,yearsToRetirement);
+  const scenario2=fvSavings(savings,income,Math.min(100,pct+2),preR,yearsToRetirement);
   setScenario('scenarioBase','scenarioBaseStatus',proj,need);
   setScenario('scenarioPlus1','scenarioPlus1Status',scenario1,need);
   setScenario('scenarioPlus2','scenarioPlus2Status',scenario2,need);
