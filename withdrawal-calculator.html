@@ -3,92 +3,97 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Withdrawal Calculator</title>
+<title>Retirement Withdrawal Calculator</title>
 <style>
-:root{--navy:#12233f;--gold:#c8a24a;--text:#172033;--muted:#667085;--border:#d9dee7;--bg:#f6f7f9}
-*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:var(--bg)}
-.wrap{max-width:1200px;margin:auto;padding:28px 16px 50px}h1{margin:0 0 8px;color:var(--navy);font-size:30px}
-.intro{margin:0 0 24px;color:var(--muted);line-height:1.5}.controls{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;display:grid;grid-template-columns:1fr 1fr auto;gap:14px;align-items:end}
-label{display:block;font-size:14px;font-weight:700;margin-bottom:6px}input,select,button{width:100%;height:44px;border-radius:8px;font-size:16px}
-input,select{border:1px solid var(--border);padding:8px 10px;background:#fff}button{border:0;background:var(--navy);color:#fff;font-weight:700;padding:0 18px;cursor:pointer}
-.summary{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:18px}.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px}
-.card h2{font-size:17px;margin:0 0 10px;color:var(--navy)}.ending{font-size:25px;font-weight:800}.sub{font-size:13px;color:var(--muted);line-height:1.5;margin-top:6px}
-.section{margin-top:24px}.section h2{font-size:20px;color:var(--navy);margin:0 0 10px}.table-wrap{overflow-x:auto;background:#fff;border:1px solid var(--border);border-radius:12px}
-table{border-collapse:collapse;width:100%;min-width:900px;font-size:13px}th,td{padding:9px 10px;border-bottom:1px solid #e9ecf1;text-align:right;white-space:nowrap}
-th{background:#f0f2f5;color:#26334a;font-weight:800}th:first-child,td:first-child{text-align:left}tr:last-child td{border-bottom:0}
-.note{font-size:12px;color:var(--muted);line-height:1.55;margin-top:14px}.error{color:#a33;font-size:13px;margin-top:8px}
-@media(max-width:760px){.controls,.summary{grid-template-columns:1fr}h1{font-size:25px}}
+:root{--navy:#102a56;--blue:#0f63c8;--blue2:#dff0ff;--green:#26724d;--green2:#edf8f0;--purple:#6421a8;--purple2:#f5eaff;--gold:#b8860b;--gold2:#fff7df;--text:#17243b;--muted:#5e6b7e;--border:#cfd8e5;--panel:#fff;--bg:#f7f9fc}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}.wrap{max-width:1500px;margin:auto;padding:18px 20px 42px}h1,h2,h3,p{margin:0}.step{font-size:21px;font-weight:850;color:var(--navy);margin-bottom:5px}.subtle{font-size:13px;color:var(--muted);line-height:1.45}.top{display:grid;grid-template-columns:1.35fr 1fr;gap:14px}.panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px}.income-panel{background:linear-gradient(135deg,#f5fbff,#fff);border-color:#c6def6}.income-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:16px;margin-top:14px}.field label{display:block;font-size:13px;font-weight:800;margin-bottom:6px}.field input,.field select{width:100%;height:46px;border:1px solid #bfcbd9;border-radius:8px;background:#fff;color:var(--text);padding:0 13px;font-size:17px}.money-input{position:relative}.money-input span{position:absolute;left:12px;top:13px;font-weight:700;color:#526176}.money-input input{padding-left:28px}.mult{font-size:25px;font-weight:900;padding-bottom:8px}.portfolio-box{height:74px;border:1px solid #77bdf2;border-radius:10px;background:#eaf6ff;display:flex;flex-direction:column;align-items:center;justify-content:center}.portfolio{font-size:28px;font-weight:900;color:#075aa9}.portfolio-label{font-size:12px;font-weight:800;color:#31506f;margin-top:2px}.horizon-panel{padding:14px 16px}.horizon-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.horizon-buttons button{height:43px;border:1px solid #bcc8d8;border-radius:9px;background:#fff;color:var(--navy);font-weight:800;font-size:14px;cursor:pointer}.horizon-buttons button.active{background:var(--blue);border-color:var(--blue);color:#fff}.details-row{display:grid;grid-template-columns:1.15fr .85fr;gap:12px;margin-top:12px}.analysis-line{font-size:14px;color:var(--navy);margin-top:14px;padding-top:11px;border-top:1px solid #e2e8f0}.analysis-line strong{font-size:16px}.analysis-banner{margin-top:12px;padding:13px 16px;border-radius:11px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:15px}.analysis-banner .big{font-size:22px;font-weight:900}.analysis-banner .small{font-size:12px;opacity:.85}.strategy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}.strategy{border-radius:13px;padding:16px;border:1px solid var(--border);min-height:165px}.strategy-a{background:linear-gradient(135deg,#fbfffb,var(--green2));border-color:#c9e4d2}.strategy-b{background:linear-gradient(135deg,#f8fcff,var(--blue2));border-color:#a9d6fb}.strategy-c{background:linear-gradient(135deg,#fffaff,var(--purple2));border-color:#d9b9f4}.strategy h3{font-size:20px;line-height:1.05;margin-bottom:7px}.strategy-a h3,.strategy-a .metric{color:var(--green)}.strategy-b h3,.strategy-b .metric{color:#075cae}.strategy-c h3,.strategy-c .metric{color:var(--purple)}.strategy-desc{font-size:13px;line-height:1.4;color:#425066;min-height:55px}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}.metric-label{font-size:12px;font-weight:750;color:#4d5d72}.metric{font-size:23px;font-weight:900;margin-top:1px}.results{margin-top:14px;background:#fff;border:1px solid var(--border);border-radius:13px;overflow:hidden}.results-head{background:#173e69;color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}.results-head h2{font-size:19px}.results-head span{font-size:12px;opacity:.9}.table-wrap{overflow-x:auto}.results table{border-collapse:collapse;width:100%;min-width:1120px;font-size:12px}.results th,.results td{border-right:1px solid #dbe2ea;border-bottom:1px solid #dbe2ea;padding:8px 9px;text-align:right;white-space:nowrap}.results th:nth-child(1),.results td:nth-child(1){min-width:62px}.results th:nth-child(2),.results td:nth-child(2){min-width:52px}.results th:nth-child(3),.results td:nth-child(3){min-width:88px}.results th:first-child,.results td:first-child{text-align:left}.results th{font-weight:850;color:#17304f;background:#eef3f8}.results .group-a{background:#eaf6ed;color:var(--green)}.results .group-b{background:#e4f3ff;color:#075cae}.results .group-c{background:#f3e7ff;color:var(--purple)}.results .subhead{font-size:11px;background:#f7f9fc}.results .group-b.subhead{background:#edf7ff}.results .group-a.subhead{background:#eef8f1}.results .group-c.subhead{background:#f7edff}.results tr:hover td{background:#fafcff}.ending-row td{font-weight:900;font-size:14px;background:#e5f2ff;border-bottom:0}.ending-row td:nth-child(3),.ending-row td:nth-child(4){color:var(--green)}.ending-row td:nth-child(5),.ending-row td:nth-child(6),.ending-row td:nth-child(7){color:#075cae}.ending-row td:nth-child(8),.ending-row td:nth-child(9){color:var(--purple)}.notes{font-size:11px;color:var(--muted);line-height:1.5;margin-top:12px}.error{margin-top:8px;color:#a23b3b;font-size:13px;font-weight:700}.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--muted)}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.dot.a{background:var(--green)}.dot.b{background:var(--blue)}.dot.c{background:var(--purple)}
+@media(max-width:900px){.top,.strategy-grid{grid-template-columns:1fr}.income-row{grid-template-columns:1fr}.mult{text-align:center;padding:0}.analysis-line{margin-top:10px}}@media(max-width:600px){.wrap{padding:12px}.horizon-buttons{grid-template-columns:repeat(2,1fr)}.details-row{grid-template-columns:1fr}.strategy h3{font-size:18px}}
 </style>
 </head>
 <body>
 <div class="wrap">
-<h1>Withdrawal Calculator</h1>
-<p class="intro">Compare three retirement-income approaches using historical S&amp;P 500 total returns, including reinvested dividends.</p>
-<div class="controls">
-<div><label for="startYear">Retirement Start Year</label><select id="startYear"></select></div>
-<div><label for="initialAmount">Portfolio at Retirement</label><input id="initialAmount" type="number" min="1000" step="1000" value="1000000"></div>
-<button id="calculate" type="button">Calculate 30 Years</button>
-</div>
-<div id="error" class="error"></div>
-<div id="summary" class="summary"></div>
-<div class="section"><h2>30-Year Comparison</h2><div id="table" class="table-wrap"></div></div>
-<p class="note">Historical illustration only. This calculator uses annual S&amp;P 500 total returns and does not include taxes, fees, inflation adjustments, Social Security, pensions, or other retirement income. Option B is an illustrative dynamic-spending comparison. Option C is the adaptive early-retirement spending framework.</p>
+  <div class="top">
+    <section class="panel income-panel">
+      <div class="step">1. How much do you need from your portfolio?</div>
+      <div class="subtle">Enter the annual amount you need from investments after Social Security and other guaranteed retirement income.</div>
+      <div class="income-row">
+        <div class="field money-input"><label for="incomeNeeded">Annual portfolio income needed</label><span>$</span><input id="incomeNeeded" type="number" min="0" step="1000" value="40000"></div>
+        <div class="mult">× 25</div>
+        <div class="portfolio-box"><div class="portfolio" id="startingPortfolio">$1,000,000</div><div class="portfolio-label">Estimated starting portfolio</div></div>
+      </div>
+    </section>
+    <section class="panel horizon-panel">
+      <div class="step">2. Choose your time horizon</div>
+      <div class="horizon-buttons" role="group" aria-label="Time horizon">
+        <button type="button" data-years="30" class="active">30 Years</button><button type="button" data-years="20">20 Years</button><button type="button" data-years="15">15 Years</button><button type="button" data-years="10">10 Years</button>
+      </div>
+      <div class="details-row">
+        <div class="field"><label for="startYear">3. Select historical retirement start year</label><select id="startYear"></select></div>
+        <div class="field"><label for="startAge">Starting retirement age</label><input id="startAge" type="number" min="40" max="100" value="60"></div>
+      </div>
+      <div class="analysis-line"><span>Analysis period:</span> <strong id="analysisPeriod">1996 – 2025 (30 years)</strong></div>
+    </section>
+  </div>
+
+  <div id="error" class="error" aria-live="polite"></div>
+  <section class="analysis-banner"><div><div class="small">SELECTED ANALYSIS</div><div class="big" id="horizonTitle">30-Year Time Horizon</div></div><div id="horizonDescription" class="small">Full 30-year historical scenario</div></section>
+
+  <section class="strategy-grid" id="strategyCards"></section>
+
+  <section class="results">
+    <div class="results-head"><h2>Year-by-Year Results</h2><span>S&amp;P 500 total returns (including dividends)</span></div>
+    <div class="table-wrap" id="tableWrap"></div>
+  </section>
+
+  <div class="legend"><span><i class="dot a"></i>4% Rule</span><span><i class="dot b"></i>Vanguard-Style Dynamic Spending</span><span><i class="dot c"></i>Early Retirement Lifestyle Strategy</span></div>
+  <p class="notes"><strong>Important:</strong> This is a historical illustration, not a forecast or guarantee. S&amp;P 500 returns include reinvested dividends. The calculation does not include taxes, fees, inflation, Social Security, pensions, or other retirement income. The Vanguard-style method shown here is an illustrative dynamic-spending implementation using a 4% portfolio-based target, with annual spending increases capped at 5% and decreases capped at 2.5%. The Early Retirement Lifestyle Strategy follows the adaptive rules defined for this calculator.</p>
 </div>
 <script>
-const R={1926:11.62,1927:37.49,1928:43.61,1929:-8.42,1930:-24.90,1931:-43.34,1932:-8.19,1933:53.99,1934:-1.44,1935:47.67,1936:33.92,1937:-35.03,1938:31.12,1939:-0.41,1940:-9.78,1941:-11.59,1942:20.34,1943:25.90,1944:19.75,1945:36.44,1946:-8.07,1947:5.71,1948:5.50,1949:18.79,1950:31.71,1951:24.02,1952:18.37,1953:-0.99,1954:52.62,1955:31.56,1956:6.56,1957:-10.78,1958:43.36,1959:11.96,1960:0.47,1961:26.89,1962:-8.73,1963:22.80,1964:16.48,1965:12.45,1966:-10.06,1967:23.98,1968:11.06,1969:-8.50,1970:3.86,1971:14.30,1972:19.00,1973:-14.69,1974:-26.47,1975:37.23,1976:23.93,1977:-7.16,1978:6.57,1979:18.61,1980:32.50,1981:-4.92,1982:21.55,1983:22.56,1984:6.27,1985:31.73,1986:18.67,1987:5.25,1988:16.61,1989:31.69,1990:-3.10,1991:30.47,1992:7.62,1993:10.08,1994:1.32,1995:37.58,1996:22.96,1997:33.36,1998:28.58,1999:21.04,2000:-9.10,2001:-11.89,2002:-22.10,2003:28.68,2004:10.88,2005:4.91,2006:15.79,2007:5.49,2008:-37.00,2009:26.46,2010:15.06,2011:2.11,2012:16.00,2013:32.39,2014:13.69,2015:1.38,2016:11.96,2017:21.83,2018:-4.38,2019:31.49,2020:18.40,2021:28.71,2022:-18.11,2023:26.29,2024:25.02,2025:17.88};
-const sy=document.getElementById('startYear'),amt=document.getElementById('initialAmount'),err=document.getElementById('error'),summary=document.getElementById('summary'),table=document.getElementById('table');
-for(let y=1926;y<=1996;y++){let o=document.createElement('option');o.value=y;o.textContent=y+'–'+(y+29);sy.appendChild(o)}sy.value='1973';
-const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n);
-const pct=n=>n.toFixed(1)+'%';
-
-function sim(start,P,type){
- let b=P,prevW=0,def=false,pos=0,em=false,rows=[];
- for(let i=0;i<30;i++){
-  let y=start+i,r=R[y],w=0;
-  if(type==='a'){w=i===0?P*.04:prevW}
-  else if(type==='b'){
-   if(i===0)w=P*.04;
-   else{let lo=prevW*.975,hi=prevW*1.05,raw=prevW*(1+r/100);w=Math.min(hi,Math.max(lo,raw))}
-  }else{
-   if(i===0)w=0;
-   else{
-    let pr=R[y-1],pe=rows[rows.length-1].end;
-    if(pe<=P*.30)em=true;
-    if(em){
-     if(pe>P*.60){em=false;def=true;pos=0}
-     else w=P*.03;
-    }
-    if(!em){
-     if(i<10){
-      if(pr<0){def=true;pos=0}else if(def)pos++;
-      if(pe<=P*.60)w=P*.04;
-      else if(def){w=P*.04;if(pos>=2&&pe>P*.60){def=false;pos=0;w=P*.12}}
-      else w=P*.12;
-     }else{
-      w=Math.max(P*.04,Math.min(P*.05,P*((pr-7)/100)));
-     }
-    }
-   }
-   if(i>=10&&em)w=P*.03;
-  }
-  w=Math.max(0,Math.min(w,b));
-  let end=(b-w)*(1+r/100);
-  rows.push({year:y,r,w,end});b=end;prevW=w;
+const RETURNS={1926:11.62,1927:37.49,1928:43.61,1929:-8.42,1930:-24.90,1931:-43.34,1932:-8.19,1933:53.99,1934:-1.44,1935:47.67,1936:33.92,1937:-35.03,1938:31.12,1939:-0.41,1940:-9.78,1941:-11.59,1942:20.34,1943:25.90,1944:19.75,1945:36.44,1946:-8.07,1947:5.71,1948:5.50,1949:18.79,1950:31.71,1951:24.02,1952:18.37,1953:-0.99,1954:52.62,1955:31.56,1956:6.56,1957:-10.78,1958:43.36,1959:11.96,1960:0.47,1961:26.89,1962:-8.73,1963:22.80,1964:16.48,1965:12.45,1966:-10.06,1967:23.98,1968:11.06,1969:-8.50,1970:3.86,1971:14.30,1972:19.00,1973:-14.69,1974:-26.47,1975:37.23,1976:23.93,1977:-7.16,1978:6.57,1979:18.61,1980:32.50,1981:-4.92,1982:21.55,1983:22.56,1984:6.27,1985:31.73,1986:18.67,1987:5.25,1988:16.61,1989:31.69,1990:-3.10,1991:30.47,1992:7.62,1993:10.08,1994:1.32,1995:37.58,1996:22.96,1997:33.36,1998:28.58,1999:21.04,2000:-9.10,2001:-11.89,2002:-22.10,2003:28.68,2004:10.88,2005:4.91,2006:15.79,2007:5.49,2008:-37.00,2009:26.46,2010:15.06,2011:2.11,2012:16.00,2013:32.39,2014:13.69,2015:1.38,2016:11.96,2017:21.83,2018:-4.38,2019:31.49,2020:18.40,2021:28.71,2022:-18.11,2023:26.29,2024:25.02,2025:17.88};
+const $=id=>document.getElementById(id); const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n); const pct=n=>(n*100).toFixed(2)+'%';
+let years=30;
+function populateYears(){const s=$('startYear'),max=2025-years+1,old=Number(s.value);s.innerHTML='';for(let y=1926;y<=max;y++){const o=document.createElement('option');o.value=y;o.textContent=y+'–'+(y+years-1);s.appendChild(o)}s.value=(old>=1926&&old<=max)?old:max}
+function simulate(start,P,type){let balance=P,previousWithdrawal=P*.04,total=0;let emergency=false,defensiveYears=0,positiveYears=0,rows=[];for(let i=0;i<years;i++){const year=start+i,ret=RETURNS[year]/100,age=Number($('startAge').value)+i;let withdrawal=0,target=null,upper=null,lower=null;
+ if(type==='a'){withdrawal=P*.04;if(i===0)withdrawal=P*.04}
+ if(type==='b'){
+   if(i===0)withdrawal=P*.04;
+   else {target=balance*.04;upper=previousWithdrawal*1.05;lower=previousWithdrawal*.975;withdrawal=Math.min(upper,Math.max(lower,target));}
  }
- return rows;
-}
-function render(){
- let start=+sy.value,P=+amt.value;
- if(!Number.isFinite(P)||P<=0){err.textContent='Enter a valid starting portfolio amount.';return}
- err.textContent='';
- let A=sim(start,P,'a'),B=sim(start,P,'b'),C=sim(start,P,'c');
- let sets=[['Option A — 4% Rule',A],['Option B — Dynamic Spending',B],['Option C — Spend While Healthy',C]];
- summary.innerHTML=sets.map(([n,d])=>'<div class="card"><h2>'+n+'</h2><div class="ending">'+money(d[29].end)+'</div><div class="sub">Ending balance after 30 years<br>Total withdrawals: '+money(d.reduce((s,x)=>s+x.w,0))+'</div></div>').join('');
- let h='<table><thead><tr><th>Year</th><th>S&amp;P Return</th><th>Option A<br>Withdrawal</th><th>Option B<br>Withdrawal</th><th>Option C<br>Withdrawal</th><th>Option A<br>Ending Balance</th><th>Option B<br>Ending Balance</th><th>Option C<br>Ending Balance</th></tr></thead><tbody>';
- for(let i=0;i<30;i++)h+='<tr><td>'+A[i].year+'</td><td>'+pct(A[i].r)+'</td><td>'+money(A[i].w)+'</td><td>'+money(B[i].w)+'</td><td>'+money(C[i].w)+'</td><td>'+money(A[i].end)+'</td><td>'+money(B[i].end)+'</td><td>'+money(C[i].end)+'</td></tr>';
- table.innerHTML=h+'</tbody></table>';
-}
-document.getElementById('calculate').addEventListener('click',render);sy.addEventListener('change',render);amt.addEventListener('change',render);render();
+ if(type==='c'){
+   if(i===0){withdrawal=0}
+   else{
+     const previousReturn=RETURNS[year-1];
+     if(balance<=P*.30) emergency=true;
+     if(emergency){withdrawal=P*.03;if(balance>P*.60){emergency=false;defensiveYears=0;positiveYears=0}}
+     if(!emergency){
+       if(i<=9){
+         if(previousReturn<=-10){defensiveYears=2;positiveYears=0}
+         if(previousReturn<0){positiveYears=0}
+         if(previousReturn>0)positiveYears++;
+         if(balance<=P*.60){withdrawal=P*.04;positiveYears=0}
+         else if(defensiveYears>0){withdrawal=P*.04;defensiveYears--}
+         else if(positiveYears>=2 && balance>P*.60){withdrawal=P*.12;positiveYears=0}
+         else withdrawal=P*.12;
+       }else{
+         withdrawal=P*Math.min(.05,Math.max(.04,(previousReturn-7)/100));
+       }
+       if(balance<=P*.30){emergency=true;withdrawal=P*.03}
+     }
+   }
+ }
+ withdrawal=Math.max(0,Math.min(withdrawal,balance)); const end=(balance-withdrawal)*(1+ret); total+=withdrawal; rows.push({year,age,ret,withdrawal,end,target,upper,lower});balance=end;previousWithdrawal=withdrawal;
+ }
+ return {rows,end:balance,total};}
+function render(){const income=Math.max(0,Number($('incomeNeeded').value)||0),P=income*25,start=Number($('startYear').value),age=Number($('startAge').value);if(!Number.isFinite(age)||age<40||age>100){$('error').textContent='Enter a starting retirement age from 40 to 100.';return}$('error').textContent='';$('startingPortfolio').textContent=money(P);const end=start+years-1;$('analysisPeriod').textContent=start+' – '+end+' ('+years+' years)';$('horizonTitle').textContent=years+'-Year Time Horizon';$('horizonDescription').textContent=years===30?'Full 30-year historical scenario':('This is a '+years+'-year historical scenario and should not be interpreted as a 30-year retirement projection.');
+ const A=simulate(start,P,'a'),B=simulate(start,P,'b'),C=simulate(start,P,'c');
+ $('strategyCards').innerHTML=`<article class="strategy strategy-a"><h3>4% Rule</h3><div class="strategy-desc">A traditional approach using an initial withdrawal of 4% of the retirement portfolio, with the same dollar amount withdrawn each year in this historical illustration.</div><div class="metrics"><div><div class="metric-label">Ending portfolio balance</div><div class="metric">${money(A.end)}</div></div><div><div class="metric-label">Total withdrawals</div><div class="metric">${money(A.total)}</div></div></div></article>
+ <article class="strategy strategy-b"><h3>Vanguard-Style<br>Dynamic Spending</h3><div class="strategy-desc">Spending adjusts with portfolio performance, with annual increases capped at 5% and decreases capped at 2.5%.</div><div class="metrics"><div><div class="metric-label">Ending portfolio balance</div><div class="metric">${money(B.end)}</div></div><div><div class="metric-label">Total withdrawals</div><div class="metric">${money(B.total)}</div></div></div></article>
+ <article class="strategy strategy-c"><h3>Early Retirement Lifestyle Strategy</h3><div class="strategy-desc">Higher potential spending during the first 10 years, with adaptive reductions during significant market declines and a more conservative withdrawal range thereafter.</div><div class="metrics"><div><div class="metric-label">Ending portfolio balance</div><div class="metric">${money(C.end)}</div></div><div><div class="metric-label">Total withdrawals</div><div class="metric">${money(C.total)}</div></div></div></article>`;
+ let html='<table><thead><tr><th rowspan="2">Year</th><th rowspan="2">Age</th><th rowspan="2">S&amp;P 500<br>Return</th><th colspan="2" class="group-a">4% Rule</th><th colspan="5" class="group-b">Vanguard-Style Dynamic Spending</th><th colspan="2" class="group-c">Early Retirement Lifestyle Strategy</th></tr><tr><th class="group-a subhead">Withdrawal</th><th class="group-a subhead">Ending Balance</th><th class="group-b subhead">Withdrawal</th><th class="group-b subhead">Ending Balance</th><th class="group-b subhead">4% Target</th><th class="group-b subhead">+5% Limit</th><th class="group-b subhead">−2.5% Limit</th><th class="group-c subhead">Withdrawal</th><th class="group-c subhead">Ending Balance</th></tr></thead><tbody>';
+ for(let i=0;i<years;i++){const a=A.rows[i],b=B.rows[i],c=C.rows[i];html+=`<tr><td>${a.year}</td><td>${a.age}</td><td>${pct(a.ret)}</td><td>${money(a.withdrawal)}</td><td>${money(a.end)}</td><td>${money(b.withdrawal)}</td><td>${money(b.end)}</td><td>${b.target==null?'—':money(b.target)}</td><td>${b.upper==null?'—':money(b.upper)}</td><td>${b.lower==null?'—':money(b.lower)}</td><td>${money(c.withdrawal)}</td><td>${money(c.end)}</td></tr>`}
+ const finalAge=age+years-1;html+=`<tr class="ending-row"><td>Ending Balance</td><td>${finalAge}</td><td>—</td><td>—</td><td>${money(A.end)}</td><td>—</td><td>${money(B.end)}</td><td colspan="3">—</td><td>—</td><td>${money(C.end)}</td></tr></tbody></table>`;$('tableWrap').innerHTML=html;}
+
+document.querySelectorAll('.horizon-buttons button').forEach(btn=>btn.addEventListener('click',()=>{years=Number(btn.dataset.years);document.querySelectorAll('.horizon-buttons button').forEach(b=>b.classList.toggle('active',b===btn));populateYears();render()}));$('incomeNeeded').addEventListener('input',render);$('startAge').addEventListener('input',render);$('startYear').addEventListener('change',render);populateYears();render();
 </script>
 </body>
 </html>
