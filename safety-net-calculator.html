@@ -287,7 +287,7 @@ input[type="range"]{accent-color:var(--ns-blue);min-height:40px;width:100%}
       </details>
     </div>
     <div class="card">
-      <h2>Investment & Inflation Assumptions</h2>
+      <h2>Investment Assumptions</h2>
       <div class="grid">
         <div><label>Return before retirement <button type="button" class="info-btn" title="Hypothetical annual return assumption. Higher expected returns generally involve greater risk and volatility.">?</button></label><input id="preReturn" type="number" min="0" max="25" step=".1" value="7"></div>
         <div><label>Return during retirement <button type="button" class="info-btn" title="Hypothetical annual return assumption during retirement. Actual returns can vary widely.">?</button></label><input id="postReturn" type="number" min="0" max="25" step=".1" value="4"></div>
@@ -415,7 +415,7 @@ function projectedRetirementIncome(income){
   return Math.max(0,Number(income)||0);
 }
 
-function solveAdditionalContribution(targetNeed, savings, income, pct, growth, ret, years){
+function solveAdditionalContribution(targetNeed, savings, income, pct, ret, years){
   if(targetNeed<=0 || Math.round(years)<=1) return 0;
   const base=fvSavings(savings,income,pct,ret,years);
   if(base>=targetNeed) return 0;
@@ -492,7 +492,7 @@ function update(){
   const incomeGap=Math.max(0,target-ss);
   const need=retirementPV(incomeGap,postR,retAge,planningAge);
   const surplus=proj-need;
-  const additionalPerYear=solveAdditionalContribution(need,savings,income,pct,growth,preR,yearsToRetirement);
+  const additionalPerYear=solveAdditionalContribution(need,savings,income,pct,preR,yearsToRetirement);
 
   updateRetirementTargetDisplay(currentHouseholdIncome,repl,target,ss);
   if($('rIncome')) $('rIncome').textContent=money(householdIncome);
