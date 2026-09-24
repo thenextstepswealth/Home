@@ -289,11 +289,10 @@ input[type="range"]{accent-color:var(--ns-blue);min-height:40px;width:100%}
     <div class="card">
       <h2>Investment Assumptions</h2>
       <div class="grid">
-        <div><label>Return before retirement <button type="button" class="info-btn" title="Hypothetical annual return assumption. Higher expected returns generally involve greater risk and volatility.">?</button></label><input id="preReturn" type="number" min="0" max="25" step=".1" value="7"></div>
-        <div><label>Return during retirement <button type="button" class="info-btn" title="Hypothetical annual return assumption during retirement. Actual returns can vary widely.">?</button></label><input id="postReturn" type="number" min="0" max="25" step=".1" value="4"></div>
-        <div><label for="planningAge">Planning age <span class="hint">(default 102)</span></label><input id="planningAge" type="number" min="80" max="120" step="1" value="102"></div>
+        <div><label>Return before retirement <button type="button" class="info-btn" title="Hypothetical annual return assumption used to project current retirement savings to retirement. Higher expected returns generally involve greater risk and volatility.">?</button></label><input id="preReturn" type="number" min="0" max="25" step=".1" value="7"></div>
+        <div><label>Return during retirement <button type="button" class="info-btn" title="Hypothetical annual return assumption used only when one spouse retires before the other and the earlier retiree’s projected balance is carried forward to the later retirement age.">?</button></label><input id="postReturn" type="number" min="0" max="25" step=".1" value="4"></div>
       </div>
-      <div class="info"><strong>Return assumptions:</strong> Results are hypothetical. Future investment returns cannot be predicted with certainty; actual returns may vary, including periods of loss. The calculator does not recommend a particular investment or allocation.</div>
+      <div class="info"><strong>Return assumptions:</strong> The pre-retirement return is used to project current savings and future contributions to retirement. The during-retirement return is used only in the simplified household calculation when spouses have different retirement ages. These are hypothetical assumptions; future investment returns cannot be predicted with certainty. Actual returns may vary, including periods of loss. The calculator does not recommend a particular investment or allocation.</div>
     </div>
 
     <div class="card">
@@ -339,15 +338,15 @@ input[type="range"]{accent-color:var(--ns-blue);min-height:40px;width:100%}
     <div class="info result-guidance" style="margin-top:12px"><strong>How to use this:</strong> Adjust your current contribution percentage to see how increasing or decreasing your contributions changes your projected surplus or shortfall.</div>
     <div class="info" style="margin-top:12px"><strong>This is a retirement safety net—not a final retirement number.</strong> Reaching this target does not mean you should stop saving for retirement. It is a planning checkpoint to help you evaluate whether your <strong>Next Dollar</strong> may have another important job, including building your <strong>Golden Goose</strong>. Continue to review and adjust your plan as your circumstances and goals change.</div>
     <div class="info">
-      <strong>Retirement safety-net calculation:</strong> The calculator estimates the amount needed at retirement by calculating the present value of the projected retirement-income shortfall over the planning horizon, using the selected return during retirement and the selected planning horizon.
+      <strong>Retirement safety-net calculation:</strong> The annual income shortfall is multiplied by 17 to create the estimated retirement safety-net target. The 17× benchmark comes from a historical analysis of 71 possible 30-year S&amp;P 500 total-return periods from 1926–1955 through 1996–2025.
       <br><br>
-      <strong>Planning horizon:</strong> The calculator uses age 102 as the default planning age. You can change the planning age to evaluate a different horizon. Retirement-income payments are calculated from the retirement age through the selected planning age.
+      <strong>Important:</strong> The 17× result is a historical backtest, not a guarantee or prediction of future results. The historical analysis found that a starting portfolio equal to 17× the annual withdrawal requirement did not run out of money during any of the 71 tested 30-year periods under the assumptions used.
       <br><br>
       <strong>Important:</strong> This tool is for education and planning discussion. It is not investment, tax, legal or individualized financial advice.
     </div>
   </div>
   <div class="card small">
-    <strong>Calculation note:</strong> Pre-retirement savings are projected annually using the selected return and current contribution assumptions. Income is held constant in today’s dollars for this safety-net calculation. Current savings receive a full year of growth for each year until retirement; contributions are made through the year before retirement, and the retirement year itself does not include a contribution. Retirement income is projected through the selected planning age. The retirement income target and Social Security comparison are expressed in today’s dollars; the safety-net target then translates the resulting shortfall into the amount needed at retirement using the selected retirement return and planning horizon. For households with different retirement ages, the calculator uses a simplified transition approach by projecting each spouse separately and carrying the earlier retiree’s projected balance forward until the later retirement age. Social Security is shown as an editable simplified planning estimate. Users should replace the auto-populated estimate with the annual amount shown in their SSA account when available.</div>
+    <strong>Calculation note:</strong> Pre-retirement savings are projected annually using the selected return and current contribution assumptions. Income is held constant in today’s dollars for this safety-net calculation. Current savings receive a full year of growth for each year until retirement; contributions are made through the year before retirement, and the retirement year itself does not include a contribution. The retirement income target and Social Security comparison are expressed in today’s dollars. The safety-net target is the resulting annual income shortfall multiplied by 17. For households with different retirement ages, the calculator uses a simplified transition approach by projecting each spouse separately and carrying the earlier retiree’s projected balance forward until the later retirement age. Social Security is shown as an editable simplified planning estimate. Users should replace the auto-populated estimate with the annual amount shown in their SSA account when available.</div>
   <div class="card small"><strong>Important:</strong> This calculator is an educational planning tool, not investment, tax, legal, or individualized financial advice. Results are hypothetical and depend on the assumptions you enter. They are not guarantees of future income, investment performance, or Social Security benefits.</div>
 
 <script>
@@ -400,14 +399,9 @@ function ssEstimate(income,retAge,yearsWorked=35){
   return Math.min(Math.max(0,benefit),49824);
 }
 
-function retirementPV(annualIncome, retirementReturn, retirementAge, planningAge){
-  const n=Math.max(0,Math.round(planningAge)-Math.round(retirementAge)+1);
-  const r=retirementReturn/100;
-  let pv=0;
-  for(let t=0;t<n;t++){
-    pv += annualIncome/Math.pow(1+r,t);
-  }
-  return pv;
+function safetyNetTarget(annualIncomeGap){
+  // Historical Next Steps benchmark: 17× the annual withdrawal requirement.
+  return Math.max(0,Number(annualIncomeGap)||0)*17;
 }
 
 function projectedRetirementIncome(income){
@@ -440,7 +434,6 @@ function update(){
   const birth=+$('birth').value||1975, income=+$('income').value||0, savings=+$('savings').value||0;
   const pct=+$('contribPct').value||0;
   const preR=+$('preReturn').value||0, postR=+$('postReturn').value||0;
-  const planningAge=Math.max(80,Math.min(120,Math.round(+$('planningAge').value||102)));
   const repl=getRetirementTargetPercentage(), retAge=+$('retAge').value||67;
   const currentYear=new Date().getFullYear();
   const yearsToRetirement=Math.max(0,Math.round(retAge-(currentYear-birth)));
@@ -490,7 +483,7 @@ function update(){
   }
 
   const incomeGap=Math.max(0,target-ss);
-  const need=retirementPV(incomeGap,postR,retAge,planningAge);
+  const need=safetyNetTarget(incomeGap);
   const surplus=proj-need;
   const additionalPerYear=solveAdditionalContribution(need,savings,income,pct,preR,yearsToRetirement);
 
@@ -528,7 +521,7 @@ function updateSSEstimateField(defaultValue){
   if(field && (!ssUserEdited || field.value==='')) field.value=Math.round(defaultValue);
 }
 
-const inputIds = ['birth','retAge','income','savings','contribPct','preReturn','postReturn','planningAge','includeSS','married','spouseWorking','spBirth','spRetAge','spIncome','spSavings','spContribPct'];
+const inputIds = ['birth','retAge','income','savings','contribPct','preReturn','postReturn','includeSS','married','spouseWorking','spBirth','spRetAge','spIncome','spSavings','spContribPct'];
 
 function refreshContributionDisplays(){
   if(!$('contribPct') || !$('income')) return;
