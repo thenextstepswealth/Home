@@ -48,7 +48,8 @@
   </section>
 
   <div class="legend"><span><i class="dot a"></i>4% Rule</span><span><i class="dot b"></i>Vanguard-Style Dynamic Spending</span><span><i class="dot c"></i>Early Retirement Lifestyle Strategy</span></div>
-  <p class="notes"><strong>Important:</strong> This is a historical illustration, not a forecast or guarantee. S&amp;P 500 returns include reinvested dividends. The calculation does not include taxes, fees, inflation, Social Security, pensions, or other retirement income. The Vanguard-style method shown here is an illustrative dynamic-spending implementation using a 4% portfolio-based target, with annual spending increases capped at 5% and decreases capped at 2.5%. The Early Retirement Lifestyle Strategy follows the adaptive rules defined for this calculator.</p>
+  <p class="notes"><strong>Important:</strong> This is a historical illustration, not a forecast or guarantee. S&amp;P 500 returns include reinvested dividends. The calculation does not include taxes, fees, inflation, Social Security, pensions, or other retirement income. The Vanguard-style method shown here is an illustrative dynamic-spending implementation using a 4% portfolio-based target, with annual spending increases capped at 5% and decreases capped at 2.5%.</p>
+<p class="notes"><strong>Early Retirement Lifestyle Strategy:</strong> During the first 10 years, the strategy begins with a potential withdrawal of 12% of the original retirement portfolio. The calculator uses adaptive guardrails: a negative prior-year S&amp;P 500 return resets the positive-year count; a prior-year return of &minus;10% or worse initiates a two-year defensive period at 4% of the original portfolio; and if the portfolio falls to 60% or less of its original value, the 12% withdrawal is not permitted. If the portfolio falls to 30% or less of its original value, the withdrawal becomes 3% and remains at that level until the portfolio recovers above 60%. The calculator's defensive-period and positive-return counters determine when the strategy can return to the 12% withdrawal level. Beginning in year 11, the withdrawal is based on the previous year's S&amp;P 500 return minus 7 percentage points, subject to a 4% floor and 5% ceiling, with the emergency guardrail continuing to apply.</p>
 </div>
 <section class="annual-calculator" aria-labelledby="annualCalcTitle">
   <div class="annual-head">
@@ -60,8 +61,9 @@
 
     <div id="annualFieldsA" class="annual-fields annual-hidden">
       <div class="field"><label for="aOriginal">Original retirement portfolio</label><div class="money-input"><span>$</span><input id="aOriginal" type="number" min="0" step="1000" placeholder="e.g. 1,000,000"></div></div>
+      <div class="field"><label for="aBalance">Current portfolio balance</label><div class="money-input"><span>$</span><input id="aBalance" type="number" min="0" step="1000" placeholder="e.g. 1,050,000"></div></div>
       <div class="field"><label for="aYear">Retirement year you are in</label><input id="aYear" type="number" min="1" step="1" value="1"></div>
-      <div class="field"><label for="aInflation">Annual inflation adjustment</label><input id="aInflation" type="number" min="0" step="0.1" value="3"> </div>
+      <div class="field"><label for="aInflation">Annual inflation adjustment</label><input id="aInflation" type="number" min="0" step="0.1" value="3"></div>
     </div>
 
     <div id="annualFieldsB" class="annual-fields annual-hidden">
@@ -85,7 +87,7 @@
       <div id="annualExplanation" class="annual-explanation"></div>
       <div id="annualFormula" class="annual-formula"></div>
     </div>
-    <p class="annual-note"><strong>Important:</strong> This annual calculator applies the rules currently used in the strategy comparison above. It is a hypothetical educational calculation, not a forecast or guarantee. Enter accurate current information and review the result as circumstances change.</p>
+    <p class="annual-note"><strong>Important:</strong> This annual calculator applies the rules currently used in the strategy comparison above. For the Early Retirement Lifestyle Strategy, enter the S&amp;P 500 returns from three years ago, two years ago, and last year so the calculator can evaluate the current guardrails and withdrawal range. This is a hypothetical educational calculation, not a forecast or guarantee. Enter accurate current information and review the result as circumstances change.</p>
   </div>
 </section>
 
@@ -130,62 +132,165 @@ function render(){const income=Math.max(0,Number($('incomeNeeded').value)||0),P=
  $('strategyCards').innerHTML=`<article class="strategy strategy-a"><h3>4% Rule</h3><div class="strategy-desc">A traditional approach using an initial withdrawal of 4% of the retirement portfolio, with the same dollar amount withdrawn each year in this historical illustration.</div><div class="metrics"><div><div class="metric-label">Ending portfolio balance</div><div class="metric">${money(A.end)}</div></div><div><div class="metric-label">Total withdrawals</div><div class="metric">${money(A.total)}</div></div></div></article>
  <article class="strategy strategy-b"><h3>Vanguard-Style<br>Dynamic Spending</h3><div class="strategy-desc">Spending adjusts with portfolio performance, with annual increases capped at 5% and decreases capped at 2.5%.</div><div class="metrics"><div><div class="metric-label">Ending portfolio balance</div><div class="metric">${money(B.end)}</div></div><div><div class="metric-label">Total withdrawals</div><div class="metric">${money(B.total)}</div></div></div></article>
  <article class="strategy strategy-c"><h3>Early Retirement Lifestyle Strategy</h3><div class="strategy-desc">Higher potential spending during the first 10 years, with adaptive reductions during significant market declines and a more conservative withdrawal range thereafter.</div><div class="metrics"><div><div class="metric-label">Ending portfolio balance</div><div class="metric">${money(C.end)}</div></div><div><div class="metric-label">Total withdrawals</div><div class="metric">${money(C.total)}</div></div></div></article>`;
- let html='<table><thead><tr><th rowspan="2">Year</th><th rowspan="2">Age</th><th rowspan="2">S&amp;P 500<br>Return</th><th colspan="2" class="group-a">4% Rule</th><th colspan="5" class="group-b">Vanguard-Style Dynamic Spending</th><th colspan="2" class="group-c">Early Retirement Lifestyle Strategy</th></tr><tr><th class="group-a subhead">Withdrawal</th><th class="group-a subhead">Ending Balance</th><th class="group-b subhead">Withdrawal</th><th class="group-b subhead">Ending Balance</th><th class="group-b subhead">4% Target</th><th class="group-b subhead">+5% Limit</th><th class="group-b subhead">−2.5% Limit</th><th class="group-c subhead">Withdrawal</th><th class="group-c subhead">Ending Balance</th></tr></thead><tbody>';
- for(let i=0;i<years;i++){const a=A.rows[i],b=B.rows[i],c=C.rows[i];html+=`<tr><td>${a.year}</td><td>${a.age}</td><td>${pct(a.ret)}</td><td>${money(a.withdrawal)}</td><td>${money(a.end)}</td><td>${money(b.withdrawal)}</td><td>${money(b.end)}</td><td>${b.target==null?'—':money(b.target)}</td><td>${b.upper==null?'—':money(b.upper)}</td><td>${b.lower==null?'—':money(b.lower)}</td><td>${money(c.withdrawal)}</td><td>${money(c.end)}</td></tr>`}
- const finalAge=age+years-1;html+=`<tr class="ending-row"><td>Ending Balance</td><td>${finalAge}</td><td>—</td><td>—</td><td>${money(A.end)}</td><td>—</td><td>${money(B.end)}</td><td colspan="3">—</td><td>—</td><td>${money(C.end)}</td></tr></tbody></table>`;$('tableWrap').innerHTML=html;}
+ let html='<table><thead><tr><th rowspan="2">Year</th><th rowspan="2">Age</th><th rowspan="2">S&amp;P 500<br>Return</th><th colspan="2" class="group-a">4% Rule</th><th colspan="2" class="group-b">Vanguard-Style Dynamic Spending</th><th colspan="2" class="group-c">Early Retirement Lifestyle Strategy</th></tr><tr><th class="group-a subhead">Withdrawal</th><th class="group-a subhead">Ending Balance</th><th class="group-b subhead">Withdrawal</th><th class="group-b subhead">Ending Balance</th><th class="group-c subhead">Withdrawal</th><th class="group-c subhead">Ending Balance</th></tr></thead><tbody>';
+ for(let i=0;i<years;i++){const a=A.rows[i],b=B.rows[i],c=C.rows[i];html+=`<tr><td>${a.year}</td><td>${a.age}</td><td>${pct(a.ret)}</td><td>${money(a.withdrawal)}</td><td>${money(a.end)}</td><td>${money(b.withdrawal)}</td><td>${money(b.end)}</td><td>${money(c.withdrawal)}</td><td>${money(c.end)}</td></tr>`}
+ const finalAge=age+years-1;html+=`<tr class="ending-row"><td>Ending Balance</td><td>${finalAge}</td><td>—</td><td>—</td><td>${money(A.end)}</td><td>—</td><td>${money(B.end)}</td><td>—</td><td>${money(C.end)}</td></tr></tbody></table>`;$('tableWrap').innerHTML=html;}
 
 document.querySelectorAll('.horizon-buttons button').forEach(btn=>btn.addEventListener('click',()=>{years=Number(btn.dataset.years);document.querySelectorAll('.horizon-buttons button').forEach(b=>b.classList.toggle('active',b===btn));populateYears();render()}));$('incomeNeeded').addEventListener('input',render);$('startAge').addEventListener('input',render);$('startYear').addEventListener('change',render);populateYears();render();
 </script>
 <script>
 (function(){
-  const strategy=$('annualStrategy'), result=$('annualResult'), amount=$('annualAmount'), explanation=$('annualExplanation'), formula=$('annualFormula'), err=$('annualError');
+  const strategy=$('annualStrategy'), result=$('annualResult'), amount=$('annualAmount'),
+        explanation=$('annualExplanation'), formula=$('annualFormula'), err=$('annualError');
   const groups={a:$('annualFieldsA'),b:$('annualFieldsB'),c:$('annualFieldsC')};
   const val=id=>Number($(id).value);
   const show=id=>groups[id].classList.remove('annual-hidden');
   const hide=id=>groups[id].classList.add('annual-hidden');
-  function fail(msg){err.textContent=msg;result.classList.add('annual-hidden')}
-  function calculate(){
-    err.textContent=''; result.classList.add('annual-hidden');
-    const type=strategy.value; if(!type) return;
-    Object.keys(groups).forEach(hide); show(type);
-    let withdrawal=0, why='', how='';
-    if(type==='a'){
-      const P=val('aOriginal'), year=val('aYear'), inflation=val('aInflation');
-      if(!(P>0) || !(year>=1) || inflation<0){return fail('Enter the original retirement portfolio, retirement year, and inflation adjustment.')}
-      withdrawal=P*.04*Math.pow(1+inflation/100,year-1);
-      why=year===1?'This is Year 1, so the starting withdrawal is 4% of the original retirement portfolio.':`The Year ${year} withdrawal starts with 4% of the original retirement portfolio and is increased by the ${inflation.toFixed(1)}% annual inflation adjustment for each completed year after Year 1.`;
-      how=`${money(P)} × 4% × (1 + ${inflation.toFixed(1)}%)^(${year}-1) = ${money(withdrawal)}`;
-    } else if(type==='b'){
-      const balance=val('bBalance'), last=val('bLastWithdrawal');
-      if(!(balance>=0) || !(last>=0) || !Number.isFinite(balance) || !Number.isFinite(last)){return fail("Enter the current portfolio balance and last year's withdrawal.")}
-      const target=balance*.04, upper=last*1.05, lower=last*.975; withdrawal=Math.min(upper,Math.max(lower,target));
-      if(withdrawal===target) why='The portfolio-based 4% target falls within the allowed annual spending range, so the target is used.';
-      else if(withdrawal===upper) why="The portfolio-based target would increase spending by more than 5%, so the +5% annual increase guardrail limits this year's withdrawal.";
-      else why="The portfolio-based target would reduce spending by more than 2.5%, so the −2.5% annual decrease guardrail limits this year's withdrawal.";
-      how=`4% target: ${money(target)}; allowed range from last year: ${money(lower)} to ${money(upper)}; calculated withdrawal: ${money(withdrawal)}`;
-    } else {
-      const P=val('cOriginal'), balance=val('cBalance'), year=val('cYear'), r3=val('cReturn3'), r2=val('cReturn2'), r1=val('cReturn1');
-      if(!(P>0) || !(balance>=0) || !(year>=1) || ![r3,r2,r1].every(Number.isFinite)){return fail('Enter the original portfolio, current balance, retirement year, and all three prior-year returns.')}
-      if(year===1){withdrawal=0;why='Year 1 has a one-year waiting period under the Early Retirement Lifestyle Strategy, so there is no withdrawal for this year.';how='Year 1 waiting period → $0 withdrawal';}
-      else if(year<=10){
-        if(balance<=P*.30){withdrawal=P*.03;why='The portfolio is at or below 30% of the original retirement portfolio, so the 3% emergency withdrawal rule applies.';how=`${money(P)} × 3% = ${money(withdrawal)}`;}
-        else if(balance<=P*.60){withdrawal=P*.04;why='The portfolio is at or below 60% of the original retirement portfolio, so the 4% defensive withdrawal applies.';how=`${money(P)} × 4% = ${money(withdrawal)}`;}
-        else {
-          const defensiveActive=r1<=-10 ? 2 : (r2<=-10 ? 1 : 0);
-          const twoPositive=r2>0 && r1>0;
-          if(defensiveActive>0){withdrawal=P*.04;why=`A return of ${r1<=-10? r1.toFixed(2):r2.toFixed(2)}% triggered the defensive period. The strategy remains at the 4% defensive withdrawal until that period is completed.`;how=`${money(P)} × 4% = ${money(withdrawal)}`;}
-          else if(twoPositive){withdrawal=P*.12;why='The last two years were positive and the defensive period has been completed, so the strategy returns to the normal 12% withdrawal for Years 2–10.';how=`${money(P)} × 12% = ${money(withdrawal)}`;}
-          else {withdrawal=P*.12;why='No defensive guardrail is active based on the information entered, so the normal 12% withdrawal applies for Years 2–10.';how=`${money(P)} × 12% = ${money(withdrawal)}`;}
-        }
-      } else {
-        const rate=Math.min(.05,Math.max(.04,(r1-7)/100)); withdrawal=P*rate; why="After Year 10, the withdrawal is based on last year's return, with the result bounded between 4% and 5% of the original retirement portfolio."; how=`Last year's return: ${r1.toFixed(2)}% → applied rate: ${(rate*100).toFixed(2)}% → ${money(P)} × ${(rate*100).toFixed(2)}% = ${money(withdrawal)}`;
-      }
-      if(withdrawal>balance){withdrawal=balance;why+=' The calculated amount exceeded the current portfolio balance, so the withdrawal is limited to the available balance.';how+=`; available balance: ${money(balance)}`;}
-    }
-    amount.textContent=money(withdrawal); explanation.textContent=why; formula.textContent=how; result.classList.remove('annual-hidden');
+
+  function fail(msg){
+    err.textContent=msg;
+    result.classList.add('annual-hidden');
   }
+
+  function capToBalance(withdrawal,balance){
+    return Math.max(0,Math.min(withdrawal,balance));
+  }
+
+  function calculate(){
+    err.textContent='';
+    result.classList.add('annual-hidden');
+
+    const type=strategy.value;
+    if(!type) return;
+
+    Object.keys(groups).forEach(hide);
+    show(type);
+
+    let withdrawal=0, why='', how='';
+
+    if(type==='a'){
+      const P=val('aOriginal'), balance=val('aBalance'), year=val('aYear'), inflation=val('aInflation');
+
+      if(!(P>0) || !(balance>=0) || !(year>=1) || !Number.isFinite(inflation) || inflation<0){
+        return fail('Enter the original portfolio, current portfolio balance, retirement year, and inflation adjustment.');
+      }
+
+      withdrawal=P*.04*Math.pow(1+inflation/100,year-1);
+      const uncapped=withdrawal;
+      withdrawal=capToBalance(withdrawal,balance);
+
+      why=year===1
+        ? 'Year 1 starts with a withdrawal of 4% of the original retirement portfolio.'
+        : `The Year ${year} withdrawal starts with 4% of the original retirement portfolio and applies the ${inflation.toFixed(1)}% annual inflation adjustment for each completed year after Year 1.`;
+
+      if(withdrawal<uncapped){
+        why+=' The calculated amount exceeded the current portfolio balance, so the withdrawal is limited to the amount available.';
+      }
+
+      how=`${money(P)} × 4% × (1 + ${inflation.toFixed(1)}%)^(${year}-1) = ${money(uncapped)}; available balance: ${money(balance)}; withdrawal: ${money(withdrawal)}`;
+    }
+
+    else if(type==='b'){
+      const balance=val('bBalance'), last=val('bLastWithdrawal');
+
+      if(!(balance>=0) || !(last>=0) || !Number.isFinite(balance) || !Number.isFinite(last)){
+        return fail("Enter the current portfolio balance and last year's withdrawal.");
+      }
+
+      const target=balance*.04, upper=last*1.05, lower=last*.975;
+      const uncapped=Math.min(upper,Math.max(lower,target));
+      withdrawal=capToBalance(uncapped,balance);
+
+      if(uncapped===target){
+        why='The portfolio-based 4% target falls within the allowed annual spending range, so the target is used.';
+      }else if(uncapped===upper){
+        why="The portfolio-based target would increase spending by more than 5%, so the +5% annual increase guardrail limits this year's withdrawal.";
+      }else{
+        why="The portfolio-based target would reduce spending by more than 2.5%, so the −2.5% annual decrease guardrail limits this year's withdrawal.";
+      }
+
+      if(withdrawal<uncapped){
+        why+=' The calculated amount exceeded the current portfolio balance, so the withdrawal is limited to the amount available.';
+      }
+
+      how=`4% target: ${money(target)}; allowed range from last year: ${money(lower)} to ${money(upper)}; calculated withdrawal: ${money(uncapped)}; available balance: ${money(balance)}; withdrawal: ${money(withdrawal)}`;
+    }
+
+    else {
+      const P=val('cOriginal'), balance=val('cBalance'), year=val('cYear'),
+            r3=val('cReturn3'), r2=val('cReturn2'), r1=val('cReturn1');
+
+      if(!(P>0) || !(balance>=0) || !(year>=1) || ![r3,r2,r1].every(Number.isFinite)){
+        return fail('Enter the original portfolio, current balance, retirement year, and all three prior-year S&P 500 returns.');
+      }
+
+      if(year===1){
+        withdrawal=0;
+        why='Year 1 has a one-year waiting period under the Early Retirement Lifestyle Strategy, so there is no withdrawal for this year.';
+        how='Year 1 waiting period → $0 withdrawal';
+      }
+      else if(year<=10){
+        if(balance<=P*.30){
+          withdrawal=P*.03;
+          why='The portfolio is at or below 30% of the original retirement portfolio, so the 3% emergency withdrawal applies.';
+          how=`${money(P)} × 3% = ${money(withdrawal)}`;
+        }
+        else if(balance<=P*.60){
+          withdrawal=P*.04;
+          why='The portfolio is at or below 60% of the original retirement portfolio, so the 4% defensive withdrawal applies.';
+          how=`${money(P)} × 4% = ${money(withdrawal)}`;
+        }
+        else if(r1<=-10){
+          withdrawal=P*.04;
+          why=`Last year's S&P 500 return was ${r1.toFixed(2)}%, which is −10% or worse. This starts a two-year defensive period, so the current year's withdrawal is 4% of the original portfolio.`;
+          how=`${money(P)} × 4% = ${money(withdrawal)}`;
+        }
+        else if(r2<=-10){
+          withdrawal=P*.04;
+          why=`The S&P 500 return two years ago was ${r2.toFixed(2)}%, which is −10% or worse. This is the second withdrawal year of the two-year defensive period, so the current year's withdrawal is 4% of the original portfolio.`;
+          how=`${money(P)} × 4% = ${money(withdrawal)}`;
+        }
+        else if(r1<0){
+          withdrawal=P*.04;
+          why=`Last year's S&P 500 return was negative (${r1.toFixed(2)}%), so the current year uses the 4% defensive withdrawal.`;
+          how=`${money(P)} × 4% = ${money(withdrawal)}`;
+        }
+        else{
+          withdrawal=P*.12;
+          why=`The portfolio is above 60%, there is no active −10% or worse two-year defensive period, and last year's return was positive. The normal 12% withdrawal applies.`;
+          how=`${money(P)} × 12% = ${money(withdrawal)}`;
+        }
+      }
+      else{
+        const rate=Math.min(.05,Math.max(.04,(r1-7)/100));
+        withdrawal=P*rate;
+        why=`Beginning in Year 11, the withdrawal is based on last year's S&P 500 return minus 7 percentage points, with a 4% floor and 5% ceiling.`;
+        how=`Last year's return: ${r1.toFixed(2)}% → ${r1.toFixed(2)}% − 7.00% = ${(r1-7).toFixed(2)}%; applied rate: ${(rate*100).toFixed(2)}%; ${money(P)} × ${(rate*100).toFixed(2)}% = ${money(withdrawal)}`;
+
+        if(balance<=P*.30){
+          withdrawal=P*.03;
+          why='The portfolio is at or below 30% of the original retirement portfolio, so the 3% emergency withdrawal overrides the Year 11–30 calculation.';
+          how=`${money(P)} × 3% = ${money(withdrawal)}`;
+        }
+      }
+
+      const uncapped=withdrawal;
+      withdrawal=capToBalance(withdrawal,balance);
+      if(withdrawal<uncapped){
+        why+=' The calculated amount exceeded the current portfolio balance, so the withdrawal is limited to the amount available.';
+        how+=`; available balance: ${money(balance)}; withdrawal: ${money(withdrawal)}`;
+      }
+    }
+
+    amount.textContent=money(withdrawal);
+    explanation.textContent=why;
+    formula.textContent=how;
+    result.classList.remove('annual-hidden');
+  }
+
   strategy.addEventListener('change',calculate);
-  document.querySelectorAll('#annualFieldsA input,#annualFieldsB input,#annualFieldsC input').forEach(el=>el.addEventListener('input',calculate));
+  document.querySelectorAll('#annualFieldsA input,#annualFieldsB input,#annualFieldsC input')
+    .forEach(el=>el.addEventListener('input',calculate));
 })();
 </script>
 </body>
