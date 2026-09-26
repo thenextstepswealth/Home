@@ -55,15 +55,16 @@
 <div class="wrap">
 <header>
   <div class="brand">Next Steps Wealth-Building Journey</div>
-  <h1>Financial Journey Assessment</h1>
-  <div class="version">Beta Version 1.2</div>
+  <h1>Find Your Next Step</h1>
+  <div class="version">Financial Journey Assessment · Beta Version 1.5</div>
 </header>
 
 <section id="intro" class="card">
-  <h2>Find Your Next Step</h2>
-  <p class="intro"><strong>Choose the statement that most accurately describes where you are today.</strong> There are no right or wrong answers. The goal isn't to get the highest score. It's to understand where you are and identify what deserves your greatest attention and focus right now.</p>
+  <h2>Where Are You — And What's Your Next Step?</h2>
+  <p class="intro"><strong>Choose the statement that most accurately describes where you are today.</strong> There are no right or wrong answers. This isn't a test or a ranking. It's designed to help you understand where you are and identify what deserves your greatest attention and focus right now.</p>
   <div class="note">Choose the answer that most accurately describes your situation—not the answer that gets you to the next step.</div>
-  <p>You may already be working on several areas at once. Your result is designed to identify the area where focusing your effort can make the greatest difference in moving your financial journey forward right now.</p>
+  <p>You may already be working on several areas at once. Your result is designed to identify the <strong>earliest area that has not yet been sufficiently established</strong> so you can focus your effort where it can make the greatest difference in moving your financial journey forward.</p>
+  <p>As you make progress, you can return and ask the question again: <strong>Where am I now, and what's my next step?</strong></p>
   <button class="primary" onclick="start()">Begin Assessment</button>
 </section>
 
@@ -79,7 +80,7 @@
 
 <section id="result" class="hidden">
   <div class="card">
-    <div class="small">YOUR RESULT</div>
+    <div class="small">YOUR NEXT STEP</div>
     <div class="result-step" id="resultStep"></div>
     <h2>Your Next Step</h2>
     <p id="resultOpening"></p>
@@ -359,33 +360,77 @@ function next(){
 function back(){if(current>0){current--;render();}}
 
 function score(){
-  // Each response is scored from 0 (least established) to 3 (most established).
-  // A foundational response (C/D) on an earlier step can pull the primary result earlier.
-  const raw=sections.map(()=>0);
-  const counts=sections.map(()=>0);
+  /*
+    READINESS MODEL — not a points/ranking system.
+
+    The assessment moves through the six steps in order. For each step we
+    determine whether its core purpose is sufficiently established. The first
+    step that is not sufficiently established becomes the person's Next Step.
+
+    Answers are interpreted as evidence, not as a visible score:
+      0 = clear evidence the foundation needs attention
+      1 = foundation is developing
+      2 = foundation is substantially established
+      3 = foundation is well established
+
+    A step's core questions are weighted more heavily than supporting
+    questions. This prevents later-stage activity from overriding an earlier
+    foundational gap.
+  */
+  const stepData = sections.slice(0,6).map(()=>({core:[], support:[]}));
+
+  // Core questions for each step. These are the questions that most directly
+  // determine whether the purpose of that step has been sufficiently established.
+  const coreByStep = {
+    0:[0,1,2],       // cash flow, consumer debt, emergency savings
+    1:[5,6,7,8,9],   // retirement foundation
+    2:[10,11,13],    // substantial savings/investments, building wealth, capacity
+    3:[15,16,17,18], // putting capital to work, strategy, risk, long-term growth
+    4:[20,21,22,23], // enough, additional wealth, choices, accumulation vs choice
+    5:[25,26,27,28]  // wealth/life, intentional use, balance, financial freedom
+  };
+
   questions.forEach((q,i)=>{
-    if(answers[i]!==undefined){raw[q.section]+=answers[i];counts[q.section]++;}
+    if(i>=answers.length || answers[i]===undefined) return;
+    const s=q.section;
+    if(s<6){
+      if(coreByStep[s].includes(i)) stepData[s].core.push(answers[i]);
+      else stepData[s].support.push(answers[i]);
+    }
   });
-  const avg=raw.map((v,i)=>counts[i]?v/counts[i]:0);
-  // Foundation-first logic: identify the earliest step whose core is not reasonably established.
-  // Questions 1-5, 6-10, etc. are intentionally treated as a holistic signal rather than a rigid pass/fail.
-  let primary=0;
-  for(let i=0;i<6;i++){
-    if(avg[i] < 2.05){primary=i;break;}
-    primary=i;
+
+  // A core area is considered sufficiently established when the evidence
+  // averages at least 2.0. Because the result is foundation-first, a later
+  // step can never override an earlier step that falls below this threshold.
+  const threshold=2.0;
+  const readiness=[];
+  for(let s=0;s<6;s++){
+    const core=stepData[s].core;
+    const support=stepData[s].support;
+    const coreAvg=core.length ? core.reduce((a,b)=>a+b,0)/core.length : 0;
+    const supportAvg=support.length ? support.reduce((a,b)=>a+b,0)/support.length : 0;
+
+    // Core purpose controls readiness. Supporting questions provide context
+    // but do not allow a weak core foundation to be passed.
+    const established=core.length>0 && coreAvg>=threshold;
+    readiness.push({coreAvg,supportAvg,established});
   }
-  // If all six are strong, SHIFT/THRIVE may become the result based on later sections.
-  if(avg.slice(0,4).every(v=>v>=2.05) && avg[4]>=2.15 && avg[5]>=2.15){
-    primary=5;
-  } else if(avg.slice(0,4).every(v=>v>=2.05) && avg[4]>=2.15){
-    primary=4;
+
+  let primary=5;
+  for(let s=0;s<6;s++){
+    if(!readiness[s].established){
+      primary=s;
+      break;
+    }
   }
-  return {avg,primary};
+
+  return {readiness,primary};
 }
+
 function showResult(){
   document.getElementById('quiz').classList.add('hidden');
   document.getElementById('result').classList.remove('hidden');
-  const {avg,primary}=score();
+  const {readiness,primary}=score();
   const step=sections[primary].step;
   document.getElementById('resultStep').textContent=step;
 
@@ -460,13 +505,13 @@ function showResult(){
 
   const tb=document.getElementById('toolBox');
   const resourcePages={
-    "BREAK FREE":{path:"/break-free.html",label:"Explore BREAK FREE →",desc:"Learn more about building your financial foundation, including cash flow, consumer debt, emergency savings, and financial margin."},
-    "SECURE":{path:"/secure.html",label:"Explore SECURE →",desc:"Learn more about building your safety-net retirement and preparing for the next stage of your wealth-building journey."},
-    "BUILD":{path:"/build.html",label:"Explore BUILD — Your Golden Goose →",desc:"Learn more about building a substantial pool of productive capital and creating greater financial opportunities."},
-    "GROW":{path:"/grow.html",label:"Explore GROW →",desc:"Learn more about putting the productive capital you've built to work with a thoughtful long-term strategy."},
-    "SHIFT":{path:"/shift.html",label:"Explore SHIFT →",desc:"Learn more about understanding what is enough and what your wealth can make possible."},
-    "THRIVE":{path:"/thrive.html",label:"Explore THRIVE →",desc:"Learn more about intentionally using your wealth to support the life you want to live."},
-    "LEGACY":{path:"/legacy.html",label:"Explore Legacy →",desc:"Learn more about intentionally planning what you want your wealth, knowledge, values, and opportunities to leave behind."}
+    "BREAK FREE":{path:"https://thenextstepswealth.com/six-steps.html#step-1",label:"Explore BREAK FREE →",desc:"Learn more about building your financial foundation, including cash flow, consumer debt, emergency savings, and financial margin."},
+    "SECURE":{path:"https://thenextstepswealth.com/six-steps.html#step-2",label:"Explore SECURE →",desc:"Learn more about building your safety-net retirement and preparing for the next stage of your wealth-building journey."},
+    "BUILD":{path:"https://thenextstepswealth.com/six-steps.html#step-3",label:"Explore BUILD — Your Golden Goose →",desc:"Learn more about building a substantial pool of productive capital and creating greater financial opportunities."},
+    "GROW":{path:"https://thenextstepswealth.com/six-steps.html#step-4",label:"Explore GROW →",desc:"Learn more about putting the productive capital you've built to work with a thoughtful long-term strategy."},
+    "SHIFT":{path:"https://thenextstepswealth.com/six-steps.html#step-5",label:"Explore SHIFT →",desc:"Learn more about understanding what is enough and what your wealth can make possible."},
+    "THRIVE":{path:"https://thenextstepswealth.com/six-steps.html#step-6",label:"Explore THRIVE →",desc:"Learn more about intentionally using your wealth to support the life you want to live."},
+    "LEGACY":{path:"https://thenextstepswealth.com/six-steps.html#step-6",label:"Explore Legacy →",desc:"Learn more about intentionally planning what you want your wealth, knowledge, values, and opportunities to leave behind."}
   };
   const rp=resourcePages[step];
   if(step==="SECURE"){
