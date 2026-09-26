@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Next Steps Wealth-Building Journey — Financial Journey Assessment</title>
+<style>
+  :root{
+    --navy:#0d1b2a; --gold:#c9a227; --cream:#f7f5ef; --white:#fff;
+    --text:#26323d; --muted:#65717c; --line:#dfe3e6;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--cream);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;line-height:1.55}
+  .wrap{max-width:850px;margin:0 auto;padding:24px 18px 60px}
+  header{background:var(--navy);color:#fff;border-radius:16px;padding:34px 28px;margin-bottom:22px}
+  .brand{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#d9c36a;font-weight:700}
+  h1{font-family:Georgia,serif;font-weight:500;font-size:34px;line-height:1.15;margin:10px 0 12px}
+  .version{font-size:12px;color:#b9c2ca}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px;margin-bottom:18px;box-shadow:0 2px 10px rgba(13,27,42,.04)}
+  h2{font-family:Georgia,serif;font-weight:500;color:var(--navy);font-size:25px;margin:0 0 12px}
+  h3{color:var(--navy);margin:0 0 8px}
+  .intro{font-size:17px}
+  .note{background:#f4f0df;border-left:4px solid var(--gold);padding:14px 16px;border-radius:8px;margin:18px 0}
+  .progress{font-size:13px;color:var(--muted);margin-bottom:8px}
+  .bar{height:7px;background:#e7e9eb;border-radius:99px;overflow:hidden;margin-bottom:24px}
+  .bar span{display:block;height:100%;background:var(--gold);width:0%;transition:.2s}
+  .question{font-size:20px;font-weight:650;color:var(--navy);margin-bottom:16px}
+  .option{display:block;border:1px solid var(--line);border-radius:11px;padding:15px 16px;margin:10px 0;cursor:pointer;transition:.15s;background:#fff}
+  .option:hover{border-color:#b7a34f;background:#fcfbf5}
+  .option input{margin-right:10px;accent-color:var(--navy)}
+  .option.selected{border-color:var(--gold);background:#fbf8ea}
+  button{border:0;border-radius:10px;padding:13px 20px;font-size:16px;font-weight:700;cursor:pointer}
+  .primary{background:var(--navy);color:#fff}
+  .secondary{background:#e9ecef;color:var(--navy)}
+  .actions{display:flex;gap:10px;justify-content:space-between;margin-top:22px}
+  .hidden{display:none!important}
+  .result-step{font-size:30px;font-family:Georgia,serif;color:var(--gold);font-weight:700}
+  .result-box{border-top:1px solid var(--line);padding-top:18px;margin-top:18px}
+  ul{padding-left:22px}
+  .cta{background:var(--navy);color:#fff;border-radius:14px;padding:24px;margin-top:18px}
+  .cta h3{color:#fff}
+  .cta a{color:#f0d86b;font-weight:700}
+  .feedback textarea{width:100%;min-height:110px;border:1px solid var(--line);border-radius:9px;padding:12px;font:inherit}
+  .small{font-size:13px;color:var(--muted)}
+  .center{text-align:center}
+  @media(max-width:600px){header{padding:27px 20px}h1{font-size:29px}.card{padding:21px}.question{font-size:18px}.actions button{width:48%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="brand">Next Steps Wealth-Building Journey</div>
+  <h1>Financial Journey Assessment</h1>
+  <div class="version">Beta Version 1.0</div>
+</header>
+
+<section id="intro" class="card">
+  <h2>Find Your Next Step</h2>
+  <p class="intro"><strong>Choose the statement that most accurately describes where you are today.</strong> There are no right or wrong answers. The goal isn't to get the highest score. It's to understand where you are and identify what deserves your greatest attention and focus right now.</p>
+  <div class="note">Choose the answer that most accurately describes your situation—not the answer that gets you to the next step.</div>
+  <p>You may already be working on several areas at once. Your result is designed to identify the area where focusing your effort can make the greatest difference in moving your financial journey forward right now.</p>
+  <button class="primary" onclick="start()">Begin Assessment</button>
+</section>
+
+<section id="quiz" class="card hidden">
+  <div class="progress" id="progress"></div>
+  <div class="bar"><span id="bar"></span></div>
+  <div id="questionArea"></div>
+  <div class="actions">
+    <button class="secondary" id="backBtn" onclick="back()">Back</button>
+    <button class="primary" id="nextBtn" onclick="next()">Next</button>
+  </div>
+</section>
+
+<section id="result" class="hidden">
+  <div class="card">
+    <div class="small">YOUR RESULT</div>
+    <div class="result-step" id="resultStep"></div>
+    <h2>Your Next Step</h2>
+    <p id="resultOpening"></p>
+    <div class="result-box">
+      <h3>Why This Step</h3>
+      <p id="why"></p>
+    </div>
+    <div class="result-box">
+      <h3>Your Next Steps</h3>
+      <p>Here are some next steps that can help you strengthen this area and build a firm foundation for the steps ahead.</p>
+      <ul id="nextSteps"></ul>
+    </div>
+    <div id="toolBox" class="result-box"></div>
+    <div class="cta">
+      <h3>Continue Your Journey</h3>
+      <p>Want to learn more about your next step? Visit <a href="https://thenextstepswealth.com" target="_blank" rel="noopener">TheNextStepsWealth.com</a> for more information, resources, and tools to help you move forward.</p>
+      <p>You don't have to figure it out alone. Our coaching is designed to help you understand where you are, determine what deserves your attention right now, and create a personalized plan for your next step.</p>
+      <p><a href="https://thenextstepswealth.com" target="_blank" rel="noopener">Learn more at TheNextStepsWealth.com</a></p>
+    </div>
+  </div>
+
+  <div class="card feedback">
+    <h2>Beta Tester Feedback</h2>
+    <p>What felt accurate? What was confusing? Did the result feel like a useful description of what deserves your attention right now?</p>
+    <textarea id="feedback" placeholder="Your feedback..."></textarea>
+    <p class="small">This beta page does not automatically send your feedback anywhere. Copy it before leaving the page if you want to share it with the test organizer.</p>
+    <button class="secondary" onclick="copyFeedback()">Copy Feedback</button>
+    <button class="primary" onclick="restart()">Take Again</button>
+  </div>
+</section>
+</div>
+
+<script>
+const sections = [
+{step:"BREAK FREE", qs:[
+["Monthly Cash Flow",[
+"Income consistently covers my spending and regularly leaves money available for other priorities.",
+"My income generally covers my spending, but there isn't always much left over.",
+"I can cover my expenses, but I often have to adjust spending, delay things, or find other ways to make the month work.",
+"My spending regularly exceeds my income, or I rely on debt to cover normal expenses."]],
+["Consumer Debt",[
+"I have no consumer debt, or I pay my balances in full and don't rely on debt to support my lifestyle.",
+"I have some consumer debt, but it is manageable and I am consistently reducing it.",
+"I am working on consumer debt, but it represents a meaningful part of my financial picture.",
+"My consumer debt is growing, difficult to control, or is being used for normal expenses."]],
+["Emergency Savings",[
+"I have enough accessible savings to handle a meaningful unexpected expense without taking on new debt or disrupting my major goals.",
+"My reserve can handle many unexpected expenses, but a larger expense would create some pressure.",
+"I have started building emergency savings, but a modest unexpected expense could significantly disrupt my plans.",
+"I have little or no emergency savings, and an unexpected expense would likely create a significant problem."]],
+["Financial Margin",[
+"I consistently have meaningful money left after normal expenses that I can direct toward my priorities.",
+"I usually have some money left over, although the amount varies.",
+"I occasionally have money left over, but it is inconsistent.",
+"I generally have little or no meaningful surplus after normal expenses."]],
+["Financial Control",[
+"I know where my money goes, make intentional decisions, and have a clear plan for managing it.",
+"I generally understand my finances, but some areas could be more organized or intentional.",
+"I have some idea where my money goes, but I often manage things reactively.",
+"I don't have a clear picture of where my money goes or how to control it."]]
+]},
+{step:"SECURE", qs:[
+["Retirement Contributions",[
+"I consistently contribute to retirement savings as part of a deliberate plan.",
+"I contribute to retirement savings, but not always as consistently or at the level I would like.",
+"I contribute something toward retirement, but it has not yet become a consistent priority.",
+"I am not currently contributing meaningfully toward retirement savings."]],
+["Retirement Plan",[
+"I have a clear plan for building retirement savings and future retirement income.",
+"I have a general retirement plan, but there are still important pieces I need to work through.",
+"I am saving for retirement, but I'm not sure my current approach will provide the safety net I want.",
+"I don't have a clear plan for how I will support myself financially in retirement."]],
+["Retirement Progress",[
+"I believe I am making meaningful progress toward the retirement safety net I want.",
+"I am making progress, but there are areas I know I need to increase or improve.",
+"I am saving, but I'm not sure whether I am making enough progress toward the safety net I want.",
+"I don't believe I am making enough progress toward establishing my retirement safety net."]],
+["Retirement Income",[
+"I have a reasonable understanding of where my retirement income will come from and how my savings fit into that plan.",
+"I have thought about future retirement income, but I still have important questions to work through.",
+"I know I need retirement savings, but I haven't really connected my savings to the income I will need later.",
+"I don't have a clear picture of how I will financially support myself in retirement."]],
+["Retirement as a Foundation",[
+"I believe my retirement safety net is established enough that building additional wealth can become a greater priority.",
+"I am making good progress, but I still need to strengthen my retirement foundation before making additional wealth-building my primary focus.",
+"I am contributing toward retirement, but establishing a strong safety net still deserves significant attention.",
+"Building my retirement safety net needs to be a primary focus right now."]]
+]},
+{step:"BUILD", qs:[
+["Savings & Investments",[
+"I've built substantial savings and investments that give me meaningful financial opportunities beyond simply covering my current needs.",
+"I've built meaningful savings and investments, but I'm still working toward what I would consider substantial for my goals.",
+"I've started building savings and investments, but they aren't yet large enough to significantly expand my financial options.",
+"I haven't yet built significant savings or investments beyond what I need for immediate financial security."]],
+["Building Wealth",[
+"I consistently direct meaningful money toward building long-term wealth.",
+"I regularly save or invest for long-term wealth, although the amount varies.",
+"I save or invest some money, but building substantial wealth is not yet a consistent priority.",
+"Most of my available money is still going toward current expenses or establishing financial security."]],
+["What I'm Building Toward",[
+"I have a clear understanding of what I am building toward and what greater wealth could make possible.",
+"I have some clear goals, but I haven't fully defined what I want my wealth to accomplish.",
+"I know building wealth is important, but I don't have a clear destination yet.",
+"I haven't really considered what I am building wealth for."]],
+["Financial Capacity",[
+"I can consistently build wealth without compromising the financial foundation and security I've already established.",
+"I can build wealth, but I sometimes have to balance it against other important financial needs.",
+"Building wealth competes with important financial needs that still need attention.",
+"Building wealth right now would require compromising important financial security."]],
+["Primary Question",[
+"My primary financial question is: How do I build substantial wealth?",
+"I'm continuing to build wealth while also figuring out what to do with what I've already accumulated.",
+"My primary question is becoming: How do I make the money I've accumulated grow?",
+"My primary question is still: How do I establish stronger financial security?"]]
+]},
+{step:"GROW", qs:[
+["Putting Money to Work",[
+"I have a substantial amount invested and a deliberate strategy for putting it to work for long-term growth.",
+"I have a significant amount invested, but my strategy could be more intentional.",
+"I have meaningful savings and investments, but I'm still determining how best to put that money to work.",
+"My long-term savings and investments are not yet positioned according to a deliberate growth strategy."]],
+["Investment Strategy",[
+"I have a clear long-term investment strategy that reflects my goals, time horizon, risk tolerance, diversification, and costs.",
+"I have a general strategy, but there are areas I still need to understand or refine.",
+"I make some intentional investment decisions, but my overall strategy is not fully developed.",
+"My investment decisions are often reactive or driven by individual opportunities, recent performance, or what has my attention at the moment."]],
+["Risk & Diversification",[
+"I understand the major risks I am taking and have diversified in a way that fits my goals and time horizon.",
+"I understand many of the risks in my investments, but there are areas I should evaluate more closely.",
+"I know risk and diversification are important, but I'm not sure my investments reflect them appropriately.",
+"I don't have a clear understanding of the risks or concentration in my investments."]],
+["Long-Term Growth",[
+"I have a long-term approach and generally stay focused on my strategy rather than short-term market movements.",
+"I generally think long term, although market movements sometimes influence my decisions.",
+"I sometimes make decisions based on recent performance or current market conditions.",
+"Short-term headlines, market movements, or opportunities frequently influence my investment decisions."]],
+["Primary Question",[
+"My primary financial question is: How do I make the wealth I've already built work and grow?",
+"I'm continuing to build wealth while also figuring out how to grow what I've already accumulated.",
+"My primary question is still: How do I accumulate more savings and investments?",
+"My primary question is still: How do I establish stronger financial security?"]]
+]},
+{step:"SHIFT", qs:[
+["Understanding Enough",[
+"I have a reasonable understanding of what 'enough' means for me financially.",
+"I've begun thinking seriously about what would be enough, but I haven't clearly defined it.",
+"I continue to accumulate largely because I'm not sure when I will have enough.",
+"I haven't really considered what enough means for me."]],
+["Additional Wealth",[
+"I have a clear understanding of what additional wealth would allow me to do or change.",
+"I have some ideas about what additional wealth could make possible, but they aren't fully connected to my goals.",
+"I want more wealth, but I'm not sure what additional wealth would actually change for me.",
+"Accumulating more wealth has largely become the goal in itself."]],
+["Financial Choices",[
+"My financial position provides meaningful flexibility and allows me to make choices I couldn't make before.",
+"I am beginning to have greater financial flexibility, but important limitations remain.",
+"My financial position has improved my options, but I still need significant growth to have the choices I want.",
+"My primary focus is still establishing security and building the wealth base I need."]],
+["Accumulation vs. Choice",[
+"I am increasingly interested in what my wealth can make possible rather than simply accumulating more.",
+"I am beginning to balance growing my wealth with thinking about what that wealth can make possible.",
+"My focus is still primarily on maximizing accumulation.",
+"I still need to establish the financial foundation or wealth base I need before this becomes my primary focus."]],
+["Primary Question",[
+"My primary question is: What should I do with what I've built?",
+"My primary question is becoming: How much more do I need, and what could it allow me to do?",
+"My primary question is still: How can I continue growing what I've built?",
+"My primary question is still: How do I build the security and wealth I need?"]]
+]},
+{step:"THRIVE", qs:[
+["Wealth & Life",[
+"I intentionally use my wealth to support the life I want to live.",
+"I am beginning to use my wealth to support the life I want, but I'm still figuring out how.",
+"Most of my attention is still focused on accumulating and growing wealth.",
+"My financial foundation and wealth-building still require most of my attention."]],
+["Using Wealth",[
+"My financial decisions intentionally support the experiences, priorities, relationships, opportunities, and goals that matter most to me.",
+"I make some intentional choices with my money, but I could connect them more clearly to what matters most to me.",
+"I spend most of my financial energy saving and investing, with less attention to how my wealth can support my life today.",
+"My primary financial focus is still security and accumulation."]],
+["Today & Tomorrow",[
+"I have a deliberate balance between enjoying and using my resources today and preparing for the future.",
+"I have a reasonable balance, although there are areas I am still working through.",
+"My financial decisions lean heavily toward either the present or the future.",
+"I don't yet have enough financial foundation or wealth to make this balance my primary focus."]],
+["Financial Freedom",[
+"I have a clear idea of what financial freedom looks like for me, and my wealth helps me live toward it.",
+"I have a general idea of financial freedom, but I am still defining what it means for my life.",
+"Financial freedom mostly means having more money or a larger portfolio to me right now.",
+"I still need to establish more financial foundation or wealth before this becomes my primary focus."]],
+["Primary Question",[
+"My primary question is: How do I use my wealth to live my best life?",
+"My primary question is: What do I want my wealth to make possible?",
+"My primary question is still: How do I continue growing my wealth?",
+"My primary question is still: How do I build the security and wealth I need?"]]
+]},
+{step:"LEGACY", qs:[
+["Wealth Beyond Yourself",[
+"I have a clear vision for how I want my wealth to benefit future generations, people, or causes beyond myself.",
+"I've begun thinking about this, but I haven't clearly defined my vision yet.",
+"I know I want to leave something behind, but I haven't developed a plan.",
+"I haven't really considered what I want my wealth to accomplish beyond my own lifetime."]],
+["What You Leave Behind",[
+"I think about leaving not only assets, but also knowledge, principles, opportunities, and values.",
+"I've thought about leaving assets, and I'm beginning to consider the broader legacy I want to leave.",
+"I primarily think of my legacy as the money or property I leave behind.",
+"I haven't thought through what I want to leave behind."]],
+["Wealth Transfer",[
+"I have an intentional wealth-transfer plan and am addressing the appropriate legal and financial considerations with qualified professionals.",
+"I've started working on a wealth-transfer plan, but important areas still need attention.",
+"I know I need a wealth-transfer plan, but I haven't developed a comprehensive one.",
+"I haven't really considered how my wealth will be transferred."]],
+["Future Generations",[
+"I've considered my own needs while also intentionally thinking about what I want future generations to receive.",
+"I'm beginning to think about when and how my goals should include future generations.",
+"My financial focus is primarily on myself and my own future right now.",
+"I haven't considered this distinction yet."]]
+]}
+];
+
+let questions=[], answers=[], current=0;
+sections.forEach((s,si)=>s.qs.forEach((q,qi)=>questions.push({section:si,step:s.step,title:q[0],options:q[1]})));
+
+function start(){
+  document.getElementById('intro').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  current=0; answers=[];
+  render();
+}
+function render(){
+  const q=questions[current];
+  document.getElementById('progress').textContent=`Question ${current+1} of ${questions.length} · ${q.step}`;
+  document.getElementById('bar').style.width=((current)/questions.length*100)+'%';
+  let h=`<div class="question">${q.title}</div>`;
+  q.options.forEach((o,i)=>{
+    const checked=answers[current]===i;
+    h+=`<label class="option ${checked?'selected':''}"><input type="radio" name="answer" value="${i}" ${checked?'checked':''} onchange="select(${i})">${String.fromCharCode(65+i)}. ${o}</label>`;
+  });
+  document.getElementById('questionArea').innerHTML=h;
+  document.getElementById('backBtn').disabled=current===0;
+  document.getElementById('nextBtn').textContent=current===questions.length-1?'See My Result':'Next';
+}
+function select(i){answers[current]=i; render();}
+function next(){
+  if(answers[current]===undefined){alert('Please choose the statement that most accurately describes you today.');return;}
+  if(current<questions.length-1){current++;render();}else showResult();
+}
+function back(){if(current>0){current--;render();}}
+
+function score(){
+  // Each response is scored from 0 (least established) to 3 (most established).
+  // A foundational response (C/D) on an earlier step can pull the primary result earlier.
+  const raw=sections.map(()=>0);
+  const counts=sections.map(()=>0);
+  questions.forEach((q,i)=>{
+    if(answers[i]!==undefined){raw[q.section]+=answers[i];counts[q.section]++;}
+  });
+  const avg=raw.map((v,i)=>counts[i]?v/counts[i]:0);
+  // Foundation-first logic: identify the earliest step whose core is not reasonably established.
+  // Questions 1-5, 6-10, etc. are intentionally treated as a holistic signal rather than a rigid pass/fail.
+  let primary=0;
+  for(let i=0;i<6;i++){
+    if(avg[i] < 2.05){primary=i;break;}
+    primary=i;
+  }
+  // If all six are strong, SHIFT/THRIVE may become the result based on later sections.
+  if(avg.slice(0,4).every(v=>v>=2.05) && avg[4]>=2.15 && avg[5]>=2.15){
+    primary=5;
+  } else if(avg.slice(0,4).every(v=>v>=2.05) && avg[4]>=2.15){
+    primary=4;
+  }
+  return {avg,primary};
+}
+function showResult(){
+  document.getElementById('quiz').classList.add('hidden');
+  document.getElementById('result').classList.remove('hidden');
+  const {avg,primary}=score();
+  const step=sections[primary].step;
+  document.getElementById('resultStep').textContent=step;
+
+  const openings={
+    "BREAK FREE":`Your next step—the area where focusing your effort can make the greatest difference in moving your financial journey forward right now—is BREAK FREE. Building your financial foundation now can give you greater control, stability, and financial margin as you move forward.`,
+    "SECURE":`Your next step—the area where focusing your effort can make the greatest difference in moving your financial journey forward right now—is SECURE. Build a safety net retirement that lets you take bold steps towards growing your future wealth in the next step.`,
+    "BUILD":`Your next step—the area where focusing your effort can make the greatest difference in moving your financial journey forward right now—is BUILD. Building a substantial pool of productive capital now can create the foundation you need to grow your future wealth and create greater financial opportunities in the steps ahead.`,
+    "GROW":`Your next step—the area where focusing your effort can make the greatest difference in moving your financial journey forward right now—is GROW. Putting the productive capital you've built to work with a thoughtful long-term strategy can give your wealth greater opportunity to grow and create greater financial freedom in the steps ahead.`,
+    "SHIFT":`Your next step—the area where focusing your effort can make the greatest difference in moving your financial journey forward right now—is SHIFT. Understanding what is enough and what additional wealth can make possible can help you begin turning financial growth into greater choices and freedom.`,
+    "THRIVE":`Your next step—the area where focusing your effort can make the greatest difference in moving your financial journey forward right now—is THRIVE. Intentionally using the wealth you've built to support the life you want can help turn financial success into a life well lived.`,
+    "LEGACY":`Your assessment indicates that thinking intentionally about legacy may deserve meaningful attention in your journey. Legacy is a later-stage focus within the broader Next Steps Wealth-Building Journey.`
+  };
+  document.getElementById('resultOpening').textContent=openings[step];
+
+  const whys={
+    "BREAK FREE":"Your answers suggest that strengthening the foundation underneath your financial journey may create the greatest benefit from your effort right now. This can include cash flow, consumer debt, emergency savings, financial margin, and having greater control over your money.",
+    "SECURE":"Your answers suggest that establishing or strengthening your retirement safety net may deserve your greatest attention right now. A stronger safety net can create the foundation that allows you to take the next bold step toward growing your future wealth.",
+    "BUILD":"Your answers suggest that your financial foundation and retirement safety net are sufficiently established that building a substantial pool of savings and investments may deserve greater attention now. The goal is to build productive capital that can create greater financial opportunities.",
+    "GROW":"Your answers suggest that you have moved beyond simply accumulating wealth and may benefit from greater attention to how the capital you've built is put to work. This is where investment strategy, risk, diversification, time horizon, and long-term growth become more important.",
+    "SHIFT":"Your answers suggest that your financial progress may be creating an opportunity to shift some attention from simply accumulating more toward understanding what is enough and what your wealth can make possible.",
+    "THRIVE":"Your answers suggest that intentionally using the wealth you've built to support the life you want may deserve greater attention. The focus becomes making wealth serve your priorities rather than treating accumulation as the destination.",
+    "LEGACY":"Your answers suggest that thinking beyond your own lifetime may deserve meaningful attention. Legacy can include assets, knowledge, values, opportunities, and an intentional plan for transferring what you've built."
+  };
+  document.getElementById('why').textContent=whys[step];
+
+  const actions={
+    "BREAK FREE":[
+      "Create a clear picture of your monthly income, spending, and available financial margin.",
+      "Address consumer debt that is limiting your ability to build financial flexibility.",
+      "Build or strengthen accessible emergency savings.",
+      "Create a sustainable system for directing money toward your priorities."
+    ],
+    "SECURE":[
+      "Review how consistently you are contributing toward retirement.",
+      "Clarify the retirement income you expect to need and where that income will come from.",
+      "Review whether your current retirement savings and contributions are moving you toward the safety net you want.",
+      "If you believe your retirement savings are on track, use the Safety Net Calculator to help verify your progress before making BUILD your primary focus."
+    ],
+    "BUILD":[
+      "Define what a substantial amount of savings and investments means for your goals.",
+      "Establish a consistent approach for directing meaningful money toward long-term wealth.",
+      "Continue building without compromising the financial foundation and safety net you've established.",
+      "Clarify what you want the wealth you're building to make possible."
+    ],
+    "GROW":[
+      "Clarify the long-term strategy for the wealth you've already built.",
+      "Evaluate whether your investments fit your goals, time horizon, risk tolerance, diversification needs, and costs.",
+      "Focus on a strategy rather than allowing short-term market movements to drive decisions.",
+      "Learn more about how to put productive capital to work for long-term growth."
+    ],
+    "SHIFT":[
+      "Define what 'enough' means for your life and goals.",
+      "Identify what additional wealth would actually allow you to do or change.",
+      "Consider where greater financial flexibility could create meaningful choices.",
+      "Begin connecting the wealth you've built to the life you want it to support."
+    ],
+    "THRIVE":[
+      "Define what your best life looks like and what role wealth plays in it.",
+      "Identify the experiences, relationships, opportunities, and priorities your wealth can support.",
+      "Create a deliberate balance between using resources today and preparing for tomorrow.",
+      "Make financial decisions increasingly intentional about the life you want to live."
+    ],
+    "LEGACY":[
+      "Clarify what you want your wealth to accomplish beyond your own lifetime.",
+      "Consider the assets, knowledge, values, and opportunities you want to leave behind.",
+      "Begin or strengthen a thoughtful wealth-transfer plan with appropriate professional guidance.",
+      "Consider how your current decisions can support both your needs and future generations."
+    ]
+  };
+  const ul=document.getElementById('nextSteps'); ul.innerHTML='';
+  actions[step].forEach(x=>{const li=document.createElement('li');li.textContent=x;ul.appendChild(li);});
+
+  const tb=document.getElementById('toolBox');
+  if(step==="SECURE"){
+    tb.innerHTML=`<h3>Verify Your Retirement Progress</h3><p>If you feel your retirement savings are on track, use our <strong>Safety Net Calculator</strong> to help verify whether your retirement foundation is where you want it to be. This can help you determine whether SECURE should remain your primary focus or whether you may be ready to begin focusing more on <strong>BUILD — your Golden Goose</strong>.</p><p><a href="https://thenextstepswealth.com" target="_blank" rel="noopener">Visit TheNextStepsWealth.com</a> to find the calculator and learn more.</p>`;
+  } else {
+    tb.innerHTML=`<h3>Explore Your Next Step</h3><p>Visit <a href="https://thenextstepswealth.com" target="_blank" rel="noopener">TheNextStepsWealth.com</a> for more information and resources related to ${step}.</p>`;
+  }
+}
+function restart(){
+  document.getElementById('result').classList.add('hidden');
+  document.getElementById('intro').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function copyFeedback(){
+  const text=document.getElementById('feedback').value;
+  if(!text){alert('Please enter feedback first.');return;}
+  navigator.clipboard?.writeText(text).then(()=>alert('Feedback copied.'));
+}
+</script>
+</body>
+</html>
