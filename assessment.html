@@ -41,6 +41,11 @@
   .cta h3{color:#fff}
   .cta a{color:#f0d86b;font-weight:700}
   .feedback textarea{width:100%;min-height:110px;border:1px solid var(--line);border-radius:9px;padding:12px;font:inherit}
+  .contact-card{margin-top:18px}
+  .contact-card label{display:block;margin:14px 0 6px;color:var(--navy)}
+  .contact-card input{width:100%;border:1px solid var(--line);border-radius:9px;padding:13px;font:inherit;background:#fff}
+  .contact-card input:focus{outline:2px solid rgba(201,162,39,.35);border-color:var(--gold)}
+  .contact-card button{margin-top:18px}
   .small{font-size:13px;color:var(--muted)}
   .center{text-align:center}
   @media(max-width:600px){header{padding:27px 20px}h1{font-size:29px}.card{padding:21px}.question{font-size:18px}.actions button{width:48%}}
@@ -51,7 +56,7 @@
 <header>
   <div class="brand">Next Steps Wealth-Building Journey</div>
   <h1>Financial Journey Assessment</h1>
-  <div class="version">Beta Version 1.1</div>
+  <div class="version">Beta Version 1.2</div>
 </header>
 
 <section id="intro" class="card">
@@ -89,10 +94,25 @@
     </div>
     <div id="toolBox" class="result-box"></div>
     <div class="cta">
-      <h3>Continue Your Journey</h3>
-      <p>Want to learn more about your next step? Visit <a href="https://thenextstepswealth.com" target="_blank" rel="noopener">TheNextStepsWealth.com</a> for more information, resources, and tools to help you move forward.</p>
-      <p>You don't have to figure it out alone. Our coaching is designed to help you understand where you are, determine what deserves your attention right now, and create a personalized plan for your next step.</p>
-      <p><a href="https://thenextstepswealth.com" target="_blank" rel="noopener">Learn more at TheNextStepsWealth.com</a></p>
+      <h3>Want Personalized Help?</h3>
+      <p>If you'd like someone in your corner as you work through your next step, learn more about Next Steps Wealth Coaching. Our coaching is designed to help you understand where you are, determine what deserves your attention right now, and create a personalized plan for your next step.</p>
+      <p><a id="coachingLink" href="/coaching.html">Explore Next Steps Wealth Coaching →</a></p>
+    </div>
+
+    <div class="card contact-card">
+      <h2>Want to Talk About Your Results?</h2>
+      <p>If you'd like to better understand what your results mean and what your next steps could look like, leave your contact information below and someone from Next Steps Wealth can reach out to you.</p>
+      <form id="contactForm" onsubmit="sendContact(event)">
+        <label for="contactName"><strong>Name</strong></label>
+        <input id="contactName" name="name" type="text" autocomplete="name" required placeholder="Your name">
+        <label for="contactEmail"><strong>Email Address</strong></label>
+        <input id="contactEmail" name="email" type="email" autocomplete="email" required placeholder="you@example.com">
+        <label for="contactPhone"><strong>Phone Number <span class="small">(optional)</span></strong></label>
+        <input id="contactPhone" name="phone" type="tel" autocomplete="tel" placeholder="(555) 555-5555">
+        <button class="primary" type="submit">I'd Like to Learn More →</button>
+        <p class="small">By submitting your information, you are requesting to be contacted by Next Steps Wealth regarding your assessment results and available resources or coaching.</p>
+      </form>
+      <div id="contactStatus" class="small hidden"></div>
     </div>
   </div>
 
@@ -439,12 +459,63 @@ function showResult(){
   actions[step].forEach(x=>{const li=document.createElement('li');li.textContent=x;ul.appendChild(li);});
 
   const tb=document.getElementById('toolBox');
+  const resourcePages={
+    "BREAK FREE":{path:"/break-free.html",label:"Explore BREAK FREE →",desc:"Learn more about building your financial foundation, including cash flow, consumer debt, emergency savings, and financial margin."},
+    "SECURE":{path:"/secure.html",label:"Explore SECURE →",desc:"Learn more about building your safety-net retirement and preparing for the next stage of your wealth-building journey."},
+    "BUILD":{path:"/build.html",label:"Explore BUILD — Your Golden Goose →",desc:"Learn more about building a substantial pool of productive capital and creating greater financial opportunities."},
+    "GROW":{path:"/grow.html",label:"Explore GROW →",desc:"Learn more about putting the productive capital you've built to work with a thoughtful long-term strategy."},
+    "SHIFT":{path:"/shift.html",label:"Explore SHIFT →",desc:"Learn more about understanding what is enough and what your wealth can make possible."},
+    "THRIVE":{path:"/thrive.html",label:"Explore THRIVE →",desc:"Learn more about intentionally using your wealth to support the life you want to live."},
+    "LEGACY":{path:"/legacy.html",label:"Explore Legacy →",desc:"Learn more about intentionally planning what you want your wealth, knowledge, values, and opportunities to leave behind."}
+  };
+  const rp=resourcePages[step];
   if(step==="SECURE"){
-    tb.innerHTML=`<h3>Verify Your Retirement Progress</h3><p>If you feel your retirement savings are on track, use our <strong>Safety Net Calculator</strong> to help verify whether your retirement foundation is where you want it to be. This can help you determine whether SECURE should remain your primary focus or whether you may be ready to begin focusing more on <strong>BUILD — your Golden Goose</strong>.</p><p><a href="https://thenextstepswealth.com" target="_blank" rel="noopener">Visit TheNextStepsWealth.com</a> to find the calculator and learn more.</p>`;
+    tb.innerHTML=`<h3>Explore SECURE</h3><p>${rp.desc}</p><p><a href="${rp.path}">${rp.label}</a></p><p><strong>Verify Your Retirement Progress:</strong> If you feel your retirement savings are on track, use the Safety Net Calculator to help verify whether your retirement foundation is where you want it to be. This can help you determine whether SECURE should remain your primary focus or whether you may be ready to begin focusing more on <strong>BUILD — your Golden Goose</strong>.</p>`;
   } else {
-    tb.innerHTML=`<h3>Explore Your Next Step</h3><p>Visit <a href="https://thenextstepswealth.com" target="_blank" rel="noopener">TheNextStepsWealth.com</a> for more information and resources related to ${step}.</p>`;
+    tb.innerHTML=`<h3>Explore Your Next Step</h3><p>${rp.desc}</p><p><a href="${rp.path}">${rp.label}</a></p>`;
   }
+  document.getElementById('coachingLink').href="/coaching.html";
 }
+function sendContact(event){
+  event.preventDefault();
+  const name=document.getElementById('contactName').value.trim();
+  const email=document.getElementById('contactEmail').value.trim();
+  const phone=document.getElementById('contactPhone').value.trim();
+  const {primary}=score();
+  const step=sections[primary].step;
+
+  // Source-specific mailbox and subject. This beta uses a mailto so no
+  // third-party form service or credentials are embedded in the HTML.
+  const mailboxes={
+    "BREAK FREE":"breakfree@thenextstepswealth.com",
+    "SECURE":"secure@thenextstepswealth.com",
+    "BUILD":"build@thenextstepswealth.com",
+    "GROW":"grow@thenextstepswealth.com",
+    "SHIFT":"shift@thenextstepswealth.com",
+    "THRIVE":"thrive@thenextstepswealth.com",
+    "LEGACY":"legacy@thenextstepswealth.com"
+  };
+  const recipient=mailboxes[step] || "assessment@thenextstepswealth.com";
+  const subject=`Financial Assessment — ${step} — Contact Request`;
+  const body=[
+    `Name: ${name}`,
+    `Email: ${email}`,
+    `Phone: ${phone || "Not provided"}`,
+    ``,
+    `Assessment Result: ${step}`,
+    `Assessment Version: Beta 1.2`,
+    `Source: Assessment`,
+    ``,
+    `The person requested to be contacted about their assessment results.`
+  ].join("\\n");
+
+  const status=document.getElementById('contactStatus');
+  status.classList.remove('hidden');
+  status.textContent=`Your email app will open with the assessment result and subject already filled in. Send the message to complete your request.`;
+
+  window.location.href=`mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
 function restart(){
   document.getElementById('result').classList.add('hidden');
   document.getElementById('intro').classList.remove('hidden');
