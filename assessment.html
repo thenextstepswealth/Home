@@ -51,7 +51,7 @@
 <header>
   <div class="brand">Next Steps Wealth-Building Journey</div>
   <h1>Financial Journey Assessment</h1>
-  <div class="version">Beta Version 1.0</div>
+  <div class="version">Beta Version 1.1</div>
 </header>
 
 <section id="intro" class="card">
@@ -317,9 +317,23 @@ function render(){
   document.getElementById('backBtn').disabled=current===0;
   document.getElementById('nextBtn').textContent=current===questions.length-1?'See My Result':'Next';
 }
-function select(i){answers[current]=i; render();}
+function select(i){
+  answers[current]=Number(i);
+  // Do not rebuild the question immediately. This prevents the iPhone/Safari
+  // radio-button event from being lost before the Next button is pressed.
+  document.querySelectorAll('.option').forEach((el,idx)=>{
+    el.classList.toggle('selected', idx===Number(i));
+  });
+}
 function next(){
-  if(answers[current]===undefined){alert('Please choose the statement that most accurately describes you today.');return;}
+  // Read the selected radio button directly as a fallback. This makes the
+  // assessment reliable on mobile Safari as well as desktop browsers.
+  const checked=document.querySelector('input[name="answer"]:checked');
+  if(checked) answers[current]=Number(checked.value);
+  if(answers[current]===undefined){
+    alert('Please choose the statement that most accurately describes you today.');
+    return;
+  }
   if(current<questions.length-1){current++;render();}else showResult();
 }
 function back(){if(current>0){current--;render();}}
