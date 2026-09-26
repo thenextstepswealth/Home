@@ -56,7 +56,7 @@
 <header>
   <div class="brand">Next Steps Wealth-Building Journey</div>
   <h1>Find Your Next Step</h1>
-  <div class="version">Financial Journey Assessment · Beta Version 1.5</div>
+  <div class="version">Financial Journey Assessment · Beta Version 1.6</div>
 </header>
 
 <section id="intro" class="card">
@@ -84,6 +84,7 @@
     <div class="result-step" id="resultStep"></div>
     <h2>Your Next Step</h2>
     <p id="resultOpening"></p>
+    <div id="submissionStatus" class="small" style="margin-top:14px;"></div>
     <div class="result-box">
       <h3>Why This Step</h3>
       <p id="why"></p>
@@ -427,9 +428,35 @@ function score(){
   return {readiness,primary};
 }
 
+const FORMSPREE_ENDPOINT="https://formspree.io/f/xjykapoa";
+
+async function submitAssessmentResult(){
+  const {primary}=score();
+  const step=sections[primary].step;
+  const formData=new FormData();
+  formData.append("submission_type","Assessment Completed");
+  formData.append("source","Financial Journey Assessment");
+  formData.append("assessment_version","Beta 1.6");
+  formData.append("next_step",step);
+  formData.append("completed_at",new Date().toISOString());
+  questions.forEach((q,i)=>{
+    const n=answers[i];
+    formData.append(`question_${i+1}`,`${q.step} — ${q.title}: ${n===undefined?"":q.options[n]}`);
+  });
+  try{
+    const response=await fetch(FORMSPREE_ENDPOINT,{method:"POST",body:formData,headers:{Accept:"application/json"}});
+    const status=document.getElementById("submissionStatus");
+    status.textContent=response.ok ? "Your assessment result has been recorded." : "Your result is shown above. We couldn't record the beta submission automatically.";
+  }catch(e){
+    const status=document.getElementById("submissionStatus");
+    if(status) status.textContent="Your result is shown above. We couldn't record the beta submission automatically.";
+  }
+}
+
 function showResult(){
   document.getElementById('quiz').classList.add('hidden');
   document.getElementById('result').classList.remove('hidden');
+  submitAssessmentResult();
   const {readiness,primary}=score();
   const step=sections[primary].step;
   document.getElementById('resultStep').textContent=step;
@@ -521,44 +548,40 @@ function showResult(){
   }
   document.getElementById('coachingLink').href="/coaching.html";
 }
-function sendContact(event){
+async function sendContact(event){
   event.preventDefault();
   const name=document.getElementById('contactName').value.trim();
   const email=document.getElementById('contactEmail').value.trim();
   const phone=document.getElementById('contactPhone').value.trim();
   const {primary}=score();
   const step=sections[primary].step;
-
-  // Source-specific mailbox and subject. This beta uses a mailto so no
-  // third-party form service or credentials are embedded in the HTML.
-  const mailboxes={
-    "BREAK FREE":"breakfree@thenextstepswealth.com",
-    "SECURE":"secure@thenextstepswealth.com",
-    "BUILD":"build@thenextstepswealth.com",
-    "GROW":"grow@thenextstepswealth.com",
-    "SHIFT":"shift@thenextstepswealth.com",
-    "THRIVE":"thrive@thenextstepswealth.com",
-    "LEGACY":"legacy@thenextstepswealth.com"
-  };
-  const recipient=mailboxes[step] || "assessment@thenextstepswealth.com";
-  const subject=`Financial Assessment — ${step} — Contact Request`;
-  const body=[
-    `Name: ${name}`,
-    `Email: ${email}`,
-    `Phone: ${phone || "Not provided"}`,
-    ``,
-    `Assessment Result: ${step}`,
-    `Assessment Version: Beta 1.2`,
-    `Source: Assessment`,
-    ``,
-    `The person requested to be contacted about their assessment results.`
-  ].join("\\n");
-
+  const formData=new FormData();
+  formData.append("submission_type","Contact Request");
+  formData.append("source","Financial Journey Assessment");
+  formData.append("assessment_version","Beta 1.6");
+  formData.append("next_step",step);
+  formData.append("name",name);
+  formData.append("email",email);
+  formData.append("phone",phone);
+  formData.append("_subject",`Financial Assessment — ${step} — Contact Request`);
+  questions.forEach((q,i)=>{
+    const n=answers[i];
+    formData.append(`question_${i+1}`,`${q.step} — ${q.title}: ${n===undefined?"":q.options[n]}`);
+  });
   const status=document.getElementById('contactStatus');
   status.classList.remove('hidden');
-  status.textContent=`Your email app will open with the assessment result and subject already filled in. Send the message to complete your request.`;
-
-  window.location.href=`mailto:${recipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  status.textContent="Sending your request…";
+  try{
+    const response=await fetch(FORMSPREE_ENDPOINT,{method:"POST",body:formData,headers:{Accept:"application/json"}});
+    if(response.ok){
+      status.textContent="Your request has been sent. Someone from Next Steps Wealth can follow up with you about your results.";
+      document.getElementById('contactForm').reset();
+    }else{
+      status.textContent="We couldn't send the request right now. Please try again.";
+    }
+  }catch(e){
+    status.textContent="We couldn't send the request right now. Please try again.";
+  }
 }
 
 function restart(){
