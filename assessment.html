@@ -111,6 +111,7 @@
         <input id="contactEmail" name="email" type="email" autocomplete="email" required placeholder="you@example.com">
         <label for="contactPhone"><strong>Phone Number <span class="small">(optional)</span></strong></label>
         <input id="contactPhone" name="phone" type="tel" autocomplete="tel" placeholder="(555) 555-5555">
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
         <button class="primary" type="submit">I'd Like to Learn More →</button>
         <p class="small">By submitting your information, you are requesting to be contacted by Next Steps Wealth regarding your assessment results and available resources or coaching.</p>
       </form>
@@ -324,6 +325,7 @@ function start(){
   document.getElementById('intro').classList.add('hidden');
   document.getElementById('quiz').classList.remove('hidden');
   current=0; answers=[];
+  assessmentId=createAssessmentId();
   render();
 }
 function render(){
@@ -429,6 +431,19 @@ function score(){
 }
 
 const FORMSPREE_ENDPOINT="https://formspree.io/f/xjykapoa";
+let assessmentId="";
+
+function createAssessmentId(){
+  if(window.crypto && crypto.randomUUID){
+    return "NSW-" + crypto.randomUUID().split("-")[0].toUpperCase();
+  }
+  return "NSW-" + Date.now().toString(36).toUpperCase() + "-" + Math.random().toString(36).slice(2,8).toUpperCase();
+}
+
+function ensureAssessmentId(){
+  if(!assessmentId) assessmentId=createAssessmentId();
+  return assessmentId;
+}
 
 async function submitAssessmentResult(){
   const {primary}=score();
@@ -437,8 +452,11 @@ async function submitAssessmentResult(){
   formData.append("submission_type","Assessment Completed");
   formData.append("source","Financial Journey Assessment");
   formData.append("assessment_version","Beta 1.6");
+  formData.append("assessment_id",ensureAssessmentId());
   formData.append("next_step",step);
   formData.append("completed_at",new Date().toISOString());
+  formData.append("_subject",`Financial Assessment — ${step} — Completed`);
+  formData.append("_gotcha","");
   questions.forEach((q,i)=>{
     const n=answers[i];
     formData.append(`question_${i+1}`,`${q.step} — ${q.title}: ${n===undefined?"":q.options[n]}`);
@@ -446,7 +464,7 @@ async function submitAssessmentResult(){
   try{
     const response=await fetch(FORMSPREE_ENDPOINT,{method:"POST",body:formData,headers:{Accept:"application/json"}});
     const status=document.getElementById("submissionStatus");
-    status.textContent=response.ok ? "Your assessment result has been recorded." : "Your result is shown above. We couldn't record the beta submission automatically.";
+    status.textContent=response.ok ? `Your assessment result has been recorded. Assessment ID: ${ensureAssessmentId()}` : "Your result is shown above. We couldn't record the beta submission automatically.";
   }catch(e){
     const status=document.getElementById("submissionStatus");
     if(status) status.textContent="Your result is shown above. We couldn't record the beta submission automatically.";
@@ -559,11 +577,13 @@ async function sendContact(event){
   formData.append("submission_type","Contact Request");
   formData.append("source","Financial Journey Assessment");
   formData.append("assessment_version","Beta 1.6");
+  formData.append("assessment_id",ensureAssessmentId());
   formData.append("next_step",step);
   formData.append("name",name);
   formData.append("email",email);
   formData.append("phone",phone);
   formData.append("_subject",`Financial Assessment — ${step} — Contact Request`);
+  formData.append("_gotcha","");
   questions.forEach((q,i)=>{
     const n=answers[i];
     formData.append(`question_${i+1}`,`${q.step} — ${q.title}: ${n===undefined?"":q.options[n]}`);
