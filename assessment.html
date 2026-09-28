@@ -37,6 +37,8 @@
   .result-step{font-size:30px;font-family:Georgia,serif;color:var(--gold);font-weight:700}
   .result-box{border-top:1px solid var(--line);padding-top:18px;margin-top:18px}
   ul{padding-left:22px}
+  .calculator-cta{display:inline-block;background:var(--navy);color:#fff!important;border-radius:9px;padding:12px 16px;font-weight:700;text-decoration:none;margin-top:4px}
+  .calculator-cta:hover{opacity:.92}
   .cta{background:var(--navy);color:#fff;border-radius:14px;padding:24px;margin-top:18px}
   .cta h3{color:#fff}
   .cta a{color:#f0d86b;font-weight:700}
@@ -57,7 +59,7 @@
   <div class="brand">Next Steps Wealth-Building Journey</div>
   <h1>The Next Steps Compass</h1>
   <div class="compass-subtitle">Find where you are. Discover what deserves your focus next.</div>
-  <div class="version">The Next Steps Compass · Beta Version 1.9</div>
+  <div class="version">The Next Steps Compass · Beta Version 2.0</div>
 </header>
 
 <section id="intro" class="card">
@@ -421,7 +423,7 @@ async function submitAssessmentResult(){
   const formData=new FormData();
   formData.append("submission_type","Compass Completed");
   formData.append("source","The Next Steps Compass");
-  formData.append("assessment_version","Beta 1.9");
+  formData.append("assessment_version","Beta 2.0");
   formData.append("assessment_id",ensureAssessmentId());
   formData.append("next_step",step);
   formData.append("completed_at",new Date().toISOString());
@@ -468,7 +470,11 @@ function showResult(){
     if(allA){
       readinessNote.textContent='Your answers indicate that this foundation is well established. You can begin giving the next step your primary focus.';
     }else if(hasPassingB){
-      readinessNote.textContent='Your answers suggest you may be approaching the next step. You have established this foundation, but there may still be value in strengthening it. Use the resource below, when available, to help confirm whether you are ready to make the next step your primary focus.';
+      if(step==="SECURE"){
+        readinessNote.textContent='Your answers suggest you may be approaching the next step. You have established this foundation, but there may still be value in strengthening it. Use the Safety Net Calculator below to help confirm whether you are ready to make the next step your primary focus.';
+      }else{
+        readinessNote.textContent='Your answers suggest you may be approaching the next step. You have established this foundation, but there may still be value in strengthening it. Use the resource below to help confirm whether you are ready to make the next step your primary focus.';
+      }
     }else{
       readinessNote.textContent='Your answers indicate that this is the area where your effort can make the greatest difference right now.';
     }
@@ -544,7 +550,7 @@ function showResult(){
   };
   const rp=resourcePages[step];
   if(step==="SECURE"){
-    tb.innerHTML=`<h3>Explore SECURE</h3><p>${rp.desc}</p><p><a href="${rp.path}">${rp.label}</a></p><p><strong>Verify Your Retirement Progress:</strong> If you feel your retirement savings are on track, use the Safety Net Calculator to help verify whether your retirement foundation is where you want it to be. This can help you determine whether SECURE should remain your primary focus or whether you may be ready to begin focusing more on <strong>BUILD — your Golden Goose</strong>.</p>`;
+    tb.innerHTML=`<h3>Explore SECURE</h3><p>${rp.desc}</p><p><a href="${rp.path}">${rp.label}</a></p><p><strong>Verify Your Retirement Progress:</strong> If you feel your retirement savings are on track, use the <a href="https://thenextstepswealth.com/safety-net-calculator.html">Safety Net Calculator</a> to help verify whether your retirement foundation is where you want it to be. This can help you determine whether SECURE should remain your primary focus or whether you may be ready to begin focusing more on <strong>BUILD — your Golden Goose</strong>.</p><p><a class="calculator-cta" href="https://thenextstepswealth.com/safety-net-calculator.html">Use the Safety Net Calculator →</a></p>`;
   } else {
     tb.innerHTML=`<h3>Explore Your Next Step</h3><p>${rp.desc}</p><p><a href="${rp.path}">${rp.label}</a></p>`;
   }
