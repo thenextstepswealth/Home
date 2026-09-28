@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Next Steps Wealth-Building Journey — Financial Journey Assessment</title>
+<title>Next Steps Wealth-Building Journey — The Next Steps Compass</title>
 <style>
   :root{
     --navy:#0d1b2a; --gold:#c9a227; --cream:#f7f5ef; --white:#fff;
@@ -55,17 +55,18 @@
 <div class="wrap">
 <header>
   <div class="brand">Next Steps Wealth-Building Journey</div>
-  <h1>Find Your Next Step</h1>
-  <div class="version">Financial Journey Assessment · Beta Version 1.6</div>
+  <h1>The Next Steps Compass</h1>
+  <div class="compass-subtitle">Find where you are. Discover what deserves your focus next.</div>
+  <div class="version">The Next Steps Compass · Beta Version 1.9</div>
 </header>
 
 <section id="intro" class="card">
-  <h2>Where Are You — And What's Your Next Step?</h2>
-  <p class="intro"><strong>Choose the statement that most accurately describes where you are today.</strong> There are no right or wrong answers. This isn't a test or a ranking. It's designed to help you understand where you are and identify what deserves your greatest attention and focus right now.</p>
+  <h2>Where Are You — And What Deserves Your Focus Next?</h2>
+  <p class="intro"><strong>Choose the statement that most accurately describes where you are today.</strong> There are no right or wrong answers. This isn't a test or a ranking. It's a gauge of where things are in your financial journey, designed to help you identify what deserves your greatest attention and focus right now.</p>
   <div class="note">Choose the answer that most accurately describes your situation—not the answer that gets you to the next step.</div>
-  <p>You may already be working on several areas at once. Your result is designed to identify the <strong>earliest area that has not yet been sufficiently established</strong> so you can focus your effort where it can make the greatest difference in moving your financial journey forward.</p>
+  <p>You may already be working on several areas at once. Your result is designed to help identify the area where focusing your effort can make the greatest difference in moving your financial journey forward right now. If a foundation is not sufficiently established, that area may deserve your most attention and focus.</p>
   <p>As you make progress, you can return and ask the question again: <strong>Where am I now, and what's my next step?</strong></p>
-  <button class="primary" onclick="start()">Begin Assessment</button>
+  <button class="primary" onclick="start()">Start the Compass</button>
 </section>
 
 <section id="quiz" class="card hidden">
@@ -80,10 +81,11 @@
 
 <section id="result" class="hidden">
   <div class="card">
-    <div class="small">YOUR NEXT STEP</div>
+    <div class="small">YOUR COMPASS POINTS TO</div>
     <div class="result-step" id="resultStep"></div>
     <h2>Your Next Step</h2>
     <p id="resultOpening"></p>
+    <p id="readinessNote" class="note"></p>
     <div id="submissionStatus" class="small" style="margin-top:14px;"></div>
     <div class="result-box">
       <h3>Why This Step</h3>
@@ -101,26 +103,8 @@
       <p><a id="coachingLink" href="/coaching.html">Explore Next Steps Wealth Coaching →</a></p>
     </div>
 
-    <div class="card contact-card">
-      <h2>Want to Talk About Your Results?</h2>
-      <p>If you'd like to better understand what your results mean and what your next steps could look like, leave your contact information below and someone from Next Steps Wealth can reach out to you.</p>
-      <form id="contactForm" onsubmit="sendContact(event)">
-        <label for="contactName"><strong>Name</strong></label>
-        <input id="contactName" name="name" type="text" autocomplete="name" required placeholder="Your name">
-        <label for="contactEmail"><strong>Email Address</strong></label>
-        <input id="contactEmail" name="email" type="email" autocomplete="email" required placeholder="you@example.com">
-        <label for="contactPhone"><strong>Phone Number <span class="small">(optional)</span></strong></label>
-        <input id="contactPhone" name="phone" type="tel" autocomplete="tel" placeholder="(555) 555-5555">
-        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
-        <button class="primary" type="submit">I'd Like to Learn More →</button>
-        <p class="small">By submitting your information, you are requesting to be contacted by Next Steps Wealth regarding your assessment results and available resources or coaching.</p>
-      </form>
-      <div id="contactStatus" class="small hidden"></div>
-    </div>
-  </div>
-
-  <div class="card feedback">
-    <h2>Beta Tester Feedback</h2>
+    <div class="card feedback">
+    <h2>Compass Beta Feedback</h2>
     <p>What felt accurate? What was confusing? Did the result feel like a useful description of what deserves your attention right now?</p>
     <textarea id="feedback" placeholder="Your feedback..."></textarea>
     <p class="small">This beta page does not automatically send your feedback anywhere. Copy it before leaving the page if you want to share it with the test organizer.</p>
@@ -162,7 +146,7 @@ const sections = [
 {step:"SECURE", qs:[
 ["Retirement Contributions",[
 "I consistently contribute to retirement savings as part of a deliberate plan.",
-"I contribute to retirement savings, but not always as consistently or at the level I would like.",
+"I consistently contribute to retirement savings, but I could contribute more or improve the level over time.",
 "I contribute something toward retirement, but it has not yet become a consistent priority.",
 "I am not currently contributing meaningfully toward retirement savings."]],
 ["Retirement Plan",[
@@ -199,7 +183,7 @@ const sections = [
 "Most of my available money is still going toward current expenses or establishing financial security."]],
 ["What I'm Building Toward",[
 "I have a clear understanding of what I am building toward and what greater wealth could make possible.",
-"I have some clear goals, but I haven't fully defined what I want my wealth to accomplish.",
+"I have clear goals for my wealth, although I am still refining exactly what I want it to accomplish.",
 "I know building wealth is important, but I don't have a clear destination yet.",
 "I haven't really considered what I am building wealth for."]],
 ["Financial Capacity",[
@@ -258,7 +242,7 @@ const sections = [
 "My primary focus is still establishing security and building the wealth base I need."]],
 ["Accumulation vs. Choice",[
 "I am increasingly interested in what my wealth can make possible rather than simply accumulating more.",
-"I am beginning to balance growing my wealth with thinking about what that wealth can make possible.",
+"I am balancing continued wealth growth with thinking about what my wealth can make possible, although I could do more to connect the two.",
 "My focus is still primarily on maximizing accumulation.",
 "I still need to establish the financial foundation or wealth base I need before this becomes my primary focus."]],
 ["Primary Question",[
@@ -275,7 +259,7 @@ const sections = [
 "My financial foundation and wealth-building still require most of my attention."]],
 ["Using Wealth",[
 "My financial decisions intentionally support the experiences, priorities, relationships, opportunities, and goals that matter most to me.",
-"I make some intentional choices with my money, but I could connect them more clearly to what matters most to me.",
+"I intentionally use some of my wealth to support what matters most to me, although I could connect more of my financial decisions to those priorities.",
 "I spend most of my financial energy saving and investing, with less attention to how my wealth can support my life today.",
 "My primary financial focus is still security and accumulation."]],
 ["Today & Tomorrow",[
@@ -364,59 +348,44 @@ function back(){if(current>0){current--;render();}}
 
 function score(){
   /*
-    READINESS MODEL — not a points/ranking system.
+    The Compass is intentionally not score-based. Each step has five questions.
+    Four are "doing or not doing" foundation questions: B does not establish
+    the step. One question is intentionally written as "doing it, but not
+    perfect": B is acceptable for that question.
 
-    The assessment moves through the six steps in order. For each step we
-    determine whether its core purpose is sufficiently established. The first
-    step that is not sufficiently established becomes the person's Next Step.
-
-    Answers are interpreted as evidence, not as a visible score:
-      0 = clear evidence the foundation needs attention
-      1 = foundation is developing
-      2 = foundation is substantially established
-      3 = foundation is well established
-
-    A step's core questions are weighted more heavily than supporting
-    questions. This prevents later-stage activity from overriding an earlier
-    foundational gap.
+    The user never sees this as pass/fail. Internally, it simply determines
+    whether the current step is sufficiently established to make the next step
+    the primary focus.
   */
-  const stepData = sections.slice(0,6).map(()=>({core:[], support:[]}));
-
-  // Core questions for each step. These are the questions that most directly
-  // determine whether the purpose of that step has been sufficiently established.
-  const coreByStep = {
-    0:[0,1,2],       // cash flow, consumer debt, emergency savings
-    1:[5,6,7,8,9],   // retirement foundation
-    2:[10,11,13],    // substantial savings/investments, building wealth, capacity
-    3:[15,16,17,18], // putting capital to work, strategy, risk, long-term growth
-    4:[20,21,22,23], // enough, additional wealth, choices, accumulation vs choice
-    5:[25,26,27,28]  // wealth/life, intentional use, balance, financial freedom
+  const readiness=[];
+  const bPassQuestion={
+    0:4, // BREAK FREE: Financial Control
+    1:0, // SECURE: Retirement Contributions
+    2:12, // BUILD: What Building Toward
+    3:18, // GROW: Long-Term Growth
+    4:3, // SHIFT: Accumulation vs Choice
+    5:1  // THRIVE: Using Wealth
   };
 
-  questions.forEach((q,i)=>{
-    if(i>=answers.length || answers[i]===undefined) return;
-    const s=q.section;
-    if(s<6){
-      if(coreByStep[s].includes(i)) stepData[s].core.push(answers[i]);
-      else stepData[s].support.push(answers[i]);
-    }
-  });
-
-  // A core area is considered sufficiently established when the evidence
-  // averages at least 2.0. Because the result is foundation-first, a later
-  // step can never override an earlier step that falls below this threshold.
-  const threshold=2.0;
-  const readiness=[];
   for(let s=0;s<6;s++){
-    const core=stepData[s].core;
-    const support=stepData[s].support;
-    const coreAvg=core.length ? core.reduce((a,b)=>a+b,0)/core.length : 0;
-    const supportAvg=support.length ? support.reduce((a,b)=>a+b,0)/support.length : 0;
-
-    // Core purpose controls readiness. Supporting questions provide context
-    // but do not allow a weak core foundation to be passed.
-    const established=core.length>0 && coreAvg>=threshold;
-    readiness.push({coreAvg,supportAvg,established});
+    const qIndexes=sections[s].qs.map((_,i)=>sections[s].start+i);
+    let established=true;
+    let passingBs=0;
+    qIndexes.forEach((idx)=>{
+      const answer=answers[idx];
+      if(answer===undefined){ established=false; return; }
+      const localIndex=idx-sections[s].start;
+      const bMayPass=(localIndex===bPassQuestion[s]);
+      if(answer===0){
+        return;
+      }
+      if(answer===1 && bMayPass){
+        passingBs++;
+        return;
+      }
+      established=false;
+    });
+    readiness.push({established,passingBs});
   }
 
   let primary=5;
@@ -426,9 +395,10 @@ function score(){
       break;
     }
   }
-
   return {readiness,primary};
 }
+
+sections.forEach((section,idx)=>{ section.start=sections.slice(0,idx).reduce((n,sec)=>n+sec.qs.length,0); });
 
 const FORMSPREE_ENDPOINT="https://formspree.io/f/xjykapoa";
 let assessmentId="";
@@ -449,13 +419,13 @@ async function submitAssessmentResult(){
   const {primary}=score();
   const step=sections[primary].step;
   const formData=new FormData();
-  formData.append("submission_type","Assessment Completed");
-  formData.append("source","Financial Journey Assessment");
-  formData.append("assessment_version","Beta 1.6");
+  formData.append("submission_type","Compass Completed");
+  formData.append("source","The Next Steps Compass");
+  formData.append("assessment_version","Beta 1.9");
   formData.append("assessment_id",ensureAssessmentId());
   formData.append("next_step",step);
   formData.append("completed_at",new Date().toISOString());
-  formData.append("_subject",`Financial Assessment — ${step} — Completed`);
+  formData.append("_subject",`Next Steps Compass — ${step} — Completed`);
   formData.append("_gotcha","");
   questions.forEach((q,i)=>{
     const n=answers[i];
@@ -464,7 +434,7 @@ async function submitAssessmentResult(){
   try{
     const response=await fetch(FORMSPREE_ENDPOINT,{method:"POST",body:formData,headers:{Accept:"application/json"}});
     const status=document.getElementById("submissionStatus");
-    status.textContent=response.ok ? `Your assessment result has been recorded. Assessment ID: ${ensureAssessmentId()}` : "Your result is shown above. We couldn't record the beta submission automatically.";
+    status.textContent=response.ok ? `Your Compass result has been recorded. Compass ID: ${ensureAssessmentId()}` : "Your result is shown above. We couldn't record the beta submission automatically.";
   }catch(e){
     const status=document.getElementById("submissionStatus");
     if(status) status.textContent="Your result is shown above. We couldn't record the beta submission automatically.";
@@ -489,6 +459,20 @@ function showResult(){
     "LEGACY":`Your assessment indicates that thinking intentionally about legacy may deserve meaningful attention in your journey. Legacy is a later-stage focus within the broader Next Steps Wealth-Building Journey.`
   };
   document.getElementById('resultOpening').textContent=openings[step];
+
+  const stepAnswers=sections[primary].qs.map((_,i)=>answers[sections[primary].start+i]);
+  const allA=stepAnswers.every(a=>a===0);
+  const hasPassingB=stepAnswers.some((a,i)=>a===1 && i===({0:4,1:0,2:2,3:3,4:3,5:1}[primary]));
+  const readinessNote=document.getElementById('readinessNote');
+  if(readinessNote){
+    if(allA){
+      readinessNote.textContent='Your answers indicate that this foundation is well established. You can begin giving the next step your primary focus.';
+    }else if(hasPassingB){
+      readinessNote.textContent='Your answers suggest you may be approaching the next step. You have established this foundation, but there may still be value in strengthening it. Use the resource below, when available, to help confirm whether you are ready to make the next step your primary focus.';
+    }else{
+      readinessNote.textContent='Your answers indicate that this is the area where your effort can make the greatest difference right now.';
+    }
+  }
 
   const whys={
     "BREAK FREE":"Your answers suggest that strengthening the foundation underneath your financial journey may create the greatest benefit from your effort right now. This can include cash flow, consumer debt, emergency savings, financial margin, and having greater control over your money.",
@@ -566,44 +550,6 @@ function showResult(){
   }
   document.getElementById('coachingLink').href="/coaching.html";
 }
-async function sendContact(event){
-  event.preventDefault();
-  const name=document.getElementById('contactName').value.trim();
-  const email=document.getElementById('contactEmail').value.trim();
-  const phone=document.getElementById('contactPhone').value.trim();
-  const {primary}=score();
-  const step=sections[primary].step;
-  const formData=new FormData();
-  formData.append("submission_type","Contact Request");
-  formData.append("source","Financial Journey Assessment");
-  formData.append("assessment_version","Beta 1.6");
-  formData.append("assessment_id",ensureAssessmentId());
-  formData.append("next_step",step);
-  formData.append("name",name);
-  formData.append("email",email);
-  formData.append("phone",phone);
-  formData.append("_subject",`Financial Assessment — ${step} — Contact Request`);
-  formData.append("_gotcha","");
-  questions.forEach((q,i)=>{
-    const n=answers[i];
-    formData.append(`question_${i+1}`,`${q.step} — ${q.title}: ${n===undefined?"":q.options[n]}`);
-  });
-  const status=document.getElementById('contactStatus');
-  status.classList.remove('hidden');
-  status.textContent="Sending your request…";
-  try{
-    const response=await fetch(FORMSPREE_ENDPOINT,{method:"POST",body:formData,headers:{Accept:"application/json"}});
-    if(response.ok){
-      status.textContent="Your request has been sent. Someone from Next Steps Wealth can follow up with you about your results.";
-      document.getElementById('contactForm').reset();
-    }else{
-      status.textContent="We couldn't send the request right now. Please try again.";
-    }
-  }catch(e){
-    status.textContent="We couldn't send the request right now. Please try again.";
-  }
-}
-
 function restart(){
   document.getElementById('result').classList.add('hidden');
   document.getElementById('intro').classList.remove('hidden');
