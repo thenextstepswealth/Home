@@ -1,160 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Retirement Withdrawal Calculator — Strategy Comparison</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Next Steps — Withdrawal Calculator Preview</title>
 <style>
-:root{--navy:#102a56;--blue:#0f63c8;--blue2:#dff0ff;--green:#26724d;--green2:#edf8f0;--purple:#6421a8;--purple2:#f5eaff;--gold:#b8860b;--gold2:#fff7df;--text:#17243b;--muted:#5e6b7e;--border:#cfd8e5;--panel:#fff;--bg:#f7f9fc}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}.wrap{max-width:1500px;margin:auto;padding:18px 20px 42px}h1,h2,h3,p{margin:0}.step{font-size:21px;font-weight:850;color:var(--navy);margin-bottom:5px}.subtle{font-size:13px;color:var(--muted);line-height:1.45}.top{display:grid;grid-template-columns:1.35fr 1fr;gap:14px}.panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px}.income-panel{background:linear-gradient(135deg,#f5fbff,#fff);border-color:#c6def6}.income-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:16px;margin-top:14px}.field label{display:block;font-size:13px;font-weight:800;margin-bottom:6px}.field input,.field select{width:100%;height:46px;border:1px solid #bfcbd9;border-radius:8px;background:#fff;color:var(--text);padding:0 13px;font-size:17px}.money-input{position:relative}.money-input span{position:absolute;left:12px;top:13px;font-weight:700;color:#526176}.money-input input{padding-left:28px}.mult{font-size:25px;font-weight:900;padding-bottom:8px}.portfolio-box{height:74px;border:1px solid #77bdf2;border-radius:10px;background:#eaf6ff;display:flex;flex-direction:column;align-items:center;justify-content:center}.portfolio{font-size:28px;font-weight:900;color:#075aa9}.portfolio-label{font-size:12px;font-weight:800;color:#31506f;margin-top:2px}.horizon-panel{padding:14px 16px}.horizon-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}.horizon-buttons button{height:43px;border:1px solid #bcc8d8;border-radius:9px;background:#fff;color:var(--navy);font-weight:800;font-size:14px;cursor:pointer}.horizon-buttons button.active{background:var(--blue);border-color:var(--blue);color:#fff}.details-row{display:grid;grid-template-columns:1.15fr .85fr;gap:12px;margin-top:12px}.analysis-line{font-size:14px;color:var(--navy);margin-top:14px;padding-top:11px;border-top:1px solid #e2e8f0}.analysis-line strong{font-size:16px}.analysis-banner{margin-top:12px;padding:13px 16px;border-radius:11px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:15px}.analysis-banner .big{font-size:22px;font-weight:900}.analysis-banner .small{font-size:12px;opacity:.85}.strategy-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}.strategy{border-radius:13px;padding:16px;border:1px solid var(--border);min-height:165px}.strategy-a{background:linear-gradient(135deg,#fbfffb,var(--green2));border-color:#c9e4d2}.strategy-b{background:linear-gradient(135deg,#f8fcff,var(--blue2));border-color:#a9d6fb}.strategy-c{background:linear-gradient(135deg,#fffaff,var(--purple2));border-color:#d9b9f4}.strategy h3{font-size:20px;line-height:1.05;margin-bottom:7px}.strategy-a h3,.strategy-a .metric{color:var(--green)}.strategy-b h3,.strategy-b .metric{color:#075cae}.strategy-c h3,.strategy-c .metric{color:var(--purple)}.strategy-desc{font-size:13px;line-height:1.4;color:#425066;min-height:55px}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}.metric-label{font-size:12px;font-weight:750;color:#4d5d72}.metric{font-size:23px;font-weight:900;margin-top:1px}.results{margin-top:14px;background:#fff;border:1px solid var(--border);border-radius:13px;overflow:hidden}.results-head{background:#173e69;color:#fff;padding:10px 16px;display:flex;justify-content:space-between;align-items:center}.results-head h2{font-size:19px}.results-head span{font-size:12px;opacity:.9}.table-wrap{overflow-x:auto}.results table{border-collapse:collapse;width:100%;min-width:1120px;font-size:12px}.results th,.results td{border-right:1px solid #dbe2ea;border-bottom:1px solid #dbe2ea;padding:8px 9px;text-align:right;white-space:nowrap}.results th:nth-child(1),.results td:nth-child(1){min-width:62px}.results th:nth-child(2),.results td:nth-child(2){min-width:52px}.results th:nth-child(3),.results td:nth-child(3){min-width:88px}.results th:first-child,.results td:first-child{text-align:left}.results th{font-weight:850;color:#17304f;background:#eef3f8}.results .group-a{background:#eaf6ed;color:var(--green)}.results .group-b{background:#e4f3ff;color:#075cae}.results .group-c{background:#f3e7ff;color:var(--purple)}.results .subhead{font-size:11px;background:#f7f9fc}.results .group-b.subhead{background:#edf7ff}.results .group-a.subhead{background:#eef8f1}.results .group-c.subhead{background:#f7edff}.results tr:hover td{background:#fafcff}.ending-row td{font-weight:900;font-size:14px;background:#e5f2ff;border-bottom:0}.ending-row td:nth-child(3),.ending-row td:nth-child(4){color:var(--green)}.ending-row td:nth-child(5),.ending-row td:nth-child(6),.ending-row td:nth-child(7){color:#075cae}.ending-row td:nth-child(8),.ending-row td:nth-child(9){color:var(--purple)}.notes{font-size:11px;color:var(--muted);line-height:1.5;margin-top:12px}.error{margin-top:8px;color:#a23b3b;font-size:13px;font-weight:700}.legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--muted)}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.dot.a{background:var(--green)}.dot.b{background:var(--blue)}.dot.c{background:var(--purple)}
-@media(max-width:900px){.top,.strategy-grid{grid-template-columns:1fr}.income-row{grid-template-columns:1fr}.mult{text-align:center;padding:0}.analysis-line{margin-top:10px}}@media(max-width:600px){.wrap{padding:12px}.horizon-buttons{grid-template-columns:repeat(2,1fr)}.details-row{grid-template-columns:1fr}.strategy h3{font-size:18px}}
-
-.strategy-mc{background:linear-gradient(135deg,#fffdf6,var(--gold2));border-color:#e7d18b}
-.strategy-mc h3{color:#8a6500}
-.method-panel{margin-top:14px;background:#fff;border:1px solid var(--border);border-radius:13px;padding:14px 16px}
-.method-row{display:grid;grid-template-columns:minmax(0,420px) 1fr;gap:16px;align-items:end}
-.method-help{font-size:12px;color:var(--muted);line-height:1.45}
-.mc-callout{margin-top:12px;padding:15px 16px;border:1px solid #e2cf8c;border-radius:11px;background:#fffaf0;color:#493b16}
-.mc-callout h3{font-size:18px;color:#765600;margin-bottom:6px}
-.mc-callout p{font-size:13px;line-height:1.5;margin-top:6px}
-.tool-links{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
-.tool-links a{display:inline-block;padding:9px 12px;border:1px solid #cdbb80;border-radius:8px;background:#fff;color:#624a00;text-decoration:none;font-weight:800;font-size:12px}
-.tool-links a:hover{text-decoration:underline}
-.actual-note{margin-top:12px;padding:11px 13px;border-left:4px solid #173e69;background:#f4f7fb;font-size:12px;color:#4d5d72;line-height:1.45}
-@media(max-width:900px){.method-row{grid-template-columns:1fr}}
+:root{--navy:#102a56;--blue:#0f63c8;--blue2:#dff0ff;--green:#26724d;--green2:#edf8f0;--purple:#6421a8;--purple2:#f5eaff;--gold:#b8860b;--gold2:#fff7df;--text:#17243b;--muted:#5e6b7e;--border:#cfd8e5;--panel:#fff;--bg:#f7f9fc;--red:#a33b3b;--red2:#fff1f1}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}.wrap{max-width:1500px;margin:auto;padding:18px 20px 48px}h1,h2,h3,p{margin:0}.top{display:grid;grid-template-columns:1.35fr 1fr;gap:14px}.panel{background:var(--panel);border:1px solid var(--border);border-radius:14px;padding:16px}.income-panel{background:linear-gradient(135deg,#f5fbff,#fff);border-color:#c6def6}.step{font-size:21px;font-weight:850;color:var(--navy);margin-bottom:5px}.subtle{font-size:13px;color:var(--muted);line-height:1.45}.income-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:16px;margin-top:14px}.field label{display:block;font-size:13px;font-weight:800;margin-bottom:6px}.money-input{position:relative}.money-input>span{position:absolute;left:11px;bottom:10px;font-weight:800;color:var(--muted)}input,select{width:100%;border:1px solid #bfc9d7;border-radius:9px;background:#fff;color:var(--text);padding:10px 11px;font-size:15px}.money-input input{padding-left:25px}.mult{font-weight:900;color:var(--blue);font-size:17px;padding-bottom:10px}.portfolio-box{text-align:center;border:1px solid #c6def6;border-radius:10px;padding:9px 12px;background:#fff}.portfolio{font-size:25px;font-weight:900;color:var(--navy)}.portfolio-label{font-size:11px;color:var(--muted)}.horizon-buttons{display:flex;gap:7px;margin:12px 0 14px;flex-wrap:wrap}.horizon-buttons button{border:1px solid #bcc9d9;background:#fff;border-radius:9px;padding:9px 13px;font-weight:800;color:var(--navy);cursor:pointer}.horizon-buttons button.active{background:var(--navy);color:#fff;border-color:var(--navy)}.details-row{display:grid;grid-template-columns:1fr 150px;gap:12px}.analysis-line{font-size:12px;color:var(--muted);margin-top:12px}.analysis-line strong{color:var(--navy)}.mc-control{margin-top:14px;border-top:1px solid #e2e7ee;padding-top:12px}.mc-control select{max-width:220px}.error{min-height:22px;color:var(--red);font-weight:700;padding:7px 2px}.analysis-banner{display:flex;justify-content:space-between;align-items:center;gap:15px;background:var(--navy);color:#fff;border-radius:13px;padding:14px 17px;margin:5px 0 14px}.analysis-banner .small{font-size:12px;opacity:.82}.analysis-banner .big{font-size:22px;font-weight:900}.analysis-banner .right{text-align:right}.warning{background:var(--gold2);border:1px solid #e4cc82;color:#604b08;border-radius:11px;padding:11px 13px;font-size:13px;line-height:1.45;margin:0 0 14px}.strategy-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.strategy{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px;min-width:0}.strategy-a{border-top:5px solid var(--blue)}.strategy-b{border-top:5px solid var(--green)}.strategy-c{border-top:5px solid var(--purple)}.strategy-d{border-top:5px solid #7b5a10}.strategy-e{border-top:5px solid #8b4b00}.strategy h3{font-size:17px;color:var(--navy);line-height:1.15;margin-bottom:7px}.strategy-desc{font-size:12px;line-height:1.45;color:var(--muted);min-height:70px}.metrics{display:grid;gap:9px;margin-top:12px}.metric-label{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:800}.metric{font-size:21px;font-weight:900;color:var(--navy)}.metric-sub{font-size:11px;color:var(--muted);margin-top:2px}.mc-assumption{margin-top:10px;padding:8px;border-radius:8px;background:#faf7ef;font-size:10px;line-height:1.35;color:#66572d}.secondary{margin-top:22px}.secondary-head{display:flex;justify-content:space-between;align-items:end;gap:14px;margin-bottom:9px}.secondary-head h2{font-size:20px;color:var(--navy)}.secondary-head span{font-size:12px;color:var(--muted)}.secondary-controls{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:12px;background:#fff;border:1px solid var(--border);border-radius:13px;padding:14px;margin-bottom:12px}.method-help{font-size:11px;color:var(--muted);line-height:1.4;margin-top:6px}.referral{background:#fff;border:1px solid #d9cbe8;border-top:5px solid var(--purple);border-radius:14px;padding:17px}.referral h3{font-size:19px;color:var(--navy);margin-bottom:6px}.referral p{font-size:13px;line-height:1.5;color:var(--muted);max-width:900px}.ref-links{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}.ref-links a{display:inline-block;text-decoration:none;background:var(--purple);color:#fff;border-radius:8px;padding:9px 12px;font-size:12px;font-weight:800}.results{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden}.results-head{display:flex;justify-content:space-between;align-items:center;padding:13px 15px;border-bottom:1px solid var(--border)}.results-head h2{font-size:18px;color:var(--navy)}.results-head span{font-size:12px;color:var(--muted)}.table-wrap{overflow:auto;max-height:650px}table{border-collapse:collapse;width:100%;min-width:1250px;font-size:11px}th,td{padding:7px 8px;border-bottom:1px solid #e7ebf0;text-align:right;white-space:nowrap}th{position:sticky;top:0;background:#f4f7fb;color:var(--navy);font-weight:850;z-index:2}th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:center}.group-a{background:#edf6ff}.group-b{background:#eef8f2}.group-c{background:#f5edfc}.subhead{font-size:10px}.ending-row{font-weight:900;background:#f6f8fb}.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:11px;color:var(--muted);margin:10px 2px}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.dot.a{background:var(--blue)}.dot.b{background:var(--green)}.dot.c{background:var(--purple)}.notes{font-size:11px;line-height:1.55;color:var(--muted);margin-top:12px}.mc-note{background:#f7f4ec;border:1px solid #e1d7bd;border-radius:10px;padding:11px 13px;margin-top:13px;font-size:11px;line-height:1.5;color:#635735}.tag{display:inline-block;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;padding:3px 6px;border-radius:5px;background:#eef2f7;color:var(--muted);margin-bottom:7px}
+@media(max-width:1200px){.strategy-grid{grid-template-columns:repeat(3,1fr)}.top{grid-template-columns:1fr}}@media(max-width:760px){.wrap{padding:12px}.strategy-grid{grid-template-columns:1fr}.income-row,.details-row,.secondary-controls{grid-template-columns:1fr}.mult{padding:0;text-align:center}.analysis-banner{align-items:flex-start;flex-direction:column}.analysis-banner .right{text-align:left}}
 </style>
 </head>
-<body>
-<div class="wrap">
-  <div class="top">
-    <section class="panel income-panel">
-      <div class="step">1. How much do you need from your portfolio?</div>
-      <div class="subtle">Enter the annual amount you need from investments after Social Security and other guaranteed retirement income.</div>
-      <div class="income-row">
-        <div class="field money-input"><label for="incomeNeeded">Annual portfolio income needed</label><span>$</span><input id="incomeNeeded" type="number" min="0" step="1000" value="40000"></div>
-        <div class="mult">× 25</div>
-        <div class="portfolio-box"><div class="portfolio" id="startingPortfolio">$1,000,000</div><div class="portfolio-label">Estimated starting portfolio</div></div>
-      </div>
-    </section>
-    <section class="panel horizon-panel">
-      <div class="step">2. Choose your time horizon</div>
-      <div class="horizon-buttons" role="group" aria-label="Time horizon">
-        <button type="button" data-years="30" class="active">30 Years</button><button type="button" data-years="20">20 Years</button><button type="button" data-years="15">15 Years</button><button type="button" data-years="10">10 Years</button>
-      </div>
-      <div class="details-row">
-        <div class="field"><label for="startYear">3. Select historical retirement start year</label><select id="startYear"></select></div>
-        <div class="field"><label for="startAge">Starting retirement age</label><input id="startAge" type="number" min="40" max="100" value="60"></div>
-      </div>
-      <div class="analysis-line"><span>Analysis period:</span> <strong id="analysisPeriod">1996 – 2025 (30 years)</strong></div>
-      <div id="shortHorizonNote" class="actual-note" hidden><strong>Short-horizon note:</strong> A 10-year analysis can produce substantially higher withdrawal amounts than a 30-year analysis. Consider reviewing the historical 2000–2009 sequence as an additional stress test.</div>
-    </section>
-  </div>
-
-  <div id="error" class="error" aria-live="polite"></div>
-  <section class="analysis-banner"><div><div class="small">SELECTED ANALYSIS</div><div class="big" id="horizonTitle">30-Year Time Horizon</div></div><div id="horizonDescription" class="small">Full 30-year historical scenario</div></section>
-
-  <section class="strategy-grid" id="strategyCards"></section>
-
-  <section class="method-panel">
-    <div class="step">4. Choose an approach for the detailed calculation</div>
-    <div class="method-row">
-      <div class="field">
-        <label for="methodSelect">Withdrawal approach</label>
-        <select id="methodSelect" aria-describedby="methodHelp">
-          <option value="a">4% Rule</option>
-          <option value="b">Vanguard-Style Dynamic Spending</option>
-          <option value="c">Early Retirement Lifestyle Strategy</option>
-          <option value="mc6040">Monte Carlo — 60/40 Portfolio</option>
-          <option value="mcsnp">Monte Carlo — S&amp;P 500</option>
-        </select>
-      </div>
-      <div id="methodHelp" class="method-help">The three approaches above are calculated using the selected historical market sequence. Monte Carlo selections provide methodology information and links to dedicated tools rather than generating a personalized Monte Carlo withdrawal amount here.</div>
-    </div>
-    <div id="mcCallout" class="mc-callout" hidden></div>
-  </section>
-
-  <section class="results" id="historicalResults">
-    <div class="results-head"><h2>Historical Year-by-Year Results</h2><span>S&amp;P 500 total returns (including dividends)</span></div>
-    <div class="table-wrap" id="tableWrap"></div>
-  </section>
-
-  <div class="legend"><span><i class="dot a"></i>4% Rule</span><span><i class="dot b"></i>Vanguard-Style Dynamic Spending</span><span><i class="dot c"></i>Early Retirement Lifestyle Strategy</span><span>Monte Carlo selections are informational only</span></div>
-  <p class="notes"><strong>Important:</strong> This is a historical illustration, not a forecast or guarantee. S&amp;P 500 returns include reinvested dividends. The calculation does not include taxes, fees, inflation, Social Security, pensions, or other retirement income. The Vanguard-style method shown here is an illustrative dynamic-spending implementation using a 4% portfolio-based target, with annual spending increases capped at 5% and decreases capped at 2.5%. The Early Retirement Lifestyle Strategy follows the adaptive rules defined for this calculator. <strong>Monte Carlo:</strong> The Monte Carlo choices are included to explain and compare a probability-based planning approach; this calculator does not produce a personalized Monte Carlo withdrawal recommendation. Dedicated tools can incorporate additional personal assumptions and planning variables.</p>
+<body><div class="wrap">
+<div class="top">
+<section class="panel income-panel"><div class="step">1. How much do you need from your portfolio?</div><div class="subtle">Enter the annual amount you need from investments after Social Security and other guaranteed retirement income.</div><div class="income-row"><div class="field money-input"><label for="incomeNeeded">Annual portfolio income needed</label><span>$</span><input id="incomeNeeded" type="number" min="0" step="1000" value="40000"></div><div class="mult">× 25</div><div class="portfolio-box"><div class="portfolio" id="startingPortfolio">$1,000,000</div><div class="portfolio-label">Estimated starting portfolio</div></div></div></section>
+<section class="panel horizon-panel"><div class="step">2. Choose your time horizon</div><div class="horizon-buttons"><button data-years="30" class="active">30 Years</button><button data-years="20">20 Years</button><button data-years="15">15 Years</button><button data-years="10">10 Years</button></div><div class="details-row"><div class="field"><label for="startYear">3. Select historical retirement start year</label><select id="startYear"></select></div><div class="field"><label for="startAge">Starting retirement age</label><input id="startAge" type="number" min="40" max="100" value="60"></div></div><div class="analysis-line"><span>Historical analysis period:</span> <strong id="analysisPeriod"></strong></div><div class="mc-control"><div class="field"><label for="mcTarget">Monte Carlo target success probability</label><select id="mcTarget"><option value="80">80%</option><option value="85">85%</option><option value="90" selected>90%</option><option value="95">95%</option></select></div></div></section>
+</div>
+<div id="error" class="error"></div>
+<section class="analysis-banner"><div><div class="small">MAIN COMPARISON</div><div class="big" id="horizonTitle">30-Year Time Horizon</div></div><div class="right"><div class="small">Monte Carlo target</div><div class="big" id="mcTargetBanner">90% success</div></div></section>
+<div id="warning"></div>
+<section class="strategy-grid" id="strategyCards"></section>
+<div class="mc-note"><strong>Monte Carlo note:</strong> These two Monte Carlo cards are calculated by this preview using 1,000 simulated annual return paths. The 60/40 illustration uses an 8.08% nominal arithmetic-average return assumption and an 11% standard deviation; the S&amp;P 500 illustration uses the historical 1926–2025 arithmetic mean and standard deviation in this calculator. Inflation is modeled at 2.54% annually. These are transparent educational assumptions—not an exact reproduction of any proprietary retirement-planning software.</div>
+<section class="secondary"><div class="secondary-head"><h2>Detailed Historical Withdrawal Scenario</h2><span>30-year historical illustration</span></div>
+<div class="secondary-controls"><div class="field"><label for="methodSelect">Choose the approach to examine in detail</label><select id="methodSelect"><option value="a">4% Rule</option><option value="b">Vanguard-Style Dynamic Spending</option><option value="c">Early Retirement Lifestyle Strategy</option><option value="d">Monte Carlo — 60/40 Portfolio</option><option value="e">Monte Carlo — S&amp;P 500</option></select><div class="method-help" id="methodHelp"></div></div><div class="field"><label>Detailed scenario period</label><div class="portfolio-box"><div class="portfolio" id="detailPeriod">1996 – 2025</div><div class="portfolio-label">The detailed historical view remains 30 years</div></div></div><div class="field"><label>Starting portfolio</label><div class="portfolio-box"><div class="portfolio" id="detailPortfolio">$1,000,000</div><div class="portfolio-label">Based on annual need × 25</div></div></div></div>
+<div id="detailArea"></div></section>
+<p class="notes"><strong>Important:</strong> This is an educational comparison and historical illustration, not a forecast or guarantee. S&amp;P 500 returns include reinvested dividends. The calculation does not include taxes, fees, inflation adjustments in the historical strategies, Social Security, pensions, or other retirement income. The Vanguard-style method shown here is an illustrative dynamic-spending implementation using a 4% portfolio-based target, with annual spending increases capped at 5% and decreases capped at 2.5%. The Early Retirement Lifestyle Strategy follows the adaptive rules defined for this calculator.</p>
 </div>
 <script>
 const RETURNS={1926:11.62,1927:37.49,1928:43.61,1929:-8.42,1930:-24.90,1931:-43.34,1932:-8.19,1933:53.99,1934:-1.44,1935:47.67,1936:33.92,1937:-35.03,1938:31.12,1939:-0.41,1940:-9.78,1941:-11.59,1942:20.34,1943:25.90,1944:19.75,1945:36.44,1946:-8.07,1947:5.71,1948:5.50,1949:18.79,1950:31.71,1951:24.02,1952:18.37,1953:-0.99,1954:52.62,1955:31.56,1956:6.56,1957:-10.78,1958:43.36,1959:11.96,1960:0.47,1961:26.89,1962:-8.73,1963:22.80,1964:16.48,1965:12.45,1966:-10.06,1967:23.98,1968:11.06,1969:-8.50,1970:3.86,1971:14.30,1972:19.00,1973:-14.69,1974:-26.47,1975:37.23,1976:23.93,1977:-7.16,1978:6.57,1979:18.61,1980:32.50,1981:-4.92,1982:21.55,1983:22.56,1984:6.27,1985:31.73,1986:18.67,1987:5.25,1988:16.61,1989:31.69,1990:-3.10,1991:30.47,1992:7.62,1993:10.08,1994:1.32,1995:37.58,1996:22.96,1997:33.36,1998:28.58,1999:21.04,2000:-9.10,2001:-11.89,2002:-22.10,2003:28.68,2004:10.88,2005:4.91,2006:15.79,2007:5.49,2008:-37.00,2009:26.46,2010:15.06,2011:2.11,2012:16.00,2013:32.39,2014:13.69,2015:1.38,2016:11.96,2017:21.83,2018:-4.38,2019:31.49,2020:18.40,2021:28.71,2022:-18.11,2023:26.29,2024:25.02,2025:17.88};
-const $=id=>document.getElementById(id); const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n); const pct=n=>(n*100).toFixed(2)+'%';
-let years=30;
+const $=id=>document.getElementById(id),money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n),pct=n=>(n*100).toFixed(2)+'%';let years=30;
 function populateYears(){const s=$('startYear'),max=2025-years+1,old=Number(s.value);s.innerHTML='';for(let y=1926;y<=max;y++){const o=document.createElement('option');o.value=y;o.textContent=y+'–'+(y+years-1);s.appendChild(o)}s.value=(old>=1926&&old<=max)?old:max}
-function simulate(start,P,type){let balance=P,previousWithdrawal=P*.04,total=0;let emergency=false,defensiveYears=0,positiveYears=0,rows=[];for(let i=0;i<years;i++){const year=start+i,ret=RETURNS[year]/100,age=Number($('startAge').value)+i;let withdrawal=0,target=null,upper=null,lower=null;
- if(type==='a'){withdrawal=P*.04;if(i===0)withdrawal=P*.04}
- if(type==='b'){
-   if(i===0)withdrawal=P*.04;
-   else {target=balance*.04;upper=previousWithdrawal*1.05;lower=previousWithdrawal*.975;withdrawal=Math.min(upper,Math.max(lower,target));}
- }
- if(type==='c'){
-   if(i===0){withdrawal=0}
-   else{
-     const previousReturn=RETURNS[year-1];
-     if(balance<=P*.30) emergency=true;
-     if(emergency){withdrawal=P*.03;if(balance>P*.60){emergency=false;defensiveYears=0;positiveYears=0}}
-     if(!emergency){
-       if(i<=9){
-         if(previousReturn<=-10){defensiveYears=2;positiveYears=0}
-         if(previousReturn<0){positiveYears=0}
-         if(previousReturn>0)positiveYears++;
-         if(balance<=P*.60){withdrawal=P*.04;positiveYears=0}
-         else if(defensiveYears>0){withdrawal=P*.04;defensiveYears--}
-         else if(positiveYears>=2 && balance>P*.60){withdrawal=P*.12;positiveYears=0}
-         else withdrawal=P*.12;
-       }else{
-         withdrawal=P*Math.min(.05,Math.max(.04,(previousReturn-7)/100));
-       }
-       if(balance<=P*.30){emergency=true;withdrawal=P*.03}
-     }
-   }
- }
- withdrawal=Math.max(0,Math.min(withdrawal,balance)); const end=(balance-withdrawal)*(1+ret); total+=withdrawal; rows.push({year,age,ret,withdrawal,end,target,upper,lower});balance=end;previousWithdrawal=withdrawal;
- }
- return {rows,end:balance,total};}
-function render(){const income=Math.max(0,Number($('incomeNeeded').value)||0),P=income*25,start=Number($('startYear').value),age=Number($('startAge').value);if(!Number.isFinite(age)||age<40||age>100){$('error').textContent='Enter a starting retirement age from 40 to 100.';return}$('error').textContent='';$('startingPortfolio').textContent=money(P);const end=start+years-1;$('analysisPeriod').textContent=start+' – '+end+' ('+years+' years)';$('horizonTitle').textContent=years+'-Year Time Horizon';$('shortHorizonNote').hidden=years!==10;$('horizonDescription').textContent=years===30?'Primary planning horizon: 30-year historical scenario':('This is a '+years+'-year historical scenario. Shorter horizons can produce substantially different results and should not be interpreted as a 30-year retirement projection. Consider reviewing the 2000–2009 historical sequence as an additional stress test.');
- const A=simulate(start,P,'a'),B=simulate(start,P,'b'),C=simulate(start,P,'c');
- $('strategyCards').innerHTML=`<article class="strategy strategy-a"><h3>4% Rule</h3><div class="strategy-desc">A traditional approach using an initial withdrawal of 4% of the retirement portfolio, with the same dollar amount withdrawn each year in this historical illustration.</div><div class="metrics"><div><div class="metric-label">Ending portfolio balance</div><div class="metric">${money(A.end)}</div></div><div><div class="metric-label">Total withdrawals</div><div class="metric">${money(A.total)}</div></div></div></article>
- <article class="strategy strategy-b"><h3>Vanguard-Style<br>Dynamic Spending</h3><div class="strategy-desc">Spending adjusts with portfolio performance, with annual increases capped at 5% and decreases capped at 2.5%.</div><div class="metrics"><div><div class="metric-label">Ending portfolio balance</div><div class="metric">${money(B.end)}</div></div><div><div class="metric-label">Total withdrawals</div><div class="metric">${money(B.total)}</div></div></div></article>
- <article class="strategy strategy-c"><h3>Early Retirement Lifestyle Strategy</h3><div class="strategy-desc">Higher potential spending during the first 10 years, with adaptive reductions during significant market declines and a more conservative withdrawal range thereafter.</div><div class="metrics"><div><div class="metric-label">Ending portfolio balance</div><div class="metric">${money(C.end)}</div></div><div><div class="metric-label">Total withdrawals</div><div class="metric">${money(C.total)}</div></div></div></article>
- <article class="strategy strategy-mc"><h3>Monte Carlo —<br>60/40 Portfolio</h3><div class="strategy-desc">A probability-based approach using a diversified 60/40 portfolio. Included here to help you compare methodologies; this calculator does not generate a personalized Monte Carlo withdrawal amount.</div></article>
- <article class="strategy strategy-mc"><h3>Monte Carlo —<br>S&amp;P 500</h3><div class="strategy-desc">A probability-based approach using historical S&amp;P 500 return characteristics. Included here for comparison; use a dedicated Monte Carlo tool for personalized analysis.</div></article>`;
- let html='<table><thead><tr><th rowspan="2">Year</th><th rowspan="2">Age</th><th rowspan="2">S&amp;P 500<br>Return</th><th colspan="2" class="group-a">4% Rule</th><th colspan="5" class="group-b">Vanguard-Style Dynamic Spending</th><th colspan="2" class="group-c">Early Retirement Lifestyle Strategy</th></tr><tr><th class="group-a subhead">Withdrawal</th><th class="group-a subhead">Ending Balance</th><th class="group-b subhead">Withdrawal</th><th class="group-b subhead">Ending Balance</th><th class="group-b subhead">4% Target</th><th class="group-b subhead">+5% Limit</th><th class="group-b subhead">−2.5% Limit</th><th class="group-c subhead">Withdrawal</th><th class="group-c subhead">Ending Balance</th></tr></thead><tbody>';
- for(let i=0;i<years;i++){const a=A.rows[i],b=B.rows[i],c=C.rows[i];html+=`<tr><td>${a.year}</td><td>${a.age}</td><td>${pct(a.ret)}</td><td>${money(a.withdrawal)}</td><td>${money(a.end)}</td><td>${money(b.withdrawal)}</td><td>${money(b.end)}</td><td>${b.target==null?'—':money(b.target)}</td><td>${b.upper==null?'—':money(b.upper)}</td><td>${b.lower==null?'—':money(b.lower)}</td><td>${money(c.withdrawal)}</td><td>${money(c.end)}</td></tr>`}
- const finalAge=age+years-1;html+=`<tr class="ending-row"><td>Ending Balance</td><td>${finalAge}</td><td>—</td><td>—</td><td>${money(A.end)}</td><td>—</td><td>${money(B.end)}</td><td colspan="3">—</td><td>—</td><td>${money(C.end)}</td></tr></tbody></table>`;$('tableWrap').innerHTML=html;}
-
-
-function updateMethodView(){
-  const method=$('methodSelect').value;
-  const callout=$('mcCallout');
-  const historical=$('historicalResults');
-  if(method==='mc6040' || method==='mcsnp'){
-    historical.hidden=true;
-    callout.hidden=false;
-    const title=method==='mc6040'?'Monte Carlo — 60/40 Portfolio':'Monte Carlo — S&P 500';
-    callout.innerHTML=`<h3>${title}</h3>
-      <p><strong>Comparative information only.</strong> The Monte Carlo approaches shown above are intended to help you understand how probability-based retirement analysis differs from the historical strategies in this calculator. This calculator does not calculate a personalized Monte Carlo withdrawal amount.</p>
-      <p>A dedicated retirement-planning tool can incorporate additional assumptions and personal circumstances. For example, <strong>Boldin</strong> uses Monte Carlo analysis within a broader retirement-planning platform, while <strong>ProjectionLab</strong> offers Monte Carlo simulations and historical backtesting. <strong>Empower Retirement Planner</strong> also offers Monte Carlo analysis within its retirement-planning tools.</p>
-      <p><strong>If Monte Carlo is the approach you want to explore further, consider using one of these tools to run your own personalized analysis.</strong></p>
-      <div class="tool-links">
-        <a href="https://www.boldin.com/retirement/planner-signup/" target="_blank" rel="noopener noreferrer">Explore Boldin</a>
-        <a href="https://projectionlab.com/retirement-calculator" target="_blank" rel="noopener noreferrer">Explore ProjectionLab</a>
-        <a href="https://www.empower.com/tools/retirement-planner" target="_blank" rel="noopener noreferrer">Explore Empower Retirement Planner</a>
-      </div>
-      <div class="actual-note"><strong>How to think about the comparison:</strong> If you find that the Monte Carlo approach is the way you want to evaluate retirement withdrawals, these dedicated tools can take the next step by applying Monte Carlo analysis to a broader, personalized retirement plan. The results will not necessarily match this calculator or each other because their assumptions and models differ.</div>`;
-  }else{
-    historical.hidden=false;
-    callout.hidden=true;
-    callout.innerHTML='';
+function simulate(start,P,type){let balance=P,previousWithdrawal=P*.04,total=0,emergency=false,defensiveYears=0,positiveYears=0,rows=[];for(let i=0;i<years;i++){const year=start+i,ret=RETURNS[year]/100,age=Number($('startAge').value)+i;let withdrawal=0,target=null,upper=null,lower=null;if(type==='a'){withdrawal=P*.04;if(i===0)withdrawal=P*.04}if(type==='b'){if(i===0)withdrawal=P*.04;else{target=balance*.04;upper=previousWithdrawal*1.05;lower=previousWithdrawal*.975;withdrawal=Math.min(upper,Math.max(lower,target))}}if(type==='c'){if(i===0)withdrawal=0;else{const previousReturn=RETURNS[year-1];if(balance<=P*.30)emergency=true;if(emergency){withdrawal=P*.03;if(balance>P*.60){emergency=false;defensiveYears=0;positiveYears=0}}if(!emergency){if(i<=9){if(previousReturn<=-10){defensiveYears=2;positiveYears=0}if(previousReturn<0)positiveYears=0;if(previousReturn>0)positiveYears++;if(balance<=P*.60){withdrawal=P*.04;positiveYears=0}else if(defensiveYears>0){withdrawal=P*.04;defensiveYears--}else if(positiveYears>=2&&balance>P*.60){withdrawal=P*.12;positiveYears=0}else withdrawal=P*.12}else withdrawal=P*Math.min(.05,Math.max(.04,(previousReturn-7)/100));if(balance<=P*.30){emergency=true;withdrawal=P*.03}}}}withdrawal=Math.max(0,Math.min(withdrawal,balance));const end=(balance-withdrawal)*(1+ret);total+=withdrawal;rows.push({year,age,ret,withdrawal,end,target,upper,lower});balance=end;previousWithdrawal=withdrawal}return{rows,end:balance,total}}
+function seededRandom(seed){
+  let state=(seed>>>0)||1;
+  return function(){state=(Math.imul(1664525,state)+1013904223)>>>0;return state/4294967296;};
+}
+function normalRandom(rng){
+  let u=0,v=0;
+  while(u===0)u=rng();
+  while(v===0)v=rng();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+function mcSuccessRate(P,horizon,mean,sd,initialWithdrawal,seed){
+  const paths=1000,inflation=0.0254,rng=seededRandom(seed);let successes=0;
+  for(let p=0;p<paths;p++){
+    let balance=P,withdrawal=initialWithdrawal,alive=true;
+    for(let y=0;y<horizon;y++){
+      const ret=mean+sd*normalRandom(rng);
+      balance-=withdrawal;
+      if(balance<=0){alive=false;break;}
+      balance*=1+ret;
+      withdrawal*=1+inflation;
+    }
+    if(alive)successes++;
   }
+  return successes/paths;
+}
+function mcInitial(P,horizon,mean,sd,target,seed){
+  if(P<=0)return 0;
+  let lo=0,hi=P*.25;
+  for(let i=0;i<28;i++){
+    const mid=(lo+hi)/2;
+    const rate=mcSuccessRate(P,horizon,mean,sd,mid,seed);
+    if(rate>=target)lo=mid;else hi=mid;
+  }
+  return lo;
 }
 
-document.querySelectorAll('.horizon-buttons button').forEach(btn=>btn.addEventListener('click',()=>{years=Number(btn.dataset.years);document.querySelectorAll('.horizon-buttons button').forEach(b=>b.classList.toggle('active',b===btn));populateYears();render();updateMethodView()}));$('incomeNeeded').addEventListener('input',render);$('startAge').addEventListener('input',render);$('startYear').addEventListener('change',render);$('methodSelect').addEventListener('change',updateMethodView);populateYears();render();updateMethodView();
-</script>
-</body>
-</html>
+function firstNonzero(rows){const x=rows.find(r=>r.withdrawal>0);return x?x.withdrawal:0}
+function renderTop(){const income=Math.max(0,Number($('incomeNeeded').value)||0),P=income*25,start=Number($('startYear').value),age=Number($('startAge').value),target=Number($('mcTarget').value)/100;if(!Number.isFinite(age)||age<40||age>100){$('error').textContent='Enter a starting retirement age from 40 to 100.';return}$('error').textContent='';$('startingPortfolio').textContent=money(P);$('detailPortfolio').textContent=money(P);$('analysisPeriod').textContent=start+' – '+(start+years-1)+' ('+years+' years)';$('detailPeriod').textContent=(start)+' – '+(start+29);$('horizonTitle').textContent=years+'-Year Time Horizon';$('mcTargetBanner').textContent=(target*100)+'% success';
+const A=simulate(start,P,'a'),B=simulate(start,P,'b'),C=simulate(start,P,'c');const mc60=mcInitial(P,years,.0808,.11,target,20260929+years+1),mcs=mcInitial(P,years,.123475,.195764,target,20260929+years+2);
+$('strategyCards').innerHTML=`<article class="strategy strategy-a"><span class="tag">Historical sequence</span><h3>4% Rule</h3><div class="strategy-desc">Initial withdrawal is 4% of the starting portfolio, then the same dollar amount is withdrawn each year in this historical illustration.</div><div class="metrics"><div><div class="metric-label">Initial withdrawal</div><div class="metric">${money(P*.04)}</div></div><div><div class="metric-label">Ending balance</div><div class="metric">${money(A.end)}</div></div><div><div class="metric-label">Total withdrawals</div><div class="metric">${money(A.total)}</div></div></div></article>
+<article class="strategy strategy-b"><span class="tag">Historical sequence</span><h3>Vanguard-Style Dynamic Spending</h3><div class="strategy-desc">Spending adjusts with portfolio performance, with annual increases capped at 5% and decreases capped at 2.5%.</div><div class="metrics"><div><div class="metric-label">Initial withdrawal</div><div class="metric">${money(P*.04)}</div></div><div><div class="metric-label">Ending balance</div><div class="metric">${money(B.end)}</div></div><div><div class="metric-label">Total withdrawals</div><div class="metric">${money(B.total)}</div></div></div></article>
+<article class="strategy strategy-c"><span class="tag">Historical sequence</span><h3>Early Retirement Lifestyle Strategy</h3><div class="strategy-desc">Higher potential spending during the first 10 years, with adaptive reductions during significant market declines and a more conservative range thereafter.</div><div class="metrics"><div><div class="metric-label">First planned withdrawal</div><div class="metric">${money(firstNonzero(C.rows))}</div><div class="metric-sub">Year 1 is $0 under the existing rules.</div></div><div><div class="metric-label">Ending balance</div><div class="metric">${money(C.end)}</div></div><div><div class="metric-label">Total withdrawals</div><div class="metric">${money(C.total)}</div></div></div></article>
+<article class="strategy strategy-d"><span class="tag">Illustrative Monte Carlo</span><h3>Monte Carlo — 60/40 Portfolio</h3><div class="strategy-desc">Probability-based model using a diversified 60/40 return assumption and simulated annual market paths.</div><div class="metrics"><div><div class="metric-label">Initial withdrawal</div><div class="metric">${money(mc60)}</div><div class="metric-sub">At ${target*100}% modeled success</div></div><div><div class="metric-label">Horizon</div><div class="metric">${years} years</div></div></div><div class="mc-assumption">8.08% mean return · 11% SD · 2.54% inflation · 1,000 simulations</div></article>
+<article class="strategy strategy-e"><span class="tag">Illustrative Monte Carlo</span><h3>Monte Carlo — S&amp;P 500</h3><div class="strategy-desc">Probability-based model using the S&amp;P 500 historical return characteristics in this calculator.</div><div class="metrics"><div><div class="metric-label">Initial withdrawal</div><div class="metric">${money(mcs)}</div><div class="metric-sub">At ${target*100}% modeled success</div></div><div><div class="metric-label">Horizon</div><div class="metric">${years} years</div></div></div><div class="mc-assumption">12.35% mean return · 19.58% SD · 2.54% inflation · 1,000 simulations</div></article>`;
+$('warning').innerHTML=years===10?'<div class="warning"><strong>10-year view:</strong> Shorter horizons can produce substantially higher withdrawal amounts in the Monte Carlo models. For a useful stress test, consider reviewing the 2000–2009 historical sequence below by selecting 2000 as the start year.</div>':'';renderDetail();}
+function renderDetail(){const method=$('methodSelect').value,start=Number($('startYear').value),P=Math.max(0,Number($('incomeNeeded').value)||0)*25;$('detailPeriod').textContent=start+' – '+(start+29);$('detailPortfolio').textContent=money(P);if(method==='d'||method==='e'){const is60=method==='d';$('methodHelp').textContent='Monte Carlo is calculated in the main comparison above. This detailed section links to external planning tools instead of pretending to reproduce a full planning engine.';$('detailArea').innerHTML=`<div class="referral"><h3>${is60?'Monte Carlo — 60/40 Portfolio':'Monte Carlo — S&amp;P 500'}: use a full Monte Carlo planning tool</h3><p>This bottom section is intentionally not a second personalized Monte Carlo engine. If you want to explore a more comprehensive Monte Carlo plan—including additional household assumptions—these tools can provide that analysis.</p><div class="ref-links"><a href="https://www.boldin.com/" target="_blank" rel="noopener">Boldin</a><a href="https://projectionlab.com/" target="_blank" rel="noopener">ProjectionLab</a><a href="https://www.empower.com/tools/retirement-planner" target="_blank" rel="noopener">Empower Retirement Planner</a></div></div>`;return}
+$('methodHelp').textContent=method==='a'?'Historical 30-year calculation using the 4% Rule.':method==='b'?'Historical 30-year calculation using the Vanguard-style dynamic-spending rules.':'Historical 30-year calculation using the existing Early Retirement Lifestyle Strategy rules.';const R=simulate(start,P,method);let title=method==='a'?'4% Rule':method==='b'?'Vanguard-Style Dynamic Spending':'Early Retirement Lifestyle Strategy';let html='<div class="results"><div class="results-head"><h2>'+title+' — Year-by-Year Results</h2><span>S&amp;P 500 total returns (including dividends)</span></div><div class="table-wrap"><table><thead><tr><th>Year</th><th>Age</th><th>S&amp;P 500 Return</th><th>Withdrawal</th><th>Ending Balance</th>';if(method==='b')html+='<th>4% Target</th><th>+5% Limit</th><th>−2.5% Limit</th>';html+='</tr></thead><tbody>';for(const r of R.rows){html+=`<tr><td>${r.year}</td><td>${r.age}</td><td>${pct(r.ret)}</td><td>${money(r.withdrawal)}</td><td>${money(r.end)}</td>`;if(method==='b')html+=`<td>${r.target==null?'—':money(r.target)}</td><td>${r.upper==null?'—':money(r.upper)}</td><td>${r.lower==null?'—':money(r.lower)}</td>`;html+='</tr>'}html+=`<tr class="ending-row"><td>Ending Balance</td><td>${R.rows[R.rows.length-1].age}</td><td>—</td><td>—</td><td>${money(R.end)}</td>`;if(method==='b')html+='<td colspan="3">—</td>';html+='</tr></tbody></table></div></div>'; $('detailArea').innerHTML=html}
+
+document.querySelectorAll('.horizon-buttons button').forEach(btn=>btn.addEventListener('click',()=>{years=Number(btn.dataset.years);document.querySelectorAll('.horizon-buttons button').forEach(b=>b.classList.toggle('active',b===btn));populateYears();renderTop()}));$('incomeNeeded').addEventListener('input',renderTop);$('startAge').addEventListener('input',renderTop);$('startYear').addEventListener('change',renderTop);$('mcTarget').addEventListener('change',renderTop);$('methodSelect').addEventListener('change',renderDetail);populateYears();renderTop();
+</script></body></html>
