@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1f2937">
+<title>Popcorn Inventory Calculator</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 20px 14px 40px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+    background: #f5f6f8;
+    color: #1f2937;
+  }
+  .calculator {
+    width: 100%;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+  h1 {
+    margin: 0 0 18px;
+    text-align: center;
+    font-size: 25px;
+    line-height: 1.2;
+  }
+  .section {
+    background: white;
+    border: 1px solid #d9dde3;
+    border-radius: 14px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 165px;
+    gap: 12px;
+    align-items: center;
+    padding: 8px 0;
+  }
+  label {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  input {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid #b9c0ca;
+    border-radius: 9px;
+    padding: 9px 11px;
+    background: white;
+    color: #111827;
+    font-size: 17px;
+    text-align: right;
+  }
+  input:focus {
+    outline: 3px solid #dbeafe;
+    border-color: #2563eb;
+  }
+  input.locked {
+    background: #eef0f3;
+    color: #5f6875;
+  }
+  .calculated {
+    font-size: 18px;
+    font-weight: 700;
+    text-align: right;
+  }
+  .formula {
+    border-top: 1px solid #e1e4e8;
+    margin-top: 8px;
+    padding-top: 12px;
+  }
+  .final {
+    background: #1f2937;
+    color: white;
+    border-radius: 14px;
+    padding: 18px 16px;
+    margin-top: 4px;
+  }
+  .final .row { padding: 6px 0; }
+  .final label { color: white; }
+  .final-value {
+    font-size: 28px;
+    font-weight: 800;
+    text-align: right;
+  }
+  .bags-value {
+    font-size: 23px;
+    font-weight: 800;
+    text-align: right;
+  }
+  .note {
+    margin-top: 10px;
+    text-align: right;
+    font-size: 13px;
+    color: #cbd5e1;
+  }
+  .error {
+    color: #b42318;
+    font-size: 13px;
+    text-align: right;
+    min-height: 18px;
+    margin-top: 8px;
+  }
+  @media (max-width: 430px) {
+    .row { grid-template-columns: minmax(0, 1fr) 130px; }
+    .final-value { font-size: 24px; }
+  }
+
+  .home-link {
+    display: block;
+    width: fit-content;
+    margin: 34px auto 0;
+    padding: 10px 16px;
+    border-radius: 9px;
+    background: #ffffff;
+    border: 1px solid #b9c0ca;
+    color: #1f2937;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .home-link:hover { background: #f0f2f5; }
+  .home-link:focus { outline: 3px solid #dbeafe; outline-offset: 2px; }
+</style>
+</head>
+<body>
+<main class="calculator">
+  <h1>Popcorn Inventory Calculator</h1>
+
+  <section class="section">
+    <div class="section-title">Sales</div>
+
+    <div class="row">
+      <label for="sales">Sales from Dashboard</label>
+      <input id="sales" type="number" inputmode="numeric" min="0" step="1" value="80096">
+    </div>
+
+    <div class="row">
+      <label for="hhSales">Heroes &amp; Helpers</label>
+      <input id="hhSales" type="number" inputmode="numeric" min="0" step="1" value="2033">
+    </div>
+
+    <div class="row">
+      <label for="online">Online</label>
+      <input id="online" type="number" inputmode="numeric" min="0" step="1" value="1823">
+    </div>
+
+    <div class="row formula">
+      <label>Actual Popcorn Sales</label>
+      <div id="actualSales" class="calculated">76,240</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-title">Retail Orders</div>
+
+    <div class="row">
+      <label for="orders">Retail Orders</label>
+      <input id="orders" type="number" inputmode="numeric" min="0" step="1" value="86593">
+    </div>
+
+    <div class="row">
+      <label for="hhOrders">Heroes &amp; Helpers</label>
+      <input id="hhOrders" class="locked" type="number" readonly aria-readonly="true" value="2033">
+    </div>
+
+    <div class="row formula">
+      <label>Actual Popcorn Orders Owed</label>
+      <div id="actualOrders" class="calculated">84,560</div>
+    </div>
+  </section>
+
+  <section class="final">
+    <div class="row">
+      <label>Total Inventory Outstanding</label>
+      <div id="inventory" class="final-value">8,320</div>
+    </div>
+
+    <div class="row formula">
+      <label>Total Number of Bags Outstanding</label>
+      <div id="bags" class="bags-value">416</div>
+    </div>
+
+    <div class="note">Inventory Outstanding ÷ 20 = Bags Outstanding</div>
+    <div id="error" class="error" aria-live="polite"></div>
+    <a class="home-link" href="https://thenextstepswealth.com/">Back to The Next Steps Wealth Home</a>
+  </section>
+</main>
+
+<script>
+(function () {
+  const sales = document.getElementById("sales");
+  const hhSales = document.getElementById("hhSales");
+  const online = document.getElementById("online");
+  const orders = document.getElementById("orders");
+  const hhOrders = document.getElementById("hhOrders");
+
+  const actualSales = document.getElementById("actualSales");
+  const actualOrders = document.getElementById("actualOrders");
+  const inventory = document.getElementById("inventory");
+  const bags = document.getElementById("bags");
+  const error = document.getElementById("error");
+
+  function number(input) {
+    const value = Number(input.value);
+    return Number.isFinite(value) && value >= 0 ? value : 0;
+  }
+
+  function format(value) {
+    return Math.round(value).toLocaleString("en-US");
+  }
+
+  function update() {
+    const salesValue = number(sales);
+    const hhValue = number(hhSales);
+    const onlineValue = number(online);
+    const ordersValue = number(orders);
+
+    // Heroes & Helpers in the Retail Orders section always mirrors the
+    // Heroes & Helpers entered in the Sales section.
+    hhOrders.value = hhSales.value;
+
+    const salesActual = salesValue - hhValue - onlineValue;
+    const ordersActual = ordersValue - hhValue;
+    const inventoryValue = ordersActual - salesActual;
+    const bagsValue = inventoryValue / 20;
+
+    actualSales.textContent = format(salesActual);
+    actualOrders.textContent = format(ordersActual);
+    inventory.textContent = format(inventoryValue);
+
+    if (Number.isInteger(bagsValue)) {
+      bags.textContent = format(bagsValue);
+    } else {
+      bags.textContent = bagsValue.toLocaleString("en-US", {
+        maximumFractionDigits: 2
+      });
+    }
+
+    error.textContent = inventoryValue < 0
+      ? "Inventory outstanding is negative based on the entries above."
+      : "";
+  }
+
+  [sales, hhSales, online, orders].forEach(function (input) {
+    input.addEventListener("input", update);
+    input.addEventListener("change", update);
+  });
+
+  update();
+})();
+</script>
+</body>
+</html>
