@@ -11,9 +11,9 @@ h1{margin:0;font-family:Georgia,serif;font-size:clamp(2rem,6vw,3rem);color:#d493
 .board{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:4px}.cell{aspect-ratio:1;min-width:0;border:2px solid #ffffff8c;border-radius:12px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;box-shadow:inset 0 -4px 0 #00000016;transition:transform .12s;padding:0}.cell:hover{transform:translateY(-1px);filter:brightness(1.04)}.cell:focus-visible{outline:3px solid #30291f;outline-offset:2px}
 /* A recognizable egg silhouette: softly tapered crown, broad lower belly, rounded base. */
 .egg{width:88%;height:88%;display:block;position:relative;user-select:none;font-size:0;line-height:1;transform:rotate(0deg);filter:drop-shadow(0 2px 2px #0003)}
-.egg:before{content:"";position:absolute;inset:1% 4% 1%;clip-path:polygon(50% 0%,58% 2%,67% 8%,76% 19%,85% 33%,92% 48%,96% 63%,95% 75%,89% 86%,79% 94%,66% 99%,50% 100%,34% 99%,21% 94%,11% 86%,5% 75%,4% 63%,8% 48%,15% 33%,24% 19%,33% 8%,42% 2%);background:linear-gradient(115deg,#fffefb 0%,#f9f3e8 28%,#e9ddca 68%,#c7b59c 100%);box-shadow:inset -3px -4px 5px #8b785244;transform:rotate(3deg)}
-.egg:after{content:"";position:absolute;top:9%;left:23%;width:18%;height:35%;border-radius:50%;background:linear-gradient(180deg,#ffffffb8,#ffffff00);transform:rotate(22deg);pointer-events:none}
-.cell.gold .egg:before{background:linear-gradient(115deg,#fff4b0 0%,#f5d66a 14%,#d8a21b 29%,#ffdf55 42%,#b77c08 60%,#f3c63e 73%,#9c6c05 88%,#e3b72e 100%);border:1px solid #936505;box-shadow:inset 2px 2px 3px #fff8c988,inset -4px -5px 5px #6f4d0888;}
+.egg:before{content:"";position:absolute;inset:1% 4% 1%;clip-path:polygon(50% 0%,58% 1.5%,66% 6%,73% 13%,80% 23%,87% 35%,93% 49%,97% 63%,96% 74%,91% 84%,83% 92%,72% 97%,60% 100%,50% 100%,40% 100%,28% 97%,17% 92%,9% 84%,4% 74%,3% 63%,7% 49%,13% 35%,20% 23%,27% 13%,34% 6%,42% 1.5%);background:linear-gradient(112deg,#fffefa 0%,#f8f1e5 22%,#e5d6bf 57%,#bca889 100%);box-shadow:inset -3px -4px 5px #8b785244;transform:rotate(2deg)}
+.egg:after{content:"";position:absolute;top:9%;left:23%;width:18%;height:35%;border-radius:50%;background:linear-gradient(180deg,#ffffffed 0%,#fff4c8b0 28%,#ffffff00 100%);transform:rotate(22deg);pointer-events:none}
+.cell.gold .egg:before{background:linear-gradient(108deg,#9b5b05 0%,#d58a0b 9%,#fff2a0 18%,#f7c943 27%,#b97608 39%,#ffe879 49%,#fff8c9 55%,#d99a13 64%,#8e5204 75%,#f0bd32 84%,#a96306 93%,#ffdf63 100%);border:1px solid #8b5305;box-shadow:inset 3px 2px 4px #fff8d9dd,inset -4px -5px 6px #70400099,0 1px 1px #6f4306;}
 .cell.correct-pop .egg{animation:eggSpin .72s ease-out}@keyframes eggSpin{0%{transform:rotate(0) scale(.75)}45%{transform:rotate(200deg) scale(1.08)}100%{transform:rotate(360deg) scale(1)}}
 .cell.wrong-pop .egg{opacity:0}
 /* Wrong guess: egg splits into two visible shells along a jagged crack, then becomes a red X. */
@@ -30,7 +30,7 @@ button,select{font:inherit;font-weight:700;border:1px solid #cbd5e5;border-radiu
 .status{margin-top:11px;padding:10px;border-radius:10px;background:#edf2e9;min-height:54px;font-size:.91rem;line-height:1.4}.small{font-size:.8rem;color:#6b5b45}.levels{margin-top:16px;background:#fbfaf5;border:1px solid #d4ddd2;border-radius:16px;padding:13px}.levels h2{margin:0 0 8px;font-family:Georgia,serif}.levelgrid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px}.lvl{padding:7px 0;border-radius:8px;font-size:.82rem}.lvl.done{background:#dce9dc;border-color:#91ad98}.lvl.current{outline:3px solid #c78319}.lvl.locked{opacity:.4}.progressbar{height:9px;border-radius:10px;background:#e0e7dd;overflow:hidden;margin:8px 0}.progressbar span{display:block;height:100%;background:#c78319;width:0;transition:width .2s}.legend{font-size:.82rem;color:#6b5b45}
 @media(max-width:720px){.rule-guide{grid-template-columns:repeat(2,minmax(0,1fr))}main{padding:10px}.layout{display:flex;flex-direction:column}.side{order:0}.board-wrap{padding:5px}.board{gap:3px}.cell{border-radius:8px}.levelgrid{grid-template-columns:repeat(10,minmax(0,1fr));gap:3px}.lvl{padding:6px 0;font-size:.75rem}.side p{margin:6px 0}}
 </style></head><body><main>
-<header class="header"><h1>🥚 Golden Egg</h1><div class="sub">50 levels of colorful goose-egg logic</div><div class="version">v18</div></header>
+<header class="header"><h1>🥚 Golden Egg</h1><div class="sub">50 levels of colorful goose-egg logic</div><div class="version">v19</div></header>
 <div class="topbar"><span id="levelLabel" class="pill">Level 1 of 50</span><span id="difficulty" class="pill">Beginner</span><span id="progressText" class="pill">0 / 6 eggs</span><span id="scoreText" class="pill">Winnings: $0</span><span id="hearts" class="pill">❤️ ❤️ ❤️</span></div>
 <div class="layout"><section class="board-wrap"><div id="board" class="board" aria-label="Golden Egg puzzle board"></div></section>
 <aside class="side"><h2>How to play</h2>
@@ -47,7 +47,7 @@ button,select{font:inherit;font-weight:700;border:1px solid #cbd5e5;border-radiu
 <section class="levels"><h2>Level map</h2><div class="progressbar"><span id="progressBar"></span></div><div id="levelGrid" class="levelgrid"></div><p class="legend">Green = completed · Gold outline = current level · Dimmed = locked</p></section>
 </main>
 <script>
-const BUILD='v18';
+const BUILD='v19';
 const palette=['#9B83D6','#E58CB7','#A8CF91','#48B7B0','#E5C34E','#B9A078','#8FAEC7','#E5A05B'];
 const $=id=>document.getElementById(id);
 const sizeFor=k=>k<5?4:k<10?5:k<20?6:k<35?7:8;
