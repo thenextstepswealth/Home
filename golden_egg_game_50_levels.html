@@ -5,128 +5,70 @@
 :root{--ink:#34291d;--paper:#fff8e9;--green:#395a32;--gold:#d8a52c}*{box-sizing:border-box}
 body{margin:0;background:linear-gradient(135deg,#e7d8b8,#f8efdc);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,sans-serif}
 main{max-width:980px;margin:auto;padding:16px}.header{text-align:center;background:#4b633b;color:#fff3c9;border:4px solid #8d7040;border-radius:18px;padding:14px;box-shadow:0 5px 0 #b9a078}
-h1{margin:0;font-family:Georgia,serif;font-size:clamp(2rem,6vw,3rem);color:#ffdc75;text-shadow:1px 2px #34291d}.sub{margin-top:4px;color:#f8ebc9}
+h1{margin:0;font-family:Georgia,serif;font-size:clamp(2rem,6vw,3rem);color:#ffdc75;text-shadow:1px 2px #34291d}.sub{margin-top:4px;color:#f8ebc9}.version{display:inline-block;margin-top:7px;font-size:.68rem;letter-spacing:.04em;color:#d8d0b8;opacity:.8}
 .topbar{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:14px 0}.pill{background:#fff8e9;border:1px solid #d4bd8d;border-radius:999px;padding:7px 12px;font-weight:700}
-.layout{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:15px;align-items:start}.board-wrap{background:#a17b4d;padding:9px;border-radius:18px;border:3px solid #75542e;box-shadow:0 5px 0 #75542e}
+.layout{display:flex;flex-direction:column;gap:14px;align-items:stretch}.board-wrap{background:#a17b4d;padding:9px;border-radius:18px;border:3px solid #75542e;box-shadow:0 5px 0 #75542e}
 .board{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:4px}.cell{aspect-ratio:1;min-width:0;border:2px solid #ffffff8c;border-radius:12px;display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer;box-shadow:inset 0 -4px 0 #00000016;transition:transform .12s;padding:0}.cell:hover{transform:translateY(-1px);filter:brightness(1.04)}.cell:focus-visible{outline:3px solid #30291f;outline-offset:2px}
 .egg{font-size:clamp(.9rem,3.6vw,2rem);line-height:1;filter:drop-shadow(0 2px 1px #0003);user-select:none}.cell.gold .egg{filter:drop-shadow(0 2px 2px #6e4a0a);font-size:clamp(1rem,3.8vw,2.1rem)}.cell.marked:after{content:"×";position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(2rem,7vw,4rem);font-weight:900;color:#ffffff;text-shadow:0 2px 4px #49391e,0 0 2px #49391e}.cell.marked .egg{opacity:.7}.cell.clue{outline:3px solid #e5b839;outline-offset:-4px}.cell.selected{box-shadow:inset 0 0 0 3px white,0 0 0 2px #4a3922}
-.side{background:var(--paper);border:2px solid #d4bd8d;border-radius:16px;padding:14px}.side h2{font-family:Georgia,serif;margin:0 0 8px;font-size:1.35rem}.side p{font-size:.92rem;line-height:1.45}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
+.side{background:var(--paper);border:2px solid #d4bd8d;border-radius:16px;padding:14px}.board-wrap{width:100%}.board{width:100%;}.side h2{font-family:Georgia,serif;margin:0 0 8px;font-size:1.35rem}.side p{font-size:.92rem;line-height:1.45}.controls{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:10px}
 button,select{font:inherit;font-weight:700;border:1px solid #c5ad7e;border-radius:10px;padding:9px;background:#fffdf5;color:var(--ink);cursor:pointer}button:hover{filter:brightness(.97)}button.primary{background:var(--green);color:white;border-color:#284524}button:disabled{opacity:.45;cursor:not-allowed}
 .status{margin-top:11px;padding:10px;border-radius:10px;background:#f0e4c9;min-height:54px;font-size:.91rem;line-height:1.4}.small{font-size:.8rem;color:#6b5b45}.levels{margin-top:16px;background:#fff8e9;border:2px solid #d4bd8d;border-radius:16px;padding:13px}.levels h2{margin:0 0 8px;font-family:Georgia,serif}.levelgrid{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px}.lvl{padding:7px 0;border-radius:8px;font-size:.82rem}.lvl.done{background:#d8e8ce;border-color:#8da77c}.lvl.current{outline:3px solid #d8a52c}.lvl.locked{opacity:.4}.progressbar{height:9px;border-radius:10px;background:#e4d4b3;overflow:hidden;margin:8px 0}.progressbar span{display:block;height:100%;background:#63834e;width:0;transition:width .2s}.legend{font-size:.82rem;color:#6b5b45}
-@media(max-width:720px){main{padding:10px}.layout{grid-template-columns:1fr}.side{order:-1}.board-wrap{padding:5px}.board{gap:3px}.cell{border-radius:8px}.levelgrid{grid-template-columns:repeat(10,minmax(0,1fr));gap:3px}.lvl{padding:6px 0;font-size:.75rem}.side p{margin:6px 0}}
+@media(max-width:720px){main{padding:10px}.layout{display:flex;flex-direction:column}.side{order:0}.board-wrap{padding:5px}.board{gap:3px}.cell{border-radius:8px}.levelgrid{grid-template-columns:repeat(10,minmax(0,1fr));gap:3px}.lvl{padding:6px 0;font-size:.75rem}.side p{margin:6px 0}}
 </style></head><body><main>
-<header class="header"><h1>🥚 Golden Egg</h1><div class="sub">50 levels of colorful goose-egg logic</div></header>
-<div class="topbar"><span id="levelLabel" class="pill">Level 1 of 50</span><span id="difficulty" class="pill">Beginner</span><span id="progressText" class="pill">0 / 6 eggs</span></div>
+<header class="header"><h1>🥚 Golden Egg</h1><div class="sub">50 levels of colorful goose-egg logic</div><div class="version">v10</div></header>
+<div class="topbar"><span id="levelLabel" class="pill">Level 1 of 50</span><span id="difficulty" class="pill">Beginner</span><span id="progressText" class="pill">0 / 6 eggs</span><span id="scoreText" class="pill">Winnings: $0</span><span id="hearts" class="pill">❤️ ❤️ ❤️</span></div>
 <div class="layout"><section class="board-wrap"><div id="board" class="board" aria-label="Golden Egg puzzle board"></div></section>
 <aside class="side"><h2>How to play</h2>
 <p>Find one golden egg in every row, column, and color region. Golden eggs cannot touch horizontally, vertically, or diagonally.</p>
 <p><b>Single-tap an egg to put a big X directly over it. Tap that X again to place a golden egg; tap a golden egg again to clear it. The pale square keeps its region color throughout, so you can always track each color region. You do not need a separate mode or gold button.</p>
-<p><b>Auto X</b> marks positions ruled out by confirmed golden eggs. Hints point to a solution position. Finish a level to unlock the next.</p>
+<p><b>Auto X</b> marks positions ruled out by confirmed golden eggs. Hints point to a solution position. Early levels teach with one fixed golden egg and a separate single-square color-region clue; later levels rely more on deduction. Controls and instructions are below the full-width board. Finish a level to unlock the next.</p>
 <div class="controls"><button id="hintBtn">Hint</button><button id="undoBtn">Undo</button><button id="resetBtn">Restart level</button></div>
 <div class="status" id="status" role="status">Level 1: Find the forced starting egg, then use rows, columns, regions, and diagonals to deduce the rest.</div>
-<p class="small">Progress is saved in this browser on this device. Pale squares retain their region colors; A single tap puts a large X directly over the egg; the pale region-colored square stays unchanged. Puzzle uniqueness and difficulty still need solver-based verification.</p>
+<p class="small">Progress is saved in this browser on this device. Pale squares retain their region colors; Single tap = large X over the egg. Double-tap = attempt to place a golden egg and earn $100 if correct. The pale region-colored square stays unchanged. X marks do not cost hearts; incorrect golden-egg placements cost one heart. Board sizes grow from 4×4 to 8×8. Puzzle logic is designed for deduction; full uniqueness verification is not yet certified.</p>
 </aside></div>
 <section class="levels"><h2>Level map</h2><div class="progressbar"><span id="progressBar"></span></div><div id="levelGrid" class="levelgrid"></div><p class="legend">Green = completed · Gold outline = current level · Dimmed = locked</p></section>
 </main>
 <script>
+const BUILD='v10';
 const palette=['#eee5fb','#fce7eb','#e4f2fb','#e8f4e2','#fcf2cf','#fce9dc','#e0f4f0','#f7e4f6'];
-// Predefined valid row/column arrangements; adjacent rows' eggs are separated by at least two columns.
-const solutions=[
-[0,2,4,1,3,5],
-[0,2,4,1,5,3],
-[0,2,5,3,1,4],
-[0,3,1,4,2,5],
-[0,3,1,5,2,4],
-[0,3,5,1,4,2],
-[0,3,5,2,4,1],
-[0,4,1,3,5,2],
-[0,4,2,5,1,3],
-[0,4,2,5,3,1],
-[0,5,2,4,1,3],
-[0,5,3,1,4,2],
-[1,3,0,4,2,5],
-[1,3,0,5,2,4],
-[1,3,5,0,2,4],
-[1,3,5,0,4,2],
-[1,3,5,2,0,4],
-[1,3,5,2,4,0],
-[1,4,0,2,5,3],
-[1,4,0,3,5,2],
-[1,4,2,0,3,5],
-[1,4,2,0,5,3],
-[1,4,2,5,0,3],
-[1,4,2,5,3,0],
-[1,5,2,4,0,3],
-[1,5,3,0,2,4],
-[1,5,3,0,4,2],
-[2,0,3,5,1,4],
-[2,0,4,1,3,5],
-[2,0,4,1,5,3],
-[2,0,5,3,1,4],
-[2,4,0,3,1,5],
-[2,4,0,3,5,1],
-[2,4,0,5,1,3],
-[2,4,0,5,3,1],
-[2,4,1,3,0,5],
-[2,4,1,3,5,0],
-[2,4,1,5,0,3],
-[2,4,1,5,3,0],
-[2,5,0,3,1,4],
-[2,5,0,4,1,3],
-[2,5,1,3,0,4],
-[2,5,1,4,0,3],
-[2,5,3,0,4,1],
-[2,5,3,1,4,0],
-[3,0,2,4,1,5],
-[3,0,2,5,1,4],
-[3,0,4,1,5,2],
-[3,0,4,2,5,1],
-[3,0,5,1,4,2]
-];
-const difficulties=['Beginner','Beginner','Beginner','Beginner','Beginner','Beginner','Beginner','Beginner','Beginner','Beginner','Easy','Easy','Easy','Easy','Easy','Easy','Easy','Easy','Easy','Easy','Intermediate','Intermediate','Intermediate','Intermediate','Intermediate','Intermediate','Intermediate','Intermediate','Intermediate','Intermediate','Challenging','Challenging','Challenging','Challenging','Challenging','Challenging','Challenging','Challenging','Challenging','Challenging','Advanced','Advanced','Advanced','Advanced','Advanced','Advanced','Advanced','Advanced','Advanced','Advanced'];
-const $=id=>document.getElementById(id);let level=0,selected=1,cells=[],history=[],hints=3,completed=new Set(),unlocked=1,won=false,regions=[],solution=[];
-try{const s=JSON.parse(localStorage.getItem('goldenEggSave')||'{}');level=Math.min(49,Math.max(0,s.level||0));completed=new Set(s.completed||[]);unlocked=Math.max(1,s.unlocked||1)}catch(e){}
-function save(){try{localStorage.setItem('goldenEggSave',JSON.stringify({level,completed:[...completed],unlocked}))}catch(e){}}
-function makeRegions(sol,seed){
- const n=6, regs=Array(36).fill(-1), seedCells=new Set(sol.map((c,r)=>r*n+c));
- // Voronoi-like regions around the solution eggs; level seed changes the region silhouettes.
- for(let r=0;r<n;r++)for(let c=0;c<n;c++){
-  const i=r*n+c;if(seedCells.has(i)){regs[i]=r;continue}
-  let best=1,score=Infinity;
-  for(let rr=1;rr<n;rr++){
-   const cc=sol[rr],d=Math.abs(r-rr)*(1+((seed+rr)%3)*.12)+Math.abs(c-cc)*(1+((seed+rr*2)%3)*.1);
-   if(d<score){score=d;best=rr}
-  }
-  regs[i]=best;
- }
- // Region 0 is intentionally a singleton starting clue.
- for(let i=0;i<36;i++)if(i!==sol[0]&&regs[i]===0)regs[i]=1;
- regs[sol[0]]=0;
- return regs;
+const $=id=>document.getElementById(id);
+const sizeFor=k=>k<5?4:k<10?5:k<20?6:k<35?7:8;
+const difficulties=Array.from({length:50},(_,k)=>k<5?'Beginner':k<10?'Beginner':k<20?'Easy':k<35?'Intermediate':'Advanced');
+function makeSolution(n,seed){
+ // Deterministic search for a permutation with no adjacent/diagonal eggs.
+ const out=Array(n).fill(-1),used=new Set();
+ function dfs(r){if(r===n)return true;let opts=Array.from({length:n},(_,i)=>(i+(seed*3+r*2)%n)%n);
+  for(const c of opts){if(used.has(c))continue;if(r&&Math.abs(out[r-1]-c)<=1)continue;out[r]=c;used.add(c);if(dfs(r+1))return true;used.delete(c);out[r]=-1;}return false;}
+ return dfs(0)?out:null;
 }
-function initLevel(k){
- level=k;solution=solutions[k];regions=makeRegions(solution,k);cells=Array(36).fill('unknown');history=[];hints=3;won=false;selected=solution[0];cells[selected]='gold';render();renderLevels();save();
- $('levelLabel').textContent=`Level ${k+1} of 50`; $('difficulty').textContent=difficulties[k];say(`Level ${k+1}: Start with the single-square color region at row 1, column ${solution[0]+1}.`);
-}
+function makePuzzle(k){const n=sizeFor(k),solution=makeSolution(n,k+1);const regions=Array(n*n).fill(-1);
+ // Each solution cell seeds its own color region. Other cells join the nearest seed.
+ for(let r=0;r<n;r++)for(let c=0;c<n;c++){let best=0,dist=Infinity;for(let rr=0;rr<n;rr++){let d=Math.abs(r-rr)*1.05+Math.abs(c-solution[rr]);if(d<dist){dist=d;best=rr;}}regions[r*n+c]=best;}
+ // The second row's solution cell is a singleton color region: a separate forced move.
+ const forced=1*n+solution[1];for(let i=0;i<n*n;i++){if(i===forced)continue;if(regions[i]===1){let r=Math.floor(i/n),c=i%n,best=0,dist=Infinity;for(let rr=0;rr<n;rr++){if(rr===1)continue;let d=Math.abs(r-rr)*1.05+Math.abs(c-solution[rr]);if(d<dist){dist=d;best=rr;}}regions[i]=best;}}
+ regions[forced]=1;
+ // One fixed starting egg; the singleton-region egg is a separate forced deduction.
+ const clues=[solution[0]];
+ return {n,solution,regions,clues};}
+let level=0,selected=0,cells=[],history=[],hints=3,hearts=3,score=0,completed=new Set(),unlocked=1,won=false,puzzle;
+try{const s=JSON.parse(localStorage.getItem('goldenEggSave')||'{}');level=Math.min(49,Math.max(0,s.level||0));completed=new Set(s.completed||[]);unlocked=Math.max(1,s.unlocked||1);score=Math.max(0,s.score||0)}catch(e){}
+function save(){try{localStorage.setItem('goldenEggSave',JSON.stringify({level,completed:[...completed],unlocked,score}))}catch(e){}}
 function say(s){$('status').textContent=s}
-function snap(){history.push({cells:[...cells],selected});if(history.length>100)history.shift()}
-function render(){const b=$('board');b.innerHTML='';b.style.setProperty('--n',6);
- for(let r=0;r<6;r++)for(let c=0;c<6;c++){let i=r*6+c,el=document.createElement('button');el.className='cell';el.style.background=palette[regions[i]%palette.length];if(cells[i]==='gold')el.classList.add('gold');if(cells[i]==='x')el.classList.add('marked');if(i===solution[0])el.classList.add('clue');if(i===selected)el.classList.add('selected');el.setAttribute('aria-label',`Row ${r+1}, column ${c+1}, ${cells[i]==='gold'?'golden egg':cells[i]==='x'?'marked impossible':'unrevealed egg'}`);let egg=document.createElement('span');egg.className='egg';egg.textContent='🥚';el.appendChild(egg);el.addEventListener('click',()=>{selected=i;if(i===solution[0]){say('This is the fixed starting golden egg.');render();return}if(won){say('Level complete! Choose the next unlocked level below.');render();return}
- if(cells[i]==='unknown'){snap();cells[i]='x';render();say('X marked. Tap again to try a golden egg.');return}
- if(cells[i]==='x'){const err=conflict(i);if(err){say(err+' Your X is unchanged; tap again to clear it.');return}snap();cells[i]='gold';autoEliminate(i);render();if(solution.every((col,rr)=>cells[rr*6+col]==='gold')){won=true;completed.add(level);unlocked=Math.max(unlocked,Math.min(50,level+2));save();renderLevels();say(`🎉 Level ${level+1} complete! ${level<49?'The next level is unlocked.':'You completed all 50 levels!'}`)}else say('Golden egg placed! Impossible positions are marked automatically.');return}
- if(cells[i]==='gold'){snap();cells[i]='unknown';render();say('Golden egg removed. Tap again to mark X.');return}
-});b.appendChild(el)}
- $('progressText').textContent=`${cells.filter(v=>v==='gold').length} / 6 golden eggs`;
+function isClue(i){return puzzle.clues.includes(i)}
+function snap(){history.push({cells:[...cells],selected,score,hearts,won});if(history.length>100)history.shift()}
+function initLevel(k){level=k;puzzle=makePuzzle(k);cells=Array(puzzle.n*puzzle.n).fill('unknown');history=[];hints=3;hearts=3;won=false;selected=puzzle.clues[0];for(const i of puzzle.clues)cells[i]='gold';render();renderLevels();save();$('levelLabel').textContent=`Level ${k+1} of 50`; $('difficulty').textContent=`${difficulties[k]} · ${puzzle.n}×${puzzle.n}`;say(k<5?`Level ${k+1}: One golden egg is fixed. A different color region contains just one square, making that second egg a guaranteed move. Then use the rules to deduce the rest.`:`Level ${k+1}: Use rows, columns, color regions, and the no-touching rule to find every golden egg.`)}
+function conflict(i){const n=puzzle.n,r=Math.floor(i/n),c=i%n,reg=puzzle.regions[i];for(let j=0;j<cells.length;j++){if(j===i||cells[j]!=='gold')continue;let rr=Math.floor(j/n),cc=j%n;if(rr===r)return 'There is already a golden egg in this row.';if(cc===c)return 'There is already a golden egg in this column.';if(puzzle.regions[j]===reg)return 'There is already a golden egg in this color region.';if(Math.abs(rr-r)<=1&&Math.abs(cc-c)<=1)return 'Golden eggs cannot touch, including diagonally.'}if(puzzle.solution[r]!==c)return 'That is not a solution position for this puzzle. Use the clues and Hint to find the logical move.';return ''}
+function autoEliminate(i){const n=puzzle.n,r=Math.floor(i/n),c=i%n,reg=puzzle.regions[i];for(let rr=0;rr<n;rr++)for(let cc=0;cc<n;cc++){let j=rr*n+cc;if(j===i||cells[j]==='gold')continue;if(rr===r||cc===c||puzzle.regions[j]===reg||(Math.abs(rr-r)<=1&&Math.abs(cc-c)<=1)){if(cells[j]==='unknown')cells[j]='x'}}}
+function finishCheck(){const n=puzzle.n;if(puzzle.solution.every((col,r)=>cells[r*n+col]==='gold')){won=true;completed.add(level);unlocked=Math.max(unlocked,Math.min(50,level+2));save();renderLevels();say(`🎉 Level ${level+1} complete! ${level<49?'The next level is unlocked.':'You completed all 50 levels!'}`);return true}return false}
+function render(){const n=puzzle.n,b=$('board');b.innerHTML='';b.style.setProperty('--n',n);b.style.gridTemplateColumns=`repeat(${n},minmax(0,1fr))`;
+ for(let r=0;r<n;r++)for(let c=0;c<n;c++){let i=r*n+c,el=document.createElement('button');el.className='cell';el.style.background=palette[puzzle.regions[i]%palette.length];if(cells[i]==='gold')el.classList.add('gold');if(cells[i]==='x')el.classList.add('marked');if(isClue(i))el.classList.add('clue');if(i===selected)el.classList.add('selected');el.setAttribute('aria-label',`Row ${r+1}, column ${c+1}, ${cells[i]==='gold'?'golden egg':cells[i]==='x'?'marked X':'unrevealed egg'}`);let egg=document.createElement('span');egg.className='egg';egg.textContent='🥚';el.appendChild(egg);let tapTimer=null;
+ el.addEventListener('click',()=>{if(tapTimer)clearTimeout(tapTimer);tapTimer=setTimeout(()=>{tapTimer=null;selected=i;if(isClue(i)){say('This starting golden egg is a fixed clue.');render();return}if(won){say('Level complete! Choose the next unlocked level below.');render();return}snap();if(cells[i]==='unknown'){cells[i]='x';say('X mark added. Double-tap to try a golden egg.')}else if(cells[i]==='x'){cells[i]='unknown';say('X mark cleared.')}else{cells[i]='unknown';say('Golden egg cleared.')}render()},260)});
+ el.addEventListener('dblclick',ev=>{ev.preventDefault();if(tapTimer)clearTimeout(tapTimer);tapTimer=null;selected=i;if(isClue(i)){say('This starting golden egg is a fixed clue.');return}if(won)return;if(hearts<=0){say('No hearts left. Restart this level to try again.');return}const err=conflict(i);if(err){hearts=Math.max(0,hearts-1);cells[i]='unknown';render();say('❌ Incorrect golden-egg placement. '+err+' You lost a heart.');return}snap();cells[i]='gold';score+=100;autoEliminate(i);render();save();if(!finishCheck())say('🥚 Correct! +$100. Ruled-out positions have been marked with X.');});b.appendChild(el)}
+ $('progressText').textContent=`${cells.filter(v=>v==='gold').length} / ${n} eggs`; $('hearts').textContent='❤️ '.repeat(hearts).trim()||'No hearts';$('scoreText').textContent=`Winnings: $${score}`;
 }
-function conflict(i){let r=Math.floor(i/6),c=i%6,reg=regions[i];for(let j=0;j<36;j++){if(j===i||cells[j]!=='gold')continue;let rr=Math.floor(j/6),cc=j%6;if(rr===r)return 'There is already a golden egg in this row.';if(cc===c)return 'There is already a golden egg in this column.';if(regions[j]===reg)return 'There is already a golden egg in this color region.';if(Math.abs(rr-r)<=1&&Math.abs(cc-c)<=1)return 'Golden eggs cannot touch, including diagonally.'}if(solution[r]!==c)return 'That is not a golden-egg position in this level. Try another deduction or use Hint.';return ''}
-function autoEliminate(i){let r=Math.floor(i/6),c=i%6,reg=regions[i];for(let rr=0;rr<6;rr++)for(let cc=0;cc<6;cc++){let j=rr*6+cc;if(j===i||cells[j]==='gold')continue;if(rr===r||cc===c||regions[j]===reg||(Math.abs(rr-r)<=1&&Math.abs(cc-c)<=1)){if(cells[j]==='unknown')cells[j]='x'}}}
-function place(){if(won)return;if(selected===solution[0]){say('That golden egg is the starting clue and cannot be changed.');return}let e=conflict(selected);if(e){say(e);return}snap();cells[selected]='gold';let r=Math.floor(selected/6),c=selected%6,reg=regions[selected];for(let rr=0;rr<6;rr++)for(let cc=0;cc<6;cc++){let j=rr*6+cc;if(j===selected||cells[j]==='gold')continue;if(rr===r||cc===c||regions[j]===reg||(Math.abs(rr-r)<=1&&Math.abs(cc-c)<=1))if(cells[j]==='unknown')cells[j]='x'}render();if(solution.every((col,rr)=>cells[rr*6+col]==='gold')){won=true;completed.add(level);unlocked=Math.max(unlocked,Math.min(50,level+2));save();renderLevels();say(`🎉 Level ${level+1} complete! You found all six golden eggs. ${level<49?'The next level is unlocked.':'You completed all 50 levels!'}`)}else say('Correct! Positions ruled out by this egg have been marked X. Keep going.')}
-function mark(){if(selected===solution[0]){say('The starting clue cannot be marked.');return}if(cells[selected]==='gold'){say('Use Undo if you want to remove your last placement.');return}snap();cells[selected]=cells[selected]==='x'?'unknown':'x';render();say(cells[selected]==='x'?'Marked impossible.':'X mark cleared.')}
-function clearMark(){if(selected===solution[0]||cells[selected]==='gold'){say('The starting clue and gold placements cannot be cleared directly. Use Undo for your last placement.');return}snap();cells[selected]='unknown';render();say('Mark cleared.')}
-function hint(){if(!hints){say('No hints left on this level. Restart the level to reset them.');return}hints--;let target=-1;for(let r=0;r<6;r++){let i=r*6+solution[r];if(cells[i]!=='gold'){target=i;break}}if(target<0){say('All eggs are placed!');return}selected=target;render();say(`Hint (${hints} left): row ${Math.floor(target/6)+1}, column ${target%6+1} is a golden-egg position. Use row, column, region, and touching rules to reason it out.`)}
-function undo(){if(!history.length){say('Nothing to undo yet.');return}let s=history.pop();cells=s.cells;selected=s.selected;won=false;render();say('Last action undone.')}
+function hint(){if(!hints){say('No hints left on this level. Restart the level to reset hints.');return}hints--;let target=-1;for(let r=0;r<puzzle.n;r++){let i=r*puzzle.n+puzzle.solution[r];if(cells[i]!=='gold'){target=i;break}}if(target<0){say('All eggs are placed!');return}selected=target;render();say(`Hint (${hints} left): row ${Math.floor(target/puzzle.n)+1}, column ${target%puzzle.n+1} is a golden-egg position. Check the row, column, color region, and neighboring cells.`)}
+function undo(){if(!history.length){say('Nothing to undo yet.');return}let s=history.pop();cells=s.cells;selected=s.selected;score=s.score;hearts=s.hearts;won=s.won;save();render();renderLevels();say('Last action undone.')}
 function restart(){initLevel(level)}
-function renderLevels(){let g=$('levelGrid');g.innerHTML='';for(let i=0;i<50;i++){let b=document.createElement('button');b.className='lvl';b.textContent=i+1;if(completed.has(i))b.classList.add('done');if(i===level)b.classList.add('current');if(i>=unlocked)b.classList.add('locked');b.disabled=i>=unlocked;b.title=`Level ${i+1} · ${difficulties[i]}`;b.addEventListener('click',()=>initLevel(i));g.appendChild(b)}$('progressBar').style.width=(completed.size/50*100)+'%'}
-$('hintBtn').addEventListener('click',hint);$('undoBtn').addEventListener('click',undo);$('resetBtn').addEventListener('click',restart);
-initLevel(level);
+function renderLevels(){let g=$('levelGrid');g.innerHTML='';for(let i=0;i<50;i++){let b=document.createElement('button');b.className='lvl';b.textContent=i+1;if(completed.has(i))b.classList.add('done');if(i===level)b.classList.add('current');if(i>=unlocked)b.classList.add('locked');b.disabled=i>=unlocked;b.title=`Level ${i+1} · ${difficulties[i]} · ${sizeFor(i)}×${sizeFor(i)}`;b.addEventListener('click',()=>initLevel(i));g.appendChild(b)}$('progressBar').style.width=(completed.size/50*100)+'%'}
+$('hintBtn').addEventListener('click',hint);$('undoBtn').addEventListener('click',undo);$('resetBtn').addEventListener('click',restart);initLevel(level);
 </script></body></html>
