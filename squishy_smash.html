@@ -26,11 +26,18 @@
     linear-gradient(145deg,#e4f9f0,#d8edff 52%,#f8e2f1); background-size:80px 80px,110px 110px,90px 90px,auto; touch-action:manipulation; }
   .arena:before { content:""; position:absolute; inset:0; opacity:.35; pointer-events:none; background-image:radial-gradient(#fff 1px,transparent 1px); background-size:22px 22px; }
   .floor-label { position:absolute; bottom:10px; left:0; right:0; text-align:center; font-size:11px; font-weight:900; letter-spacing:2px; opacity:.38; pointer-events:none; }
-  .squishy { --c1:#ffb0c9; --c2:#fa5d99; position:absolute; width:clamp(84px,18vw,126px); height:clamp(84px,18vw,126px); border:0; padding:0; background:transparent; cursor:pointer; touch-action:manipulation; transform:translate(-50%,-50%); filter:drop-shadow(0 7px 0 #60416a2b); z-index:2; -webkit-tap-highlight-color:transparent; }
+  .squishy { --c1:#ffb0c9; --c2:#fa5d99; position:absolute; width:clamp(100px,21vw,150px); height:clamp(100px,21vw,150px); border:0; padding:0; background:transparent; cursor:pointer; touch-action:manipulation; transform:translate(-50%,-50%); animation:drift 2.2s ease-in-out infinite; filter:drop-shadow(0 7px 0 #60416a2b); z-index:2; -webkit-tap-highlight-color:transparent; }
   .squishy .body { position:absolute; inset:4px 5px 9px; border-radius:43% 57% 48% 52% / 48% 43% 57% 52%; background:
     radial-gradient(ellipse at 31% 19%,#ffffffed 0 5%,#ffffff60 11%,transparent 26%),
     radial-gradient(ellipse at 68% 78%,var(--c2) 0,transparent 49%),
-    linear-gradient(145deg,var(--c1),var(--c2)); box-shadow:inset -5px -8px 13px #6c24502a,inset 4px 5px 10px #ffffff90, 0 3px 0 #ffffff75; border:1px solid #ffffffa8; transition:filter .1s; animation:floaty 1.8s ease-in-out infinite; }
+    linear-gradient(145deg,var(--c1),var(--c2)); box-shadow:inset -5px -8px 13px #6c24502a,inset 4px 5px 10px #ffffff90, 0 3px 0 #ffffff75; border:1px solid #ffffffa8; transition:filter .1s; }
+  .squishy .toy-emoji { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:clamp(37px,8vw,55px); filter:drop-shadow(0 2px 1px #60416a22); pointer-events:none; z-index:1; }
+  .squishy.shape-apple .body { border-radius:44% 44% 48% 48% / 42% 42% 58% 58%; }
+  .squishy.shape-banana .body { border-radius:58% 42% 48% 52% / 35% 35% 65% 65%; transform:rotate(-28deg) scaleX(.82); }
+  .squishy.shape-strawberry .body { border-radius:45% 45% 55% 55% / 38% 38% 70% 70%; }
+  .squishy.shape-grapes .body { border-radius:45%; background:radial-gradient(circle at 28% 28%,#fff8 0 4%,transparent 20%),radial-gradient(circle at 35% 35%,var(--c1) 0 25%,transparent 26%),radial-gradient(circle at 65% 34%,var(--c2) 0 25%,transparent 26%),radial-gradient(circle at 50% 58%,var(--c1) 0 25%,transparent 26%),radial-gradient(circle at 29% 70%,var(--c2) 0 24%,transparent 25%),radial-gradient(circle at 70% 69%,var(--c1) 0 24%,transparent 25%),linear-gradient(145deg,var(--c1),var(--c2)); }
+  .squishy.shape-dumpling .body { border-radius:50% 50% 43% 43% / 48% 48% 52% 52%; }
+  .squishy.shape-meatball .body { border-radius:48% 52% 50% 50%; }
   .squishy .shine { position:absolute; width:24%; height:12%; border-radius:50%; background:#fff9; top:17%; left:18%; transform:rotate(-35deg); filter:blur(1px); pointer-events:none; }
   .face { position:absolute; inset:0; display:flex; justify-content:center; align-items:center; gap:13%; padding-top:10%; pointer-events:none; }
   .eye { width:8px; height:12px; border-radius:50%; background:#493348; box-shadow:inset 1px 1px 1px #fff7; }
@@ -43,7 +50,7 @@
   .squishy.squish-now .face { transform:scaleY(.68) translateY(10%); }
   .squishy.pop-out { animation:popout .22s ease-in forwards; pointer-events:none; }
   .squishy.pop-out .body { border-radius:50%; }
-  @keyframes floaty { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-5px) rotate(2deg)} }
+  @keyframes drift { 0%,100%{transform:translate(-50%,-50%) rotate(-3deg)} 25%{transform:translate(calc(-50% + var(--dx)),calc(-50% - 7px)) rotate(2deg)} 50%{transform:translate(calc(-50% - var(--dx)),calc(-50% - 12px)) rotate(4deg)} 75%{transform:translate(calc(-50% + var(--dx)),calc(-50% - 3px)) rotate(-1deg)} }
   @keyframes splat { 0%{transform:translate(-50%,-50%) scale(1)} 35%{transform:translate(-50%,-50%) scale(1.24,.62)} 68%{transform:translate(-50%,-50%) scale(.91,1.12)} 100%{transform:translate(-50%,-50%) scale(1)} }
   @keyframes splatBody { 0%{transform:scale(1)} 35%{transform:scale(1.14,.61)} 70%{transform:scale(.94,1.08)} 100%{transform:scale(1)} }
   @keyframes popout { to{transform:translate(-50%,-50%) scale(.1) rotate(25deg);opacity:0} }
@@ -81,7 +88,7 @@
       <div class="panel">
         <div class="mascot">🍡</div>
         <h1 id="panelTitle">Ready to Squish?</h1>
-        <p id="panelText">You have 60 seconds. Keep squishing as new toys pop up! Every tap earns a point. Finish a round to visit the store and unlock new squishies.</p>
+        <p id="panelText">You have 60 seconds. Keep squishing as new toys pop up! Every tap earns a point. Finish a round to visit the store, unlock new shapes, and earn more points with pricier toys.</p>
         <button class="primary" id="startBtn">START ROUND 1</button>
         <button class="secondary" id="storeBtn">SQUISHY STORE · 0 POINTS</button>
         <button class="secondary" id="soundBtn">Sound effects: ON</button>
@@ -99,12 +106,13 @@
   const startBtn = document.getElementById('startBtn'), soundBtn = document.getElementById('soundBtn');
   const storeBtn = document.getElementById('storeBtn');
   const toys = [
-    {name:'Pink Mochi',emoji:'🍡',colors:['#ffd0df','#f56a9f'],price:0},
-    {name:'Mint Jelly',emoji:'🟢',colors:['#c8f7e8','#55cba9'],price:25},
-    {name:'Grape Puff',emoji:'🍇',colors:['#d9d0ff','#8871e8'],price:50},
-    {name:'Peach Pop',emoji:'🍑',colors:['#ffe3a8','#f7a64c'],price:75},
-    {name:'Blue Cloud',emoji:'☁️',colors:['#c9e8ff','#69aee8'],price:100},
-    {name:'Berry Blob',emoji:'🫐',colors:['#f3d2ff','#c26bdd'],price:150}
+    {name:'Pink Mochi',emoji:'🍡',shape:'mochi',colors:['#ffd0df','#f56a9f'],price:0,points:1},
+    {name:'Apple Squish',emoji:'🍎',shape:'apple',colors:['#ffb3b8','#e63e52'],price:100,points:2},
+    {name:'Banana Bunch',emoji:'🍌',shape:'banana',colors:['#fff0a8','#e9c94f'],price:180,points:3},
+    {name:'Strawberry',emoji:'🍓',shape:'strawberry',colors:['#ffb0c9','#f02f62'],price:260,points:4},
+    {name:'Grape Cluster',emoji:'🍇',shape:'grapes',colors:['#d9c5ff','#8550c9'],price:380,points:5},
+    {name:'Dumpling',emoji:'🥟',shape:'dumpling',colors:['#ffe0b8','#d99a63'],price:520,points:7},
+    {name:'Meatball',emoji:'🧆',shape:'meatball',colors:['#d8b19a','#99604a'],price:700,points:9}
   ];
   let score=0, totalPoints=0, round=1, time=60, running=false, soundOn=true;
   let timer=null, spawnTimer=null, live=new Set(), audioCtx=null, endAt=0, owned=new Set([0]), selectedToy=0, storeOpen=false;
@@ -128,7 +136,7 @@
     startBtn.onclick=start;
     storeOpen=true;
     titleEl.textContent='Squishy Store';
-    textEl.innerHTML='<div class="wallet">Your points: '+totalPoints+'</div><div class="store-grid" id="storeGrid"></div><div style="font-size:12px;color:#75637e">Buy a squishy once, then choose it for future rounds.</div>';
+    textEl.innerHTML='<div class="wallet">Preparing for Round '+round+' · Your points: '+totalPoints+'</div><div class="store-grid" id="storeGrid"></div><div style="font-size:12px;color:#75637e">Buy a squishy once, then choose it for future rounds.</div>';
     startBtn.textContent='START ROUND '+round;
     startBtn.style.display='';storeBtn.style.display='none';soundBtn.style.display='';
     overlay.style.display='flex';
@@ -150,29 +158,32 @@
   function makeSquishy(){
     if(!running)return;
     const r=arena.getBoundingClientRect(),el=document.createElement('button');
-    el.className='squishy';el.setAttribute('aria-label','Squish for points');el.type='button';
+    el.className='squishy shape-'+toys[selectedToy].shape;el.setAttribute('aria-label','Squish for '+toys[selectedToy].points+' points');el.type='button';
     const toy=toys[selectedToy], [c1,c2]=toy.colors;
     el.style.setProperty('--c1',c1);el.style.setProperty('--c2',c2);
-    const size=Math.min(126,Math.max(84,r.width*.18));
-    const x=rand(size*.6,Math.max(size*.6,r.width-size*.6));
-    const y=rand(size*.65+18,Math.max(size*.65+18,r.height-size*.65-12));
-    el.style.left=x+'px';el.style.top=y+'px';
-    el.innerHTML='<span class="body"></span><span class="shine"></span><span class="face"><i class="eye"></i><i class="eye"></i></span><span class="cheek left"></span><span class="cheek right"></span><span class="mouth"></span>';
+    const size=Math.min(150,Math.max(100,r.width*.21));
+    let x=r.width/2,y=r.height/2;
+    for(let attempt=0;attempt<22;attempt++){
+      x=rand(size*.65,Math.max(size*.65,r.width-size*.65));
+      y=rand(size*.7+18,Math.max(size*.7+18,r.height-size*.7-12));
+      if(farEnough(x,y,size))break;
+    }
+    el.style.left=x+'px';el.style.top=y+'px';el.style.setProperty('--dx',rand(5,12)+'px');el.style.animationDelay=(-rand(0,2.2))+'s';
+    el.innerHTML='<span class="body"></span><span class="shine"></span><span class="toy-emoji">'+toy.emoji+'</span><span class="face"><i class="eye"></i><i class="eye"></i></span><span class="cheek left"></span><span class="cheek right"></span><span class="mouth"></span>';
     arena.appendChild(el);live.add(el);
     let taps=0,gone=false;
     const lifetime=Math.max(850,rand(1850,2600)-(round-1)*90);
     const remove=()=>{
       if(gone)return;gone=true;live.delete(el);el.classList.add('pop-out');
       setTimeout(()=>el.remove(),230);
-      // Replenish immediately when a toy leaves the arena.
-      if(running)setTimeout(()=>{if(running&&live.size<4)makeSquishy();},100);
+
     };
     el.addEventListener('pointerdown',e=>{
       e.preventDefault();if(!running||gone)return;
-      taps++;score++;totalPoints++;scoreEl.textContent=score;updateStoreButton();
+      taps++;score+=toy.points;totalPoints+=toy.points;scoreEl.textContent=score;updateStoreButton();
       el.classList.remove('squish-now');void el.offsetWidth;el.classList.add('squish-now');
       const b=el.getBoundingClientRect(),ar=arena.getBoundingClientRect();
-      const pts=document.createElement('div');pts.className='points-float';pts.textContent='+1';
+      const pts=document.createElement('div');pts.className='points-float';pts.textContent='+'+toy.points;
       pts.style.left=(b.left-ar.left+b.width/2)+'px';pts.style.top=(b.top-ar.top+12)+'px';arena.appendChild(pts);setTimeout(()=>pts.remove(),700);
       sound(390+Math.min(taps*35,300),.09,'triangle',.055);if(navigator.vibrate)navigator.vibrate(12);
       // A toy can be tapped repeatedly, but eventually pops away.
@@ -180,11 +191,23 @@
     });
     el._expiry=setTimeout(remove,lifetime);
   }
+  function farEnough(x,y,size){
+    for(const el of live){
+      const ex=parseFloat(el.style.left),ey=parseFloat(el.style.top);
+      const minDist=size*1.08;
+      if(Math.hypot(x-ex,y-ey)<minDist)return false;
+    }
+    return true;
+  }
   function fillArena(){
     const target=Math.min(5,3+Math.floor((round-1)/2));
     while(live.size<target)makeSquishy();
-    const pace=Math.max(380,850-(round-1)*65);
-    spawnTimer=setTimeout(()=>{if(running){if(live.size<target)makeSquishy();fillArena();}},pace);
+    const pace=Math.max(300,700-(round-1)*45);
+    spawnTimer=setTimeout(()=>{
+      if(!running)return;
+      if(live.size<target)makeSquishy();
+      fillArena();
+    },pace);
   }
   function start(){
     clearInterval(timer);clearTimeout(spawnTimer);live.forEach(el=>{clearTimeout(el._expiry);el.remove()});live.clear();
