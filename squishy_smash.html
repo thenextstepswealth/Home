@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Squishy Smash</title>
+<title>Squishy Smash v5.0</title>
 <style>
   :root { --ink:#392d4b; --pink:#ff75a8; --purple:#8065dc; --mint:#7fe0c3; --cream:#fff8ee; }
   * { box-sizing:border-box; }
@@ -84,7 +84,7 @@
 <body>
 <div class="game">
   <header>
-    <div><div class="brand">SQUISHY <span>SMASH!</span></div><div class="subtitle">Splat it. Pop it. Score big.</div><div class="version-tag">v4.0</div></div>
+    <div><div class="brand">SQUISHY <span>SMASH!</span></div><div class="subtitle">Splat it. Pop it. Score big.</div><div class="version-tag">v5.0</div></div>
     <div class="stats">
       <div class="stat"><small>SCORE</small><strong id="score">0</strong></div>
       <div class="stat"><small>TIME</small><strong id="time">60</strong></div><div class="stat"><small>ROUND</small><strong id="round">1</strong></div>
@@ -125,12 +125,14 @@
   let score=0, totalPoints=0, round=1, nextRound=1, time=60, running=false, soundOn=true;
   let timer=null, spawnTimer=null, live=new Set(), audioCtx=null, endAt=0, owned=new Set([0]), selectedToy=0, storeOpen=false;
   const rand=(a,b)=>Math.random()*(b-a)+a;
-  function sound(freq=330,duration=.08,type='sine',volume=.045){
+  function sound(freq=330,duration=.12,type='sine',volume=.18){
     if(!soundOn)return;
     try { audioCtx ||= new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended')audioCtx.resume();
       const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(freq,audioCtx.currentTime);
       o.frequency.exponentialRampToValueAtTime(Math.max(80,freq*.55),audioCtx.currentTime+duration);
-      g.gain.setValueAtTime(volume,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);
+      g.gain.setValueAtTime(Math.min(0.9, volume),audioCtx.currentTime);
+      g.gain.setValueAtTime(Math.min(0.9, volume),audioCtx.currentTime+Math.min(0.025,duration*.2));
+      g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);
       o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+duration);
     }catch(e){}
   }
@@ -193,9 +195,9 @@
       const b=el.getBoundingClientRect(),ar=arena.getBoundingClientRect();
       const pts=document.createElement('div');pts.className='points-float';pts.textContent='+'+toy.points;
       pts.style.left=(b.left-ar.left+b.width/2)+'px';pts.style.top=(b.top-ar.top+12)+'px';arena.appendChild(pts);setTimeout(()=>pts.remove(),700);
-      sound(390+Math.min(taps*35,300),.09,'triangle',.055);if(navigator.vibrate)navigator.vibrate(12);
+      sound(420+Math.min(taps*45,360),.14,'triangle',.48);if(navigator.vibrate)navigator.vibrate(12);
       // A toy can be tapped repeatedly, but eventually pops away.
-      if(taps>=Math.max(5,8-(round-1))){sound(720,.12,'sine',.04);remove();}
+      if(taps>=Math.max(5,8-(round-1))){sound(760,.18,'sine',.32);remove();}
     });
     el._expiry=setTimeout(remove,lifetime);
   }
@@ -227,14 +229,14 @@
   function finish(){
     running=false;clearInterval(timer);clearTimeout(spawnTimer);
     live.forEach(el=>{clearTimeout(el._expiry);el.remove()});live.clear();
-    sound(250,.2,'sine',.05);
+    sound(250,.25,'sine',.22);
     showOverlay('Round '+round+' Complete!', 'You squished <b>'+score+'</b> times and earned <b>'+score+'</b> points this round.<br><br>Total points to spend: <b>'+totalPoints+'</b><br>Visit the store to unlock toys, or continue to the next round.', 'NEXT: ROUND '+(round+1));
     startBtn.onclick=()=>{nextRound=round+1;openStore();};
   }
   // The button action changes between starting a round and advancing to the store.
   startBtn.onclick=start;
   storeBtn.addEventListener('click',openStore);
-  soundBtn.addEventListener('click',()=>{soundOn=!soundOn;soundBtn.textContent='Sound effects: '+(soundOn?'ON':'OFF');if(soundOn)sound(440,.08);});
+  soundBtn.addEventListener('click',()=>{soundOn=!soundOn;soundBtn.textContent='Sound effects: '+(soundOn?'ON':'OFF');if(soundOn)sound(620,.14,'triangle',.35);});
   // Store access between rounds; retain earned points and owned toys for this play session.
   updateStoreButton();
 })();
