@@ -14,6 +14,7 @@
   .brand { font-size:clamp(22px,5vw,34px); font-weight:1000; letter-spacing:-1.5px; line-height:1; }
   .brand span { color:#ed5794; }
   .subtitle { font-size:12px; opacity:.72; margin-top:4px; font-weight:700; }
+  .version-tag { margin-top:3px; font-size:9px; font-weight:800; letter-spacing:.5px; color:#8d7799; opacity:.7; }
   .stats { display:flex; gap:7px; }
   .stat { background:#fff; border:2px solid #eadcf3; border-radius:14px; padding:7px 11px; min-width:70px; text-align:center; box-shadow:0 3px 0 #e3d4ed; }
   .stat small { display:block; font-size:10px; font-weight:900; letter-spacing:1px; opacity:.65; }
@@ -57,16 +58,21 @@
   .primary:active { transform:translateY(3px); box-shadow:0 2px 0 #bc3976; }
   .secondary { margin-top:10px; border:0; background:transparent; color:#8c6d9e; font:inherit; font-weight:800; padding:9px; cursor:pointer; }
   .tip { text-align:center; font-size:12px; font-weight:800; color:#8d7799; padding:0 8px 2px; }
+  .store-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:14px 0; text-align:left; }
+  .store-item { border:2px solid #eadcf3; border-radius:14px; padding:10px; background:#fff; font-size:12px; font-weight:800; }
+  .store-item button { margin-top:7px; border:0; border-radius:9px; padding:7px; width:100%; color:white; background:#8065dc; font:inherit; font-weight:900; cursor:pointer; }
+  .store-item button:disabled { background:#c9bdcf; }
+  .wallet { background:#f4e9fb; border-radius:12px; padding:8px; font-weight:1000; }
   @media (max-height:560px) { body{padding:6px}.game{gap:6px}.stat{padding:4px 8px}.stat strong{font-size:18px}.arena{min-height:180px}.subtitle{display:none}.tip{font-size:10px} }
 </style>
 </head>
 <body>
 <div class="game">
   <header>
-    <div><div class="brand">SQUISHY <span>SMASH!</span></div><div class="subtitle">Splat it. Pop it. Score big.</div></div>
+    <div><div class="brand">SQUISHY <span>SMASH!</span></div><div class="subtitle">Splat it. Pop it. Score big.</div><div class="version-tag">v2.0</div></div>
     <div class="stats">
       <div class="stat"><small>SCORE</small><strong id="score">0</strong></div>
-      <div class="stat"><small>TIME</small><strong id="time">30</strong></div>
+      <div class="stat"><small>TIME</small><strong id="time">60</strong></div><div class="stat"><small>ROUND</small><strong id="round">1</strong></div>
     </div>
   </header>
   <main class="arena" id="arena" aria-label="Game area">
@@ -75,8 +81,9 @@
       <div class="panel">
         <div class="mascot">🍡</div>
         <h1 id="panelTitle">Ready to Squish?</h1>
-        <p id="panelText">You have 30 seconds. Tap each squishy as many times as you can before it pops away. Every splat scores a point!</p>
-        <button class="primary" id="startBtn">START SQUISHING</button>
+        <p id="panelText">You have 60 seconds. Keep squishing as new toys pop up! Every tap earns a point. Finish a round to visit the store and unlock new squishies.</p>
+        <button class="primary" id="startBtn">START ROUND 1</button>
+        <button class="secondary" id="storeBtn">SQUISHY STORE · 0 POINTS</button>
         <button class="secondary" id="soundBtn">Sound effects: ON</button>
       </div>
     </div>
@@ -86,86 +93,119 @@
 <script>
 (() => {
   const arena = document.getElementById('arena');
-  const scoreEl = document.getElementById('score');
-  const timeEl = document.getElementById('time');
-  const overlay = document.getElementById('overlay');
-  const titleEl = document.getElementById('panelTitle');
-  const textEl = document.getElementById('panelText');
-  const startBtn = document.getElementById('startBtn');
-  const soundBtn = document.getElementById('soundBtn');
-  const colors = [
-    ['#ffd0df','#f56a9f'],['#c8f7e8','#55cba9'],['#d9d0ff','#8871e8'],
-    ['#ffe3a8','#f7a64c'],['#c9e8ff','#69aee8'],['#ffdbb8','#f28b73'],
-    ['#f3d2ff','#c26bdd'],['#fff0a8','#e9c94f']
+  const scoreEl = document.getElementById('score'), timeEl = document.getElementById('time');
+  const roundEl = document.getElementById('round'), overlay = document.getElementById('overlay');
+  const titleEl = document.getElementById('panelTitle'), textEl = document.getElementById('panelText');
+  const startBtn = document.getElementById('startBtn'), soundBtn = document.getElementById('soundBtn');
+  const storeBtn = document.getElementById('storeBtn');
+  const toys = [
+    {name:'Pink Mochi',emoji:'🍡',colors:['#ffd0df','#f56a9f'],price:0},
+    {name:'Mint Jelly',emoji:'🟢',colors:['#c8f7e8','#55cba9'],price:25},
+    {name:'Grape Puff',emoji:'🍇',colors:['#d9d0ff','#8871e8'],price:50},
+    {name:'Peach Pop',emoji:'🍑',colors:['#ffe3a8','#f7a64c'],price:75},
+    {name:'Blue Cloud',emoji:'☁️',colors:['#c9e8ff','#69aee8'],price:100},
+    {name:'Berry Blob',emoji:'🫐',colors:['#f3d2ff','#c26bdd'],price:150}
   ];
-  let score=0, time=30, running=false, soundOn=true, timer=null, spawnTimer=null, live=new Set(), audioCtx=null, endAt=0;
+  let score=0, totalPoints=0, round=1, time=60, running=false, soundOn=true;
+  let timer=null, spawnTimer=null, live=new Set(), audioCtx=null, endAt=0, owned=new Set([0]), selectedToy=0, storeOpen=false;
   const rand=(a,b)=>Math.random()*(b-a)+a;
   function sound(freq=330,duration=.08,type='sine',volume=.045){
-    if(!soundOn) return;
-    try {
-      audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();
-      if(audioCtx.state==='suspended') audioCtx.resume();
-      const osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
-      osc.type=type; osc.frequency.setValueAtTime(freq,audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(Math.max(80,freq*.55),audioCtx.currentTime+duration);
-      gain.gain.setValueAtTime(volume,audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);
-      osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime+duration);
-    } catch(e){}
+    if(!soundOn)return;
+    try { audioCtx ||= new (window.AudioContext||window.webkitAudioContext)(); if(audioCtx.state==='suspended')audioCtx.resume();
+      const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=type;o.frequency.setValueAtTime(freq,audioCtx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(Math.max(80,freq*.55),audioCtx.currentTime+duration);
+      g.gain.setValueAtTime(volume,audioCtx.currentTime);g.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);
+      o.connect(g);g.connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+duration);
+    }catch(e){}
+  }
+  function updateStoreButton(){storeBtn.textContent='SQUISHY STORE · '+totalPoints+' POINTS';}
+  function showOverlay(title, text, buttonLabel){
+    titleEl.textContent=title;textEl.innerHTML=text;startBtn.textContent=buttonLabel;
+    startBtn.style.display='';storeBtn.style.display='';soundBtn.style.display='';overlay.style.display='flex';
+  }
+  function openStore(){
+    if(running)return;
+    startBtn.onclick=start;
+    storeOpen=true;
+    titleEl.textContent='Squishy Store';
+    textEl.innerHTML='<div class="wallet">Your points: '+totalPoints+'</div><div class="store-grid" id="storeGrid"></div><div style="font-size:12px;color:#75637e">Buy a squishy once, then choose it for future rounds.</div>';
+    startBtn.textContent='START ROUND '+round;
+    startBtn.style.display='';storeBtn.style.display='none';soundBtn.style.display='';
+    overlay.style.display='flex';
+    const grid=document.getElementById('storeGrid');
+    toys.forEach((toy,i)=>{
+      const item=document.createElement('div');item.className='store-item';
+      const ownedToy=owned.has(i);
+      item.innerHTML='<div style="font-size:24px">'+toy.emoji+'</div><div>'+toy.name+'</div><div style="opacity:.65;margin-top:3px">'+(ownedToy?'Owned · '+(selectedToy===i?'Selected':'Tap to select'):'Cost: '+toy.price+' pts')+'</div>';
+      const btn=document.createElement('button');btn.textContent=ownedToy?(selectedToy===i?'SELECTED':'USE THIS'):'BUY';
+      btn.disabled=ownedToy?selectedToy===i:totalPoints<toy.price;
+      btn.onclick=()=>{
+        if(owned.has(i)){selectedToy=i;}
+        else if(totalPoints>=toy.price){totalPoints-=toy.price;owned.add(i);selectedToy=i;sound(650,.12,'triangle');}
+        updateStoreButton();openStore();
+      };
+      item.appendChild(btn);grid.appendChild(item);
+    });
   }
   function makeSquishy(){
-    if(!running) return;
-    const r=arena.getBoundingClientRect();
-    const el=document.createElement('button');
-    el.className='squishy'; el.setAttribute('aria-label','Squish for points'); el.type='button';
-    const [c1,c2]=colors[Math.floor(Math.random()*colors.length)];
-    el.style.setProperty('--c1',c1); el.style.setProperty('--c2',c2);
+    if(!running)return;
+    const r=arena.getBoundingClientRect(),el=document.createElement('button');
+    el.className='squishy';el.setAttribute('aria-label','Squish for points');el.type='button';
+    const toy=toys[selectedToy], [c1,c2]=toy.colors;
+    el.style.setProperty('--c1',c1);el.style.setProperty('--c2',c2);
     const size=Math.min(126,Math.max(84,r.width*.18));
     const x=rand(size*.6,Math.max(size*.6,r.width-size*.6));
     const y=rand(size*.65+18,Math.max(size*.65+18,r.height-size*.65-12));
-    el.style.left=x+'px'; el.style.top=y+'px';
+    el.style.left=x+'px';el.style.top=y+'px';
     el.innerHTML='<span class="body"></span><span class="shine"></span><span class="face"><i class="eye"></i><i class="eye"></i></span><span class="cheek left"></span><span class="cheek right"></span><span class="mouth"></span>';
-    arena.appendChild(el); live.add(el);
-    let taps=0, gone=false;
-    const lifetime=rand(1550,2350);
-    const remove=()=>{ if(gone)return; gone=true; live.delete(el); el.classList.add('pop-out'); setTimeout(()=>el.remove(),230); };
+    arena.appendChild(el);live.add(el);
+    let taps=0,gone=false;
+    const lifetime=Math.max(850,rand(1850,2600)-(round-1)*90);
+    const remove=()=>{
+      if(gone)return;gone=true;live.delete(el);el.classList.add('pop-out');
+      setTimeout(()=>el.remove(),230);
+      // Replenish immediately when a toy leaves the arena.
+      if(running)setTimeout(()=>{if(running&&live.size<4)makeSquishy();},100);
+    };
     el.addEventListener('pointerdown',e=>{
-      e.preventDefault(); if(!running||gone)return;
-      taps++; score++; scoreEl.textContent=score;
-      el.classList.remove('squish-now'); void el.offsetWidth; el.classList.add('squish-now');
-      const b=el.getBoundingClientRect(), ar=arena.getBoundingClientRect();
-      const pts=document.createElement('div'); pts.className='points-float'; pts.textContent='+1';
-      pts.style.left=(b.left-ar.left+b.width/2)+'px'; pts.style.top=(b.top-ar.top+12)+'px'; arena.appendChild(pts); setTimeout(()=>pts.remove(),700);
-      sound(390+Math.min(taps*35,300),.09,'triangle',.055);
-      if(navigator.vibrate) navigator.vibrate(12);
-      clearTimeout(el._expiry); el._expiry=setTimeout(remove,lifetime);
-      // Taps keep the squishy around just a touch longer, but never indefinitely.
-      if(taps>=5) { sound(720,.12,'sine',.04); remove(); }
+      e.preventDefault();if(!running||gone)return;
+      taps++;score++;totalPoints++;scoreEl.textContent=score;updateStoreButton();
+      el.classList.remove('squish-now');void el.offsetWidth;el.classList.add('squish-now');
+      const b=el.getBoundingClientRect(),ar=arena.getBoundingClientRect();
+      const pts=document.createElement('div');pts.className='points-float';pts.textContent='+1';
+      pts.style.left=(b.left-ar.left+b.width/2)+'px';pts.style.top=(b.top-ar.top+12)+'px';arena.appendChild(pts);setTimeout(()=>pts.remove(),700);
+      sound(390+Math.min(taps*35,300),.09,'triangle',.055);if(navigator.vibrate)navigator.vibrate(12);
+      // A toy can be tapped repeatedly, but eventually pops away.
+      if(taps>=Math.max(5,8-(round-1))){sound(720,.12,'sine',.04);remove();}
     });
     el._expiry=setTimeout(remove,lifetime);
-    // Spawn another while this one is still on screen, for rapid multi-target tapping.
-    setTimeout(()=>{if(running && live.size<3) makeSquishy();},rand(450,720));
+  }
+  function fillArena(){
+    const target=Math.min(5,3+Math.floor((round-1)/2));
+    while(live.size<target)makeSquishy();
+    const pace=Math.max(380,850-(round-1)*65);
+    spawnTimer=setTimeout(()=>{if(running){if(live.size<target)makeSquishy();fillArena();}},pace);
   }
   function start(){
-    clearInterval(timer); clearTimeout(spawnTimer); live.forEach(el=>el.remove()); live.clear();
-    score=0;time=30;scoreEl.textContent='0';timeEl.textContent='30';running=true;overlay.style.display='none';
-    endAt=Date.now()+30000; makeSquishy();
-    spawnTimer=setTimeout(makeSquishy,520);
-    timer=setInterval(()=>{
-      time=Math.max(0,Math.ceil((endAt-Date.now())/1000));timeEl.textContent=time;
-      if(time<=0) finish();
-    },100);
+    clearInterval(timer);clearTimeout(spawnTimer);live.forEach(el=>{clearTimeout(el._expiry);el.remove()});live.clear();
+    score=0;time=60;scoreEl.textContent='0';timeEl.textContent='60';roundEl.textContent=round;
+    running=true;storeOpen=false;startBtn.onclick=start;overlay.style.display='none';endAt=Date.now()+60000;
+    fillArena();
+    timer=setInterval(()=>{time=Math.max(0,Math.ceil((endAt-Date.now())/1000));timeEl.textContent=time;if(time<=0)finish();},100);
   }
   function finish(){
     running=false;clearInterval(timer);clearTimeout(spawnTimer);
     live.forEach(el=>{clearTimeout(el._expiry);el.remove()});live.clear();
-    titleEl.textContent='Time’s Up!';
-    textEl.innerHTML='You scored <b>'+score+'</b> squishes!'+(score>=50?' Incredible squishing!':score>=25?' Nice work — quick fingers!':'Ready for another round?');
-    startBtn.textContent='PLAY AGAIN';overlay.style.display='flex';sound(250,.2,'sine',.05);
+    sound(250,.2,'sine',.05);
+    showOverlay('Round '+round+' Complete!', 'You squished <b>'+score+'</b> times and earned <b>'+score+'</b> points this round.<br><br>Total points to spend: <b>'+totalPoints+'</b><br>Visit the store to unlock toys, or continue to the next round.', 'NEXT: ROUND '+(round+1));
+    startBtn.onclick=()=>{round++;roundEl.textContent=round;openStore();};
   }
-  startBtn.addEventListener('click',start);
+  // The button action changes between starting a round and advancing to the store.
+  startBtn.onclick=start;
+  storeBtn.addEventListener('click',openStore);
   soundBtn.addEventListener('click',()=>{soundOn=!soundOn;soundBtn.textContent='Sound effects: '+(soundOn?'ON':'OFF');if(soundOn)sound(440,.08);});
-  document.addEventListener('visibilitychange',()=>{if(document.hidden&&running){/* clock continues for a fair timed round */}});
+  // Store access between rounds; retain earned points and owned toys for this play session.
+  updateStoreButton();
 })();
 </script>
 </body>
