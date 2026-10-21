@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Squishy Smash</title>
+<style>
+  :root { --ink:#392d4b; --pink:#ff75a8; --purple:#8065dc; --mint:#7fe0c3; --cream:#fff8ee; }
+  * { box-sizing:border-box; }
+  html,body { margin:0; width:100%; height:100%; overflow:hidden; font-family:ui-rounded,"Trebuchet MS",system-ui,sans-serif; color:var(--ink); background:#f7eafa; }
+  body { display:flex; align-items:center; justify-content:center; padding:10px; }
+  .game { width:min(100%, 900px); height:min(100%, 900px); min-height:0; display:flex; flex-direction:column; gap:10px; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:3px 4px; }
+  .brand { font-size:clamp(22px,5vw,34px); font-weight:1000; letter-spacing:-1.5px; line-height:1; }
+  .brand span { color:#ed5794; }
+  .subtitle { font-size:12px; opacity:.72; margin-top:4px; font-weight:700; }
+  .stats { display:flex; gap:7px; }
+  .stat { background:#fff; border:2px solid #eadcf3; border-radius:14px; padding:7px 11px; min-width:70px; text-align:center; box-shadow:0 3px 0 #e3d4ed; }
+  .stat small { display:block; font-size:10px; font-weight:900; letter-spacing:1px; opacity:.65; }
+  .stat strong { font-size:22px; line-height:1.2; font-weight:1000; font-variant-numeric:tabular-nums; }
+  .arena { position:relative; flex:1; min-height:240px; overflow:hidden; border:4px solid #fff; border-radius:28px; box-shadow:0 8px 0 #e2cce9, 0 14px 30px #bba3d233; background:
+    radial-gradient(ellipse at 15% 12%, #ffffffa8 0 2px, transparent 3px),
+    radial-gradient(ellipse at 80% 30%, #ffffffa8 0 3px, transparent 4px),
+    radial-gradient(ellipse at 62% 80%, #ffffffa8 0 2px, transparent 3px),
+    linear-gradient(145deg,#e4f9f0,#d8edff 52%,#f8e2f1); background-size:80px 80px,110px 110px,90px 90px,auto; touch-action:manipulation; }
+  .arena:before { content:""; position:absolute; inset:0; opacity:.35; pointer-events:none; background-image:radial-gradient(#fff 1px,transparent 1px); background-size:22px 22px; }
+  .floor-label { position:absolute; bottom:10px; left:0; right:0; text-align:center; font-size:11px; font-weight:900; letter-spacing:2px; opacity:.38; pointer-events:none; }
+  .squishy { --c1:#ffb0c9; --c2:#fa5d99; position:absolute; width:clamp(84px,18vw,126px); height:clamp(84px,18vw,126px); border:0; padding:0; background:transparent; cursor:pointer; touch-action:manipulation; transform:translate(-50%,-50%); filter:drop-shadow(0 7px 0 #60416a2b); z-index:2; -webkit-tap-highlight-color:transparent; }
+  .squishy .body { position:absolute; inset:4px 5px 9px; border-radius:43% 57% 48% 52% / 48% 43% 57% 52%; background:
+    radial-gradient(ellipse at 31% 19%,#ffffffed 0 5%,#ffffff60 11%,transparent 26%),
+    radial-gradient(ellipse at 68% 78%,var(--c2) 0,transparent 49%),
+    linear-gradient(145deg,var(--c1),var(--c2)); box-shadow:inset -5px -8px 13px #6c24502a,inset 4px 5px 10px #ffffff90, 0 3px 0 #ffffff75; border:1px solid #ffffffa8; transition:filter .1s; animation:floaty 1.8s ease-in-out infinite; }
+  .squishy .shine { position:absolute; width:24%; height:12%; border-radius:50%; background:#fff9; top:17%; left:18%; transform:rotate(-35deg); filter:blur(1px); pointer-events:none; }
+  .face { position:absolute; inset:0; display:flex; justify-content:center; align-items:center; gap:13%; padding-top:10%; pointer-events:none; }
+  .eye { width:8px; height:12px; border-radius:50%; background:#493348; box-shadow:inset 1px 1px 1px #fff7; }
+  .mouth { position:absolute; top:57%; left:50%; width:13px; height:7px; border-bottom:2.5px solid #493348; border-radius:0 0 50% 50%; transform:translateX(-50%); }
+  .cheek { position:absolute; top:53%; width:13px; height:7px; border-radius:50%; background:#ff628a66; }
+  .cheek.left { left:17%; } .cheek.right { right:17%; }
+  .spark { position:absolute; font-size:19px; opacity:0; pointer-events:none; }
+  .squishy.squish-now { animation:splat .24s cubic-bezier(.2,.8,.2,1); }
+  .squishy.squish-now .body { animation:splatBody .25s cubic-bezier(.2,.8,.2,1); filter:saturate(1.25) brightness(1.08); }
+  .squishy.squish-now .face { transform:scaleY(.68) translateY(10%); }
+  .squishy.pop-out { animation:popout .22s ease-in forwards; pointer-events:none; }
+  .squishy.pop-out .body { border-radius:50%; }
+  @keyframes floaty { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-5px) rotate(2deg)} }
+  @keyframes splat { 0%{transform:translate(-50%,-50%) scale(1)} 35%{transform:translate(-50%,-50%) scale(1.24,.62)} 68%{transform:translate(-50%,-50%) scale(.91,1.12)} 100%{transform:translate(-50%,-50%) scale(1)} }
+  @keyframes splatBody { 0%{transform:scale(1)} 35%{transform:scale(1.14,.61)} 70%{transform:scale(.94,1.08)} 100%{transform:scale(1)} }
+  @keyframes popout { to{transform:translate(-50%,-50%) scale(.1) rotate(25deg);opacity:0} }
+  .points-float { position:absolute; z-index:4; font-weight:1000; font-size:22px; color:#fff; text-shadow:0 2px 0 #d94f91,0 4px 8px #7e427a77; transform:translate(-50%,-50%); animation:floatPoints .65s ease-out forwards; pointer-events:none; }
+  @keyframes floatPoints { to{transform:translate(-50%,-125%) scale(1.2);opacity:0} }
+  .overlay { position:absolute; z-index:10; inset:0; display:flex; align-items:center; justify-content:center; padding:20px; background:#f7eafa9c; backdrop-filter:blur(5px); }
+  .panel { width:min(100%,380px); padding:24px 20px; text-align:center; border:3px solid #fff; border-radius:26px; background:#fffaf7; box-shadow:0 9px 0 #dfc7e8,0 20px 35px #6e437333; }
+  .mascot { font-size:55px; line-height:1.2; filter:drop-shadow(0 4px 0 #efc9dc); }
+  h1 { margin:5px 0 7px; font-size:clamp(25px,7vw,34px); line-height:1; letter-spacing:-1px; }
+  .panel p { margin:9px 0 18px; font-size:14px; line-height:1.5; color:#75637e; font-weight:650; }
+  .primary { border:0; border-radius:16px; padding:14px 23px; width:100%; background:linear-gradient(135deg,#ff75a8,#e84c91); color:white; font:inherit; font-size:17px; font-weight:1000; box-shadow:0 5px 0 #bc3976; cursor:pointer; }
+  .primary:active { transform:translateY(3px); box-shadow:0 2px 0 #bc3976; }
+  .secondary { margin-top:10px; border:0; background:transparent; color:#8c6d9e; font:inherit; font-weight:800; padding:9px; cursor:pointer; }
+  .tip { text-align:center; font-size:12px; font-weight:800; color:#8d7799; padding:0 8px 2px; }
+  @media (max-height:560px) { body{padding:6px}.game{gap:6px}.stat{padding:4px 8px}.stat strong{font-size:18px}.arena{min-height:180px}.subtitle{display:none}.tip{font-size:10px} }
+</style>
+</head>
+<body>
+<div class="game">
+  <header>
+    <div><div class="brand">SQUISHY <span>SMASH!</span></div><div class="subtitle">Splat it. Pop it. Score big.</div></div>
+    <div class="stats">
+      <div class="stat"><small>SCORE</small><strong id="score">0</strong></div>
+      <div class="stat"><small>TIME</small><strong id="time">30</strong></div>
+    </div>
+  </header>
+  <main class="arena" id="arena" aria-label="Game area">
+    <div class="floor-label">TAP THE SQUISHIES!</div>
+    <div class="overlay" id="overlay">
+      <div class="panel">
+        <div class="mascot">🍡</div>
+        <h1 id="panelTitle">Ready to Squish?</h1>
+        <p id="panelText">You have 30 seconds. Tap each squishy as many times as you can before it pops away. Every splat scores a point!</p>
+        <button class="primary" id="startBtn">START SQUISHING</button>
+        <button class="secondary" id="soundBtn">Sound effects: ON</button>
+      </div>
+    </div>
+  </main>
+  <div class="tip">QUICK TAPS = MORE POINTS · THEY WON’T STAY FOREVER!</div>
+</div>
+<script>
+(() => {
+  const arena = document.getElementById('arena');
+  const scoreEl = document.getElementById('score');
+  const timeEl = document.getElementById('time');
+  const overlay = document.getElementById('overlay');
+  const titleEl = document.getElementById('panelTitle');
+  const textEl = document.getElementById('panelText');
+  const startBtn = document.getElementById('startBtn');
+  const soundBtn = document.getElementById('soundBtn');
+  const colors = [
+    ['#ffd0df','#f56a9f'],['#c8f7e8','#55cba9'],['#d9d0ff','#8871e8'],
+    ['#ffe3a8','#f7a64c'],['#c9e8ff','#69aee8'],['#ffdbb8','#f28b73'],
+    ['#f3d2ff','#c26bdd'],['#fff0a8','#e9c94f']
+  ];
+  let score=0, time=30, running=false, soundOn=true, timer=null, spawnTimer=null, live=new Set(), audioCtx=null, endAt=0;
+  const rand=(a,b)=>Math.random()*(b-a)+a;
+  function sound(freq=330,duration=.08,type='sine',volume=.045){
+    if(!soundOn) return;
+    try {
+      audioCtx ||= new (window.AudioContext||window.webkitAudioContext)();
+      if(audioCtx.state==='suspended') audioCtx.resume();
+      const osc=audioCtx.createOscillator(), gain=audioCtx.createGain();
+      osc.type=type; osc.frequency.setValueAtTime(freq,audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(Math.max(80,freq*.55),audioCtx.currentTime+duration);
+      gain.gain.setValueAtTime(volume,audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.001,audioCtx.currentTime+duration);
+      osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(audioCtx.currentTime+duration);
+    } catch(e){}
+  }
+  function makeSquishy(){
+    if(!running) return;
+    const r=arena.getBoundingClientRect();
+    const el=document.createElement('button');
+    el.className='squishy'; el.setAttribute('aria-label','Squish for points'); el.type='button';
+    const [c1,c2]=colors[Math.floor(Math.random()*colors.length)];
+    el.style.setProperty('--c1',c1); el.style.setProperty('--c2',c2);
+    const size=Math.min(126,Math.max(84,r.width*.18));
+    const x=rand(size*.6,Math.max(size*.6,r.width-size*.6));
+    const y=rand(size*.65+18,Math.max(size*.65+18,r.height-size*.65-12));
+    el.style.left=x+'px'; el.style.top=y+'px';
+    el.innerHTML='<span class="body"></span><span class="shine"></span><span class="face"><i class="eye"></i><i class="eye"></i></span><span class="cheek left"></span><span class="cheek right"></span><span class="mouth"></span>';
+    arena.appendChild(el); live.add(el);
+    let taps=0, gone=false;
+    const lifetime=rand(1550,2350);
+    const remove=()=>{ if(gone)return; gone=true; live.delete(el); el.classList.add('pop-out'); setTimeout(()=>el.remove(),230); };
+    el.addEventListener('pointerdown',e=>{
+      e.preventDefault(); if(!running||gone)return;
+      taps++; score++; scoreEl.textContent=score;
+      el.classList.remove('squish-now'); void el.offsetWidth; el.classList.add('squish-now');
+      const b=el.getBoundingClientRect(), ar=arena.getBoundingClientRect();
+      const pts=document.createElement('div'); pts.className='points-float'; pts.textContent='+1';
+      pts.style.left=(b.left-ar.left+b.width/2)+'px'; pts.style.top=(b.top-ar.top+12)+'px'; arena.appendChild(pts); setTimeout(()=>pts.remove(),700);
+      sound(390+Math.min(taps*35,300),.09,'triangle',.055);
+      if(navigator.vibrate) navigator.vibrate(12);
+      clearTimeout(el._expiry); el._expiry=setTimeout(remove,lifetime);
+      // Taps keep the squishy around just a touch longer, but never indefinitely.
+      if(taps>=5) { sound(720,.12,'sine',.04); remove(); }
+    });
+    el._expiry=setTimeout(remove,lifetime);
+    // Spawn another while this one is still on screen, for rapid multi-target tapping.
+    setTimeout(()=>{if(running && live.size<3) makeSquishy();},rand(450,720));
+  }
+  function start(){
+    clearInterval(timer); clearTimeout(spawnTimer); live.forEach(el=>el.remove()); live.clear();
+    score=0;time=30;scoreEl.textContent='0';timeEl.textContent='30';running=true;overlay.style.display='none';
+    endAt=Date.now()+30000; makeSquishy();
+    spawnTimer=setTimeout(makeSquishy,520);
+    timer=setInterval(()=>{
+      time=Math.max(0,Math.ceil((endAt-Date.now())/1000));timeEl.textContent=time;
+      if(time<=0) finish();
+    },100);
+  }
+  function finish(){
+    running=false;clearInterval(timer);clearTimeout(spawnTimer);
+    live.forEach(el=>{clearTimeout(el._expiry);el.remove()});live.clear();
+    titleEl.textContent='Time’s Up!';
+    textEl.innerHTML='You scored <b>'+score+'</b> squishes!'+(score>=50?' Incredible squishing!':score>=25?' Nice work — quick fingers!':'Ready for another round?');
+    startBtn.textContent='PLAY AGAIN';overlay.style.display='flex';sound(250,.2,'sine',.05);
+  }
+  startBtn.addEventListener('click',start);
+  soundBtn.addEventListener('click',()=>{soundOn=!soundOn;soundBtn.textContent='Sound effects: '+(soundOn?'ON':'OFF');if(soundOn)sound(440,.08);});
+  document.addEventListener('visibilitychange',()=>{if(document.hidden&&running){/* clock continues for a fair timed round */}});
+})();
+</script>
+</body>
+</html>
