@@ -8,7 +8,7 @@
 :root{color-scheme:dark;--cream:#fff0c2;--gold:#ffc857;--red:#f25f5c;--blue:#4ea5d9;--green:#8ac926}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;overflow-x:hidden;background:radial-gradient(ellipse at top,#302747,#12111c 70%);color:var(--cream);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;display:flex;justify-content:center;padding:16px}
 main{width:min(100%,560px);max-width:560px;min-width:0}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(22px,4vw,34px);letter-spacing:2px;text-shadow:3px 3px #8b3a62}.sub{color:#c5badb;margin:0 0 14px;font-size:12px}
-.layout{display:flex;flex-direction:column;gap:10px;align-items:stretch;width:100%;min-width:0}.main-game{min-width:0}.sidebar{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;align-items:start;width:100%;min-width:0}.cabinet{border:4px solid #8d719b;box-shadow:0 0 0 4px #201b30,0 12px 40px #0009;background:#211d32;padding:10px}canvas{display:block;width:100%;height:auto;aspect-ratio:3/5;image-rendering:auto;background:#241e37;border:2px solid #100e18}
+.layout{display:flex;flex-direction:column;gap:10px;align-items:stretch;width:100%;min-width:0}.main-game{min-width:0}.sidebar{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;align-items:start;width:100%;min-width:0}.cabinet{border:4px solid #8d719b;box-shadow:0 0 0 4px #201b30,0 12px 40px #0009;background:#211d32;padding:10px}canvas{display:block;width:100%;height:auto;aspect-ratio:3/4.7;image-rendering:auto;background:#241e37;border:2px solid #100e18}
 .hud{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 0 6px}.meter-card,.panel{background:#171421;border:2px solid #574667;padding:6px}.name-row{display:flex;justify-content:space-between;gap:5px;font-size:10px;margin-bottom:5px}.bar{height:12px;background:#383145;border:2px solid #07070b;padding:1px}.fill{height:100%;width:100%}#playerHealth{background:var(--blue);box-shadow:0 0 7px #238cff}#enemyHealth{background:var(--red);box-shadow:0 0 7px #f25f5c}#stamina{background:var(--gold)}
 .panel{margin-bottom:12px}.panel h2{color:var(--gold);font-size:13px;margin:0 0 9px}.small{font-size:11px;line-height:1.5;color:#c5badb}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}button,input,select{font:inherit}button{border:2px solid #b8a2cc;background:#352b49;color:#fff0c2;font-weight:bold;min-height:38px;padding:7px;cursor:pointer;box-shadow:0 3px #120f1b;touch-action:manipulation}button:active{transform:translateY(2px);box-shadow:0 1px #120f1b}button.primary{background:#7a345d;border-color:#ffb1a9}.wide{grid-column:span 3}.field{display:block;width:100%;margin:6px 0 9px;background:#252032;color:var(--cream);border:1px solid #7a678b;padding:8px}.actions{display:flex;gap:7px;flex-wrap:wrap}.actions button{flex:1}.photo-preview{display:flex;gap:10px;align-items:center;margin:8px 0}.portrait{width:64px;height:64px;object-fit:cover;border:2px solid #ffc857;background:#302747;image-rendering:auto}.portrait.enemy{border-color:#f25f5c}.notice{min-height:30px;color:#d6cbe8;font-size:11px;line-height:1.5}.log{min-height:56px;line-height:1.5;font-size:11px;color:#d6cbe8}.hint{color:#9d91b0;font-size:10px;line-height:1.5;margin-top:8px}
 
@@ -138,12 +138,12 @@ input,select,button{max-width:100%;min-width:0}
 </head>
 <body class="menu-active">
 <main>
-<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.9.3</p>
+<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.9.4</p>
 
 <section id="titleScreen" class="title-screen" role="dialog" aria-label="Retro Ring main menu">
   <div class="title-logo">RETRO RING</div>
   <div class="title-tagline">3D-INSPIRED ARCADE BOXING</div>
-  <div class="version-stamp">VERSION 1.9.3</div>
+  <div class="version-stamp">VERSION 1.9.4</div>
   <div class="title-fighters" aria-hidden="true">
     <svg class="splash-ring-art" viewBox="0 0 320 118" role="img" aria-label="Two retro arcade boxers facing off in a boxing ring">
       <defs><linearGradient id="ringBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#302741"/><stop offset="1" stop-color="#100d19"/></linearGradient></defs>
@@ -243,7 +243,7 @@ input,select,button{max-width:100%;min-width:0}
   </div>
     
     
-    <canvas id="game" width="384" height="640" aria-label="Retro arcade boxing match"></canvas>
+    <canvas id="game" width="384" height="602" aria-label="Retro arcade boxing match"></canvas>
     <div id="damageNotice" class="damage-notice" aria-live="polite"></div>
     <button id="centerRestart" type="button" class="center-restart" hidden>↻ RESTART FIGHT</button>
   </div>
@@ -409,11 +409,11 @@ function notice(s){$('notice').textContent=s;}
 function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),w,h);}
 function txt(s,x,y,size=8,c='#fff0c2',align='left'){ctx.fillStyle=c;ctx.font=`bold ${size}px monospace`;ctx.textAlign=align;ctx.fillText(s,x,y);}
 function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
+ const [skin,shorts,gloves,boots]=palette;
+ const isBlue=shorts==='#355c7d';
  ctx.save();ctx.translate(x,y);ctx.scale(flip?-scale:scale,scale);
  // Different arcade silhouettes: Rookie Ray is lean; Brick Wall is deliberately broad.
  ctx.scale(isBlue?1.17:0.94,1);
- const [skin,shorts,gloves,boots]=palette;
- const isBlue=shorts==='#355c7d';
  const outline='#1c1421', highlight=skin==='#d98c62'?'#f6c49a':'#e8a17d', shade=skin==='#d98c62'?'#a85f45':'#77412f';
  const trim=isBlue?'#ffc857':'#f5e8d4';
  const clock=(performance.now?performance.now():0)/1000;
@@ -557,7 +557,9 @@ function drawReferee(x,y,scale,pose='raise'){
 
 function draw(){
  ctx.save();
- // Version 1.9.3: taller playfield with the ring enlarged vertically.
+ // Version 1.9.4: corrected fighter initialization and slightly shorter playfield.
+ ctx.scale(1,602/640);
+ // Version 1.9.4: taller playfield with the ring enlarged vertically.
  rect(0,0,W,H,'#100e1a');
  const sky=ctx.createLinearGradient(0,0,0,118);sky.addColorStop(0,'#171526');sky.addColorStop(1,'#332746');
  rect(0,0,W,108,'#20192e');ctx.fillStyle=sky;ctx.fillRect(0,0,W,108);
