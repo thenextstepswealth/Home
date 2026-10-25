@@ -8,7 +8,7 @@
 :root{color-scheme:dark;--cream:#fff0c2;--gold:#ffc857;--red:#f25f5c;--blue:#4ea5d9;--green:#8ac926}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#302747,#12111c 70%);color:var(--cream);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;display:flex;justify-content:center;padding:16px}
 main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(22px,4vw,34px);letter-spacing:2px;text-shadow:3px 3px #8b3a62}.sub{color:#c5badb;margin:0 0 14px;font-size:12px}
-.layout{display:grid;grid-template-columns:1fr;gap:14px;align-items:start}.main-game{min-width:0}.sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}.cabinet{border:4px solid #8d719b;box-shadow:0 0 0 4px #201b30,0 12px 40px #0009;background:#211d32;padding:10px}canvas{display:block;width:100%;height:auto;aspect-ratio:6/7;image-rendering:pixelated;background:#241e37;border:2px solid #100e18}
+.layout{display:grid;grid-template-columns:1fr;gap:14px;align-items:start}.main-game{min-width:0}.sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}.cabinet{border:4px solid #8d719b;box-shadow:0 0 0 4px #201b30,0 12px 40px #0009;background:#211d32;padding:10px}canvas{display:block;width:100%;height:auto;aspect-ratio:3/4.375;image-rendering:pixelated;background:#241e37;border:2px solid #100e18}
 .hud{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.meter-card,.panel{background:#171421;border:2px solid #574667;padding:9px}.name-row{display:flex;justify-content:space-between;gap:8px;font-size:11px;margin-bottom:7px}.bar{height:13px;background:#383145;border:2px solid #07070b;padding:1px}.fill{height:100%;width:100%}#playerHealth{background:var(--green)}#enemyHealth{background:var(--red)}#stamina{background:var(--gold)}
 .panel{margin-bottom:12px}.panel h2{color:var(--gold);font-size:13px;margin:0 0 9px}.small{font-size:11px;line-height:1.5;color:#c5badb}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}button,input,select{font:inherit}button{border:2px solid #b8a2cc;background:#352b49;color:#fff0c2;font-weight:bold;min-height:38px;padding:7px;cursor:pointer;box-shadow:0 3px #120f1b;touch-action:manipulation}button:active{transform:translateY(2px);box-shadow:0 1px #120f1b}button.primary{background:#7a345d;border-color:#ffb1a9}.wide{grid-column:span 3}.field{display:block;width:100%;margin:6px 0 9px;background:#252032;color:var(--cream);border:1px solid #7a678b;padding:8px}.actions{display:flex;gap:7px;flex-wrap:wrap}.actions button{flex:1}.photo-preview{display:flex;gap:10px;align-items:center;margin:8px 0}.portrait{width:64px;height:64px;object-fit:cover;border:2px solid #ffc857;background:#302747;image-rendering:auto}.portrait.enemy{border-color:#f25f5c}.notice{min-height:30px;color:#d6cbe8;font-size:11px;line-height:1.5}.log{min-height:56px;line-height:1.5;font-size:11px;color:#d6cbe8}.hint{color:#9d91b0;font-size:10px;line-height:1.5;margin-top:8px}
 
@@ -42,14 +42,15 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
 
 @media(max-width:760px){.layout{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:1fr;gap:10px}.panel{margin-bottom:0}.full{grid-column:auto}}
 @media(max-width:480px){body{padding:8px}.sidebar{display:grid;grid-template-columns:1fr}.panel{margin-bottom:0}.name-row{font-size:9px}button{font-size:11px}.meter-card{padding:7px}}
+.camera-stage{position:relative;width:min(100%,390px);aspect-ratio:1/1;margin:8px auto 0;background:#090710;overflow:hidden;border-radius:12px}.camera-stage video{width:100%;height:100%;object-fit:cover;display:block}.oval-guide{position:absolute;left:22%;top:10%;width:56%;height:78%;border:3px solid #ffc857;border-radius:50%;box-shadow:0 0 0 999px #09071066;pointer-events:none;display:flex;align-items:flex-end;justify-content:center}.oval-guide span{position:absolute;bottom:-28px;white-space:nowrap;background:#090710dd;color:#fff0c2;padding:4px 8px;border-radius:5px;font-size:11px;letter-spacing:.5px}.camera-panel .hint{margin-top:34px}.portrait{object-fit:cover}
 </style>
 </head>
 <body>
 <main>
-<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.0.5</p>
+<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.0.8</p>
 <div class="layout">
 <section class="main-game">
-<div class="cabinet"><canvas id="game" width="384" height="448" aria-label="Retro pixel art boxing match"></canvas></div>
+<div class="cabinet"><canvas id="game" width="384" height="560" aria-label="Retro pixel art boxing match"></canvas></div>
 <div class="panel controller-panel">
 <h2>ARCADE CONTROLS</h2>
 <div class="gamepad">
@@ -109,17 +110,17 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
 </div>
 </main>
 <div id="cameraDialog" style="display:none;position:fixed;inset:0;background:#090710ee;z-index:5;align-items:center;justify-content:center;padding:16px">
-<div class="panel" style="width:min(100%,520px);margin:0"><h2 id="cameraTitle">TAKE A PICTURE</h2><video id="video" autoplay playsinline style="width:100%;max-height:55vh;background:#090710;display:block"></video><canvas id="captureCanvas" width="320" height="320" style="display:none"></canvas><div class="actions" style="margin-top:10px"><button id="takeShot" class="primary">Capture photo</button><button id="closeCamera">Cancel</button></div><div class="hint">Your browser will ask for camera permission. If camera access is unavailable, use Upload photo instead. Camera access usually requires HTTPS or localhost.</div></div>
+<div class="panel camera-panel" style="width:min(100%,520px);margin:0"><h2 id="cameraTitle">TAKE A PICTURE</h2><div class="camera-stage"><video id="video" autoplay playsinline></video><div class="oval-guide"><span>FIT FACE INSIDE OVAL</span></div></div><canvas id="captureCanvas" width="320" height="320" style="display:none"></canvas><div class="actions" style="margin-top:10px"><button id="takeShot" class="primary">Capture photo</button><button id="closeCamera">Cancel</button></div><div class="hint">Center the face inside the oval, with the top of the head and chin visible. Only the oval area is kept for the boxer’s head. Camera access requires permission and usually HTTPS or localhost.</div></div>
 </div>
 <script>
 (() => {
 const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;
-const $=id=>document.getElementById(id),W=384,H=448;
+const $=id=>document.getElementById(id),W=384,H=560;
 const DEFAULT_PLAYER={name:'Rookie Ray',photo:null},DEFAULT_ENEMY={name:'The Brick Wall',photo:null};
 let player={...DEFAULT_PLAYER},enemy={...DEFAULT_ENEMY},cameraStream=null,cameraTarget='player';
 const STORAGE_KEY='retroRing.boxers.v1';
 let state;
-function fresh(){return {player:100,enemy:100,stamina:100,downs:0,phase:'ready',phaseTime:1.2,attackType:'head',playerX:0,playerPos:118,enemyPos:266,duck:0,block:0,punch:0,enemyPunch:0,flash:0,over:false,won:false,log:'DING DING! The Brick Wall is watching you. Wait for his tell, dodge, then counter.'};}
+function fresh(){return {player:100,enemy:100,stamina:100,downs:0,phase:'ready',phaseTime:1.2,attackType:'head',playerX:0,playerPos:118,enemyPos:266,enemyStun:0,duck:0,block:0,punch:0,bodyPunch:0,enemyPunch:0,flash:0,over:false,won:false,log:'DING DING! The Brick Wall is watching you. Wait for his tell, dodge, then counter.'};}
 state=fresh();
 function say(s){state.log=s;$('log').textContent=s;}
 function notice(s){$('notice').textContent=s;}
@@ -128,53 +129,82 @@ function txt(s,x,y,size=8,c='#fff0c2',align='left'){ctx.fillStyle=c;ctx.font=`bo
 function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
  ctx.save();ctx.translate(x,y);ctx.scale(flip?-scale:scale,scale);
  const [skin,shorts,gloves,boots]=palette;
- rect(-13,1,27,4,'#151222');rect(-10,-6,8,8,skin);rect(2,-6,8,8,skin);rect(-12,0,11,4,boots);rect(1,0,11,4,boots);
- rect(-12,-16,10,11,shorts);rect(2,-16,10,11,shorts);rect(-11,-17,22,3,skin);
- rect(-12,-34,24,18,skin);rect(-10,-33,20,14,skin==='#d98c62'?'#b96e50':'#8e4d38');rect(-14,-33,5,13,skin);rect(9,-33,5,13,skin);
- // Head base, with clipped photo crop when provided.
- rect(-9,-49,18,16,skin);
+ // Ground shadow, legs and shorts.
+ rect(-17,2,34,5,'#151222');
+ rect(-13,-13,10,15,skin);rect(3,-13,10,15,skin);
+ rect(-16,0,14,5,boots);rect(2,0,14,5,boots);
+ rect(-15,-31,13,20,shorts);rect(2,-31,13,20,shorts);
+ rect(-14,-34,28,4,skin);
+ // Broader torso: the head is intentionally oversized for readable, playful arcade portraits.
+ rect(-18,-62,36,30,skin);
+ rect(-15,-59,30,23,skin==='#d98c62'?'#b96e50':'#8e4d38');
+ rect(-21,-59,7,23,skin);rect(14,-59,7,23,skin);
+ // Head base and large face area (approx 40% of overall upper-body visual height).
+ const hx=-17,hy=-103,hw=34,hh=39;
+ rect(hx-2,hy-3,hw+4,hh+5,'#28202c');
+ rect(hx,hy,hw,hh,skin);
  if(photo && photo.complete && photo.naturalWidth){
-   ctx.save();ctx.beginPath();ctx.rect(-9,-49,18,16);ctx.clip();
-   // Slightly larger crop to keep face prominent in the sprite.
-   ctx.translate(-9,-49);ctx.scale(18/photo.naturalWidth,16/photo.naturalHeight);ctx.drawImage(photo,0,0);ctx.restore();
-   // simple pixel-style hairline and outline over the image
-   rect(-10,-50,20,3,'#28202c');rect(-10,-49,2,16,'#28202c');rect(8,-49,2,16,'#28202c');
- }else{
-   rect(-10,-50,20,5,'#28202c');rect(-9,-46,3,3,'#28202c');rect(-6,-42,3,2,'#fff0c2');rect(4,-42,3,2,'#fff0c2');rect(0,-37,5,2,'#5a2f2b');
+   ctx.save();ctx.beginPath();ctx.ellipse(hx+hw/2,hy+hh/2,hw/2,hh/2,0,0,Math.PI*2);ctx.clip();
+   // Center-crop the saved photo into an oval head; transparent corners reveal the head outline.
+   const side=Math.min(photo.naturalWidth,photo.naturalHeight);
+   const sx=(photo.naturalWidth-side)/2, sy=(photo.naturalHeight-side)/2;
+   ctx.drawImage(photo,sx,sy,side,side,hx,hy,hw,hh);
+   ctx.restore();
+   // Pixel-art outline and hairline frame the real face without covering it.
+   rect(hx-2,hy-3,hw+4,4,'#28202c');
+   rect(hx-2,hy-3,3,hh+5,'#28202c');rect(hx+hw-1,hy-3,3,hh+5,'#28202c');
+ } else {
+   rect(hx-2,hy-3,hw+4,10,'#28202c');rect(hx+1,hy+3,7,4,'#28202c');
+   rect(hx+5,hy+14,5,3,'#fff0c2');rect(hx+23,hy+14,5,3,'#fff0c2');
+   rect(hx+13,hy+20,7,5,'#8a4c39');rect(hx+9,hy+29,15,4,'#5a2f2b');
  }
- if(pose==='punch'){rect(8,-32,9,5,skin);rect(14,-34,12,8,gloves);rect(22,-33,4,5,'#fff0c2');}
- else if(pose==='block'){rect(-15,-38,7,13,skin);rect(-18,-43,10,10,gloves);rect(8,-38,7,13,skin);rect(6,-43,10,10,gloves);}
- else{rect(-16,-31,7,13,skin);rect(-20,-22,11,9,gloves);rect(9,-31,7,13,skin);rect(10,-22,11,9,gloves);}
- rect(-12,-17,24,3,'#fff0c2');ctx.restore();
+ // Gloves and arms animate distinctly for every action.
+ if(pose==='punch'){
+   // Near arm extends forward horizontally; glove travels out past the torso.
+   rect(13,-58,10,8,skin);rect(19,-62,18,12,gloves);rect(34,-60,5,7,'#fff0c2');
+   rect(3,-54,8,17,skin);rect(0,-42,11,9,gloves);
+ } else if(pose==='body'){
+   rect(12,-56,10,12,skin);rect(18,-48,16,11,gloves);rect(31,-46,4,6,'#fff0c2');
+   rect(-19,-56,8,16,skin);rect(-24,-46,14,11,gloves);
+ } else if(pose==='block'){
+   rect(-22,-69,10,20,skin);rect(-25,-81,15,15,gloves);
+   rect(12,-69,10,20,skin);rect(10,-81,15,15,gloves);
+ } else {
+   rect(-22,-57,9,20,skin);rect(-27,-42,15,12,gloves);
+   rect(13,-57,9,20,skin);rect(14,-42,15,12,gloves);
+ }
+ rect(-17,-34,34,5,'#fff0c2');
+ ctx.restore();
 }
 function draw(){
- rect(0,0,W,H,'#211a31');
- // Arena lights and dark crowd, arranged for a taller arcade screen.
- for(let i=0;i<42;i++){rect((i*37)%W,34+(i*29)%118,2,2,i%2?'#5b496d':'#3c3454');}
- rect(0,148,W,120,'#332a48');
- for(let i=0;i<48;i++){const x=i*8;rect(x,154+(i%4)*4,5,12,'#5d4669');rect(x+1,149+(i%3)*3,3,6,'#e4a16b');}
+ ctx.save();ctx.scale(1,0.875);
+ rect(0,0,W,640,'#211a31');
+ // Arena lights, crowd and classic head-on arcade presentation.
+ for(let i=0;i<54;i++)rect((i*37)%W,34+(i*31)%160,2,2,i%2?'#5b496d':'#3c3454');
+ rect(0,184,W,105,'#332a48');
+ for(let i=0;i<48;i++){const x=i*8;rect(x,188+(i%4)*4,5,13,'#5d4669');rect(x+1,183+(i%3)*3,3,6,'#e4a16b');}
  rect(28,18,64,4,'#8b7ba2');rect(292,18,64,4,'#8b7ba2');rect(45,22,18,9,'#fff0c2');rect(321,22,18,9,'#fff0c2');
  txt('ROUND 1',192,16,9,'#ffc857','center');txt('FIGHT!',192,31,12,'#fff0c2','center');
- // HUD-like fight callout
  const banner=state.over?(state.won?'KNOCKOUT! YOU WIN!':'TKO! TRY AGAIN'):state.phase==='windup'?'WATCH THE TELL!':state.phase==='open'?'OPEN! COUNTER NOW':state.phase==='attack'?'INCOMING!':state.phase==='recover'?'RESETTING...':'FIGHT!';
  const bc=state.phase==='windup'?'#ffc857':state.phase==='open'?'#8ac926':state.phase==='attack'?'#f25f5c':'#fff0c2';
  rect(67,43,250,20,'#151321');txt(banner,192,57,9,bc,'center');
- // Ring perspective: rear rope higher, mat lower to emphasize distance.
- rect(12,270,360,135,'#d6c1a0');rect(20,278,344,118,'#eee0bd');
- for(let i=0;i<4;i++)rect(12,264+i*12,360,3,['#f25f5c','#fff0c2','#4ea5d9','#f25f5c'][i]);
- rect(12,264,5,143,'#fff0c2');rect(367,264,5,143,'#fff0c2');
- for(let x=24;x<364;x+=18)rect(x,286,1,108,'#d1bd9d');
- for(let y=300;y<396;y+=18)rect(20,y,344,1,'#d1bd9d');
- // Boxers use horizontal ring positions. Scale up slightly for clearer faces.
- const playerY=state.duck>0?353:366, enemyY=366;
- drawFighter(state.playerPos+state.playerX,playerY,1.75,['#d98c62','#355c7d','#4ea5d9','#2b2435'],state.punch>0?'punch':state.block>0?'block':'idle',false,player.image);
- drawFighter(state.enemyPos-(state.enemyPunch>0?15:0),enemyY,1.8,['#a96b4d','#7a345d','#f25f5c','#2b2435'],state.enemyPunch>0?'punch':'idle',true,enemy.image);
- if(state.flash>0)txt('✦',192,315,22,'#ffc857','center');
- txt(player.name.toUpperCase().slice(0,18),state.playerPos+state.playerX,407,8,'#355c7d','center');
- txt(enemy.name.toUpperCase().slice(0,18),state.enemyPos,407,8,'#7a345d','center');
+ // Large ring floor occupies the majority of the viewport.
+ rect(10,300,364,280,'#d6c1a0');rect(18,309,348,260,'#eee0bd');
+ for(let i=0;i<4;i++)rect(10,290+i*15,364,4,['#f25f5c','#fff0c2','#4ea5d9','#f25f5c'][i]);
+ rect(10,290,5,291,'#fff0c2');rect(369,290,5,291,'#fff0c2');
+ for(let x=24;x<364;x+=18)rect(x,324,1,236,'#d1bd9d');
+ for(let y=340;y<566;y+=18)rect(18,y,348,1,'#d1bd9d');
+ // Perspective feet anchors; characters are large and move laterally across the ring.
+ const playerY=state.duck>0?491:508, enemyY=508;
+ drawFighter(state.playerPos+state.playerX,playerY,2.35,['#d98c62','#355c7d','#4ea5d9','#2b2435'],state.punch>0?'punch':state.block>0?'block':state.bodyPunch>0?'body':'idle',false,player.image);
+ drawFighter(state.enemyPos-(state.enemyPunch>0?18:0)+(state.enemyStun>0?8:0),enemyY,2.4,['#a96b4d','#7a345d','#f25f5c','#2b2435'],state.enemyPunch>0?'punch':'idle',true,enemy.image);
+ if(state.flash>0){txt('✦',state.playerPos+state.playerX+50,430,28,'#ffc857','center');txt('POW!',state.playerPos+state.playerX+50,405,13,'#fff0c2','center');}
+ txt(player.name.toUpperCase().slice(0,18),state.playerPos+state.playerX,566,8,'#355c7d','center');
+ txt(enemy.name.toUpperCase().slice(0,18),state.enemyPos,566,8,'#7a345d','center');
  if(!state.over&&state.phase==='windup'){rect(128,69,128,5,'#51435f');rect(128,69,128*Math.max(0,state.phaseTime/1.25),5,'#ffc857');}
- if(state.over){rect(48,174,288,76,'#151321');rect(52,178,280,68,'#352b49');txt(state.won?'CHAMPION!':'DOWN FOR THE COUNT',192,202,14,state.won?'#ffc857':'#f25f5c','center');txt(state.won?'THE CROWD GOES WILD':'TAP RESTART TO FIGHT AGAIN',192,225,8,'#fff0c2','center');}
- for(let y=0;y<H;y+=4)rect(0,y,W,1,'#00000012');
+ if(state.over){rect(48,105,288,76,'#151321');rect(52,109,280,68,'#352b49');txt(state.won?'CHAMPION!':'DOWN FOR THE COUNT',192,133,14,state.won?'#ffc857':'#f25f5c','center');txt(state.won?'THE CROWD GOES WILD':'TAP RESTART TO FIGHT AGAIN',192,156,8,'#fff0c2','center');}
+ for(let y=0;y<640;y+=4)rect(0,y,W,1,'#00000012');
+ ctx.restore();
 }
 function updateHUD(){
  $('playerHealth').style.width=state.player+'%';$('playerPct').textContent=Math.ceil(state.player)+'%';$('enemyHealth').style.width=state.enemy+'%';$('enemyPct').textContent=Math.ceil(state.enemy)+'%';
@@ -225,9 +255,19 @@ async function openCamera(type){
 }
 function closeCamera(){$('cameraDialog').style.display='none';if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null;}$('video').srcObject=null;}
 $('takeShot').addEventListener('click',async()=>{
- const v=$('video'),c=$('captureCanvas');if(!v.videoWidth){notice('Camera is still starting. Try again in a moment.');return;}
- const side=Math.min(v.videoWidth,v.videoHeight),sx=(v.videoWidth-side)/2,sy=(v.videoHeight-side)/2;c.width=side;c.height=side;c.getContext('2d').drawImage(v,sx,sy,side,side,0,0,side,side);
- c.toBlob(async blob=>{if(!blob){notice('Could not capture the photo.');return;}const file=new File([blob],'camera-photo.jpg',{type:'image/jpeg'});await handleFile(cameraTarget,file);closeCamera();},'image/jpeg',.85);
+ const v=$('video'),c=$('captureCanvas');
+ if(!v.videoWidth){notice('Camera is still starting. Try again in a moment.');return;}
+ // Crop a centered square from the source, then keep only an oval portrait.
+ const side=Math.min(v.videoWidth,v.videoHeight),sx=(v.videoWidth-side)/2,sy=(v.videoHeight-side)/2;
+ c.width=side;c.height=side;
+ const cx=c.getContext('2d');cx.clearRect(0,0,side,side);
+ cx.save();cx.beginPath();cx.ellipse(side/2,side/2,side*.34,side*.46,0,0,Math.PI*2);cx.clip();
+ cx.drawImage(v,sx,sy,side,side,0,0,side,side);cx.restore();
+ c.toBlob(async blob=>{
+  if(!blob){notice('Could not capture the photo.');return;}
+  const file=new File([blob],'oval-camera-photo.png',{type:'image/png'});
+  await handleFile(cameraTarget,file);closeCamera();
+ },'image/png');
 });
 $('closeCamera').addEventListener('click',closeCamera);
 $('cameraPlayer').addEventListener('click',()=>openCamera('player'));$('cameraEnemy').addEventListener('click',()=>openCamera('enemy'));
@@ -241,19 +281,19 @@ $('enemyName').addEventListener('change',()=>{enemy.name=$('enemyName').value.tr
 function distance(){return Math.abs((state.playerPos+state.playerX)-state.enemyPos);}
 function hitEnemy(kind){
  if(state.over)return;
- if(distance()>72){say('Too far away! Move closer before punching.');return;}
+ if(distance()>68){say('Too far away! Move closer before punching.');return;}
  if(state.stamina<9){say('You are exhausted! Recover your stamina before throwing another punch.');return;}
- state.stamina=Math.max(0,state.stamina-(kind==='jab'?8:13));state.punch=.28;
+ state.stamina=Math.max(0,state.stamina-(kind==='jab'?8:13));state.punch=.32;state.bodyPunch=kind==='body'?.32:0;
  const close=distance()<62;
  if(state.phase==='open'){
    const dmg=(kind==='jab'?22:30)*(close?1:0.8);
-   state.enemy=Math.max(0,state.enemy-dmg);state.flash=.22;
+   state.enemy=Math.max(0,state.enemy-dmg);state.flash=.38;state.enemyStun=.28;
    say(kind==='jab'?'CLEAN JAB! You caught him during his opening.':'BIG BODY SHOT! That counter landed hard.');
    state.phase='recover';state.phaseTime=.9;
  }else if(state.phase==='windup'){
-   const dmg=kind==='jab'?8:11;state.enemy=Math.max(0,state.enemy-dmg);say('You interrupted his setup with a hit!');
+   const dmg=kind==='jab'?8:11;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.3;state.enemyStun=.2;say('HIT! You interrupted his setup with a clean punch!');
  }else{
-   const dmg=kind==='jab'?7:10;state.enemy=Math.max(0,state.enemy-dmg);say('You landed a hit. Counters during OPEN! do much more damage.');
+   const dmg=kind==='jab'?7:10;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.24;state.enemyStun=.16;say('SOLID HIT! Counters during OPEN! do much more damage.');
  }
  if(state.enemy<=0){state.over=true;state.won=true;say('KNOCKOUT! '+player.name+' takes the fight!');}
  updateHUD();
@@ -281,7 +321,7 @@ document.querySelectorAll('[data-action]').forEach(b=>{
 });
 $('restart').addEventListener('click',()=>{state=fresh();say(state.log);updateHUD();draw();});$('resetGame').addEventListener('click',()=>{state=fresh();say('Fight reset. Your selected photo characters are still in place.');updateHUD();draw();});
 let keys={};window.addEventListener('keydown',e=>{const map={'ArrowLeft':'left','ArrowRight':'right','ArrowDown':'duck','j':'jab','J':'jab','k':'body','K':'body','l':'block','L':'block',' ':'block'};if(map[e.key]){e.preventDefault();if(!keys[e.key])action(map[e.key]);keys[e.key]=true;}});window.addEventListener('keyup',e=>keys[e.key]=false);
-let last=0;function tick(ts){const dt=Math.min(.05,(ts-last)/1000||0);last=ts;if(!state.over){state.stamina=Math.min(100,state.stamina+dt*8);state.phaseTime-=dt;state.punch=Math.max(0,state.punch-dt);state.enemyPunch=Math.max(0,state.enemyPunch-dt*1.5);state.flash=Math.max(0,state.flash-dt);state.duck=Math.max(0,state.duck-dt);state.block=Math.max(0,state.block-dt);state.playerX*=Math.max(0,1-dt*5);state.playerPos=Math.max(54,Math.min(286,state.playerPos));
+let last=0;function tick(ts){const dt=Math.min(.05,(ts-last)/1000||0);last=ts;if(!state.over){state.stamina=Math.min(100,state.stamina+dt*8);state.phaseTime-=dt;state.punch=Math.max(0,state.punch-dt);state.bodyPunch=Math.max(0,state.bodyPunch-dt);state.enemyPunch=Math.max(0,state.enemyPunch-dt*1.5);state.flash=Math.max(0,state.flash-dt);state.enemyStun=Math.max(0,state.enemyStun-dt);state.duck=Math.max(0,state.duck-dt);state.block=Math.max(0,state.block-dt);state.playerX*=Math.max(0,1-dt*5);state.playerPos=Math.max(54,Math.min(286,state.playerPos));
  if(state.phaseTime<=0){if(state.phase==='ready'){state.phase='windup';state.phaseTime=1.2;state.attackType=Math.random()<.65?'head':'body';say(state.attackType==='head'?'He is loading up a HEAD shot. Dodge sideways or duck.':'He is aiming for the BODY. Dodge sideways or block.');}
  else if(state.phase==='windup'){state.phase='attack';state.phaseTime=.48;state.enemyPunch=.35;}
  else if(state.phase==='attack'){if(state.block>0){state.player=Math.max(0,state.player-3);say('You absorbed part of the attack.');}else if(state.playerX!==0||(state.duck>0&&state.attackType==='head')){state.phase='open';state.phaseTime=1.1;say('He missed! There is your opening — PUNCH!');}else if(distance()>92){state.phase='recover';state.phaseTime=.8;say('His punch fell short because you were out of range.');}else{state.player=Math.max(0,state.player-(state.attackType==='head'?12:15));state.downs++;state.phase='recover';state.phaseTime=1;say(state.attackType==='head'?'Clean shot to the head! Dodge sooner next time.':'Heavy body shot! Move sideways or block that one.');}state.enemyPunch=0;if(state.player<=0||state.downs>=3)finish(false);}
