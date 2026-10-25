@@ -42,12 +42,12 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
 
 @media(max-width:760px){.layout{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:1fr;gap:10px}.panel{margin-bottom:0}.full{grid-column:auto}}
 @media(max-width:480px){body{padding:8px}.sidebar{display:grid;grid-template-columns:1fr}.panel{margin-bottom:0}.name-row{font-size:9px}button{font-size:11px}.meter-card{padding:7px}}
-.camera-stage{position:relative;width:min(100%,390px);aspect-ratio:1/1;margin:8px auto 0;background:#090710;overflow:hidden;border-radius:12px}.camera-stage video{width:100%;height:100%;object-fit:cover;display:block}.oval-guide{position:absolute;left:32%;top:18%;width:36%;height:60%;border:3px solid #ffc857;border-radius:50%;box-shadow:0 0 0 999px #09071066;pointer-events:none;display:flex;align-items:flex-end;justify-content:center}.oval-guide span{position:absolute;bottom:-28px;white-space:nowrap;background:#090710dd;color:#fff0c2;padding:4px 8px;border-radius:5px;font-size:11px;letter-spacing:.5px}.camera-panel .hint{margin-top:34px}.portrait{object-fit:cover}
+.camera-stage{position:relative;width:min(100%,390px);aspect-ratio:1/1;margin:8px auto 0;background:#090710;overflow:hidden;border-radius:12px}.camera-stage video{width:100%;height:100%;object-fit:cover;display:block}.oval-guide{position:absolute;left:28%;top:14%;width:44%;height:68%;border:3px solid #ffc857;border-radius:50%;box-shadow:0 0 0 999px #09071066;pointer-events:none;display:flex;align-items:flex-end;justify-content:center}.oval-guide span{position:absolute;bottom:-28px;white-space:nowrap;background:#090710dd;color:#fff0c2;padding:4px 8px;border-radius:5px;font-size:11px;letter-spacing:.5px}.camera-panel .hint{margin-top:34px}.portrait{object-fit:cover}
 </style>
 </head>
 <body>
 <main>
-<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.1.1</p>
+<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.1.2</p>
 <div class="layout">
 <section class="main-game">
 <div class="cabinet"><canvas id="game" width="384" height="560" aria-label="Retro pixel art boxing match"></canvas></div>
@@ -140,7 +140,7 @@ function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
  rect(-15,-59,30,23,skin==='#d98c62'?'#b96e50':'#8e4d38');
  rect(-21,-59,7,23,skin);rect(14,-59,7,23,skin);
  // Head base and large face area (approx 40% of overall upper-body visual height).
- const hx=-20,hy=-106,hw=40,hh=46;
+ const hx=-20,hy=-108,hw=40,hh=48;
  if(photo && photo.complete && photo.naturalWidth){
    // Real-photo head: oval outline and clipped photo, with no square backing.
    ctx.save();ctx.beginPath();ctx.ellipse(hx+hw/2,hy+hh/2,hw/2+0.7,hh/2+0.7,0,0,Math.PI*2);ctx.fillStyle='#d6c1a0';ctx.fill();ctx.restore();
@@ -160,14 +160,19 @@ function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
  }
  // Gloves and arms animate distinctly for every action.
  if(pose==='punch'){
-   // Clearly extended straight punch at head height.
-   rect(10,-65,12,9,skin);rect(19,-69,25,13,skin);rect(38,-72,18,17,gloves);
-   rect(51,-70,7,8,'#fff0c2');
+   // Long, unmistakable straight punch: shoulder -> forearm -> glove extends toward the opponent.
+   rect(10,-62,12,11,skin);
+   rect(18,-64,27,11,skin);
+   rect(42,-67,22,17,gloves);
+   rect(59,-64,7,9,'#fff0c2');
+   // Guarding arm remains near the body.
    rect(-19,-56,9,18,skin);rect(-25,-43,15,12,gloves);
  } else if(pose==='body'){
-   // Body hook travels forward and lower, toward the opponent's midsection.
-   rect(10,-49,12,10,skin);rect(18,-43,22,13,skin);rect(35,-42,18,16,gloves);
-   rect(48,-40,7,8,'#fff0c2');
+   // Clearly extended lower body punch, aimed at the opponent's ribs.
+   rect(10,-48,12,11,skin);
+   rect(18,-46,25,12,skin);
+   rect(40,-48,22,17,gloves);
+   rect(57,-45,7,9,'#fff0c2');
    rect(-19,-56,9,18,skin);rect(-25,-43,15,12,gloves);
  } else if(pose==='block'){
    rect(-22,-69,10,20,skin);rect(-25,-81,15,15,gloves);
@@ -204,13 +209,14 @@ function draw(){
  // Foreground punch trails guarantee the striking arm/glove remains visible at contact instead of disappearing behind the opponent.
  if(state.punch>0){
    const px=state.playerPos+state.playerX;
-   if(state.bodyPunch>0){rect(px+22,468,40,13,'#d98c62');rect(px+54,465,24,20,'#4ea5d9');rect(px+72,469,7,8,'#fff0c2');}
-   else{rect(px+22,426,42,12,'#d98c62');rect(px+55,422,25,20,'#4ea5d9');rect(px+74,426,7,8,'#fff0c2');}
+   // Draw an unmistakable long arm on top of the sprite so it cannot be hidden by the opponent.
+   if(state.bodyPunch>0){rect(px+18,472,66,15,'#d98c62');rect(px+70,466,29,25,'#4ea5d9');rect(px+93,473,8,10,'#fff0c2');}
+   else{rect(px+18,421,70,15,'#d98c62');rect(px+74,414,30,25,'#4ea5d9');rect(px+98,422,8,10,'#fff0c2');}
  }
  if(state.enemyPunch>0){
    const ex=state.enemyPos;
-   if(state.enemyAttackType==='body'){rect(ex-62,468,40,13,'#a96b4d');rect(ex-78,465,24,20,'#f25f5c');rect(ex-82,469,7,8,'#fff0c2');}
-   else{rect(ex-62,426,42,12,'#a96b4d');rect(ex-80,422,25,20,'#f25f5c');rect(ex-84,426,7,8,'#fff0c2');}
+   if(state.enemyAttackType==='body'){rect(ex-84,472,66,15,'#a96b4d');rect(ex-104,466,29,25,'#f25f5c');rect(ex-109,473,8,10,'#fff0c2');}
+   else{rect(ex-88,421,70,15,'#a96b4d');rect(ex-108,414,30,25,'#f25f5c');rect(ex-113,422,8,10,'#fff0c2');}
  }
  if(state.flash>0){const ix=Math.min(340,Math.max(42,(state.playerPos+state.playerX+state.enemyPos)/2));txt('✦',ix,432,34,'#ffc857','center');txt(state.bodyPunch>0?'WHAM!':'POW!',ix,405,15,'#fff0c2','center');}
  txt(player.name.toUpperCase().slice(0,18),state.playerPos+state.playerX,566,8,'#355c7d','center');
@@ -274,11 +280,11 @@ $('takeShot').addEventListener('click',async()=>{
  // Crop a centered square from the source, then keep only an oval portrait.
  const side=Math.min(v.videoWidth,v.videoHeight),sx=(v.videoWidth-side)/2,sy=(v.videoHeight-side)/2;
  // Save only the oval's bounding box, not the full square around it. This makes the face fill the game head.
- const outW=Math.round(side*.44),outH=Math.round(side*.62);
+ const cropW=side*.44,cropH=side*.68,outW=Math.round(cropW),outH=Math.round(cropH);
  c.width=outW;c.height=outH;
  const cx=c.getContext('2d');cx.clearRect(0,0,outW,outH);
  cx.save();cx.beginPath();cx.ellipse(outW/2,outH/2,outW/2,outH/2,0,0,Math.PI*2);cx.clip();
- cx.drawImage(v,sx+side*.28,sy+side*.19,side*.44,side*.62,0,0,outW,outH);cx.restore();
+ cx.drawImage(v,sx+side*.28,sy+side*.14,cropW,cropH,0,0,outW,outH);cx.restore();
  c.toBlob(async blob=>{
   if(!blob){notice('Could not capture the photo.');return;}
   const file=new File([blob],'oval-camera-photo.png',{type:'image/png'});
@@ -299,7 +305,7 @@ function hitEnemy(kind){
  if(state.over)return;
  if(distance()>68){say('Too far away! Move closer before punching.');return;}
  if(state.stamina<9){say('You are exhausted! Recover your stamina before throwing another punch.');return;}
- state.stamina=Math.max(0,state.stamina-(kind==='jab'?8:13));state.punch=.78;state.bodyPunch=kind==='body'?.32:0;
+ state.stamina=Math.max(0,state.stamina-(kind==='jab'?8:13));state.punch=1.0;state.bodyPunch=kind==='body'?.32:0;
  const close=distance()<62;
  if(state.phase==='open'){
    const dmg=(kind==='jab'?22:30)*(close?1:0.8);
