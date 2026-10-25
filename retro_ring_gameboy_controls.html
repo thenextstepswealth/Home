@@ -135,12 +135,12 @@ input,select,button{max-width:100%;min-width:0}
 </head>
 <body class="menu-active">
 <main>
-<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.8.2</p>
+<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.8.4</p>
 
 <section id="titleScreen" class="title-screen" role="dialog" aria-label="Retro Ring main menu">
   <div class="title-logo">RETRO RING</div>
   <div class="title-tagline">3D-INSPIRED ARCADE BOXING</div>
-  <div class="version-stamp">VERSION 1.8.2</div>
+  <div class="version-stamp">VERSION 1.8.4</div>
   <div class="title-fighters" aria-hidden="true">
     <svg class="splash-ring-art" viewBox="0 0 320 118" role="img" aria-label="Two retro arcade boxers facing off in a boxing ring">
       <defs><linearGradient id="ringBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#302741"/><stop offset="1" stop-color="#100d19"/></linearGradient></defs>
@@ -477,10 +477,13 @@ function refereeSpeak(line){
    if('speechSynthesis' in window && typeof SpeechSynthesisUtterance!=='undefined'){
      window.speechSynthesis.cancel();
      const u=new SpeechSynthesisUtterance(line);
-     u.rate=.88;u.pitch=.82;u.volume=1;
      const voices=window.speechSynthesis.getVoices();
-     const voice=voices.find(v=>/en-US/i.test(v.lang)&&/male|david|daniel|alex|fred/i.test(v.name))||voices.find(v=>/en-US/i.test(v.lang));
+     const english=voices.filter(v=>/^en(-|_)/i.test(v.lang));
+     const voice=english.find(v=>/premium|enhanced|natural|neural/i.test(v.name+' '+(v.voiceURI||'')))||
+       english.find(v=>/Samantha|Daniel|Alex|Aaron|Evan|Tom|Nathan|Google US English/i.test(v.name))||
+       english.find(v=>/en-US/i.test(v.lang))||english[0];
      if(voice)u.voice=voice;
+     u.rate=.82;u.pitch=.72;u.volume=1;
      window.speechSynthesis.speak(u);
    }
  }catch(e){}
@@ -566,9 +569,9 @@ function draw(){
    rect(86,42,212,4,'#51435f');rect(86,42,212*Math.max(0,state.phaseTime/1.25),4,'#ffc857');
  }
  // Perspective movement changes apparent size: farther away = smaller and higher; closer = larger and lower.
- const pDepth=Math.max(-64,Math.min(52,state.playerY||0));
+ const pDepth=Math.max(-112,Math.min(58,state.playerY||0));
  const playerScale=2.05;
- const enemyDepth=Math.max(-58,Math.min(46,state.enemyY||0));
+ const enemyDepth=Math.max(-108,Math.min(54,state.enemyY||0));
  const playerY=(state.duck>0?468:480)+pDepth;
  const enemyY=448+enemyDepth;
  // Soft contact shadows ground each fighter.
@@ -585,12 +588,13 @@ function draw(){
    const winnerX=state.won?(state.playerPos+state.playerX):state.enemyPos;
    const winnerY=state.won?(state.playerY||0):(state.enemyY||0);
    const glove=state.won?'#238cff':'#f25f5c';
-   drawReferee(Math.max(100,Math.min(284,(winnerX+(state.won?state.enemyPos:state.playerPos))/2)),390,2.0,'raise');
-   // The referee lifts the winning boxer's glove for the official decision.
+   drawReferee(Math.max(75,Math.min(309,winnerX+(state.won?26:-26))),390,2.0,'raise');
+   // Raise the correct winner's glove: blue player or red opponent.
    ctx.save();ctx.strokeStyle='#c7835d';ctx.lineWidth=5;ctx.lineCap='round';
-   ctx.beginPath();ctx.moveTo(winnerX-3,430+winnerY);ctx.lineTo(winnerX-17,400+winnerY);ctx.lineTo(winnerX-21,378+winnerY);ctx.stroke();
-   ctx.fillStyle=glove;ctx.beginPath();ctx.arc(winnerX-21,376+winnerY,7,0,Math.PI*2);ctx.fill();ctx.restore();
-   txt('WINNER!',192,276,15,'#ffe066','center');
+   const handX=winnerX+(state.won?-21:21);
+   ctx.beginPath();ctx.moveTo(winnerX+(state.won?-3:3),430+winnerY);ctx.lineTo(handX,400+winnerY);ctx.lineTo(handX,378+winnerY);ctx.stroke();
+   ctx.fillStyle=glove;ctx.beginPath();ctx.arc(handX,376+winnerY,7,0,Math.PI*2);ctx.fill();ctx.restore();
+   txt('WINNER: '+(state.won?player.name:enemy.name).toUpperCase().slice(0,22),192,276,11,'#ffe066','center');
  }
 
  if(state.flash>0){
@@ -616,7 +620,15 @@ function updateHUD(){
  $('stamina').style.width=state.stamina+'%';$('staminaPct').textContent=Math.ceil(state.stamina)+'%';$('downs').textContent=state.downs;
  $('playerNameHud').textContent='YOU: '+player.name.toUpperCase().slice(0,18);$('enemyNameHud').textContent=enemy.name.toUpperCase().slice(0,18);
 }
-function loadImage(data){if(!data)return null;const im=new Image();im.onload=()=>{draw();};im.onerror=()=>notice('The photo could not be displayed. Try a JPG or PNG image.');im.src=data;return im;}
+function loadImage(data){
+ if(!data||typeof data!=='string')return null;
+ const im=new Image();
+ im.onload=()=>{if(im.naturalWidth>0&&im.naturalHeight>0)draw();else notice('The photo appears to be empty. Try another image.');};
+ im.onerror=()=>notice('The photo could not be displayed. Try a JPG or PNG image.');
+ im.decoding='async';
+ im.src=data;
+ return im;
+}
 function readSaved(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{"player":[],"enemy":[]}')}catch{return {player:[],enemy:[]}}}
 function writeSaved(data){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));return true}catch(e){notice('Could not save: browser storage may be full. Try a smaller photo.');return false}}
 function refreshSelects(){
@@ -646,7 +658,31 @@ function saveCharacter(type){
 }
 function clearPhoto(type){const obj=type==='player'?player:enemy;obj.photo=null;obj.image=null;applyPhoto(type,null);notice('Photo removed. The default pixel-art head will be used.');}
 function compressImage(file){
- return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=()=>reject(Error('Could not read that image.'));reader.onload=()=>{const im=new Image();im.onerror=()=>reject(Error('That file is not a supported image.'));im.onload=()=>{const max=420,scale=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*scale));c.height=Math.max(1,Math.round(im.height*scale));const cx=c.getContext('2d');cx.clearRect(0,0,c.width,c.height);cx.drawImage(im,0,0,c.width,c.height);const keepAlpha=(file.type==='image/png'||file.type==='image/webp');resolve(keepAlpha?c.toDataURL('image/png'):c.toDataURL('image/jpeg',.82));};im.src=reader.result;};reader.readAsDataURL(file);});
+ return new Promise((resolve,reject)=>{
+   const reader=new FileReader();
+   reader.onerror=()=>reject(Error('Could not read that image. Please try again.'));
+   reader.onabort=()=>reject(Error('Photo loading was cancelled.'));
+   reader.onload=()=>{
+     const im=new Image();
+     im.onerror=()=>reject(Error('That photo format could not be opened. Try a JPG or PNG.'));
+     im.onload=()=>{
+       if(!im.naturalWidth||!im.naturalHeight){reject(Error('The selected image is empty.'));return;}
+       const max=420,scale=Math.min(1,max/Math.max(im.naturalWidth,im.naturalHeight));
+       const c=document.createElement('canvas');
+       c.width=Math.max(1,Math.round(im.naturalWidth*scale));
+       c.height=Math.max(1,Math.round(im.naturalHeight*scale));
+       const cx=c.getContext('2d');
+       if(!cx){reject(Error('Photo processing is unavailable in this browser.'));return;}
+       cx.drawImage(im,0,0,c.width,c.height);
+       try{
+         const keepAlpha=(file.type==='image/png'||file.type==='image/webp');
+         resolve(keepAlpha?c.toDataURL('image/png'):c.toDataURL('image/jpeg',.82));
+       }catch(e){reject(Error('Could not prepare that photo. Try a smaller JPG or PNG image.'));}
+     };
+     im.src=reader.result;
+   };
+   reader.readAsDataURL(file);
+ });
 }
 async function handleFile(type,file){if(!file)return;if(!file.type.startsWith('image/')){notice('Please choose an image file.');return;}try{const data=await compressImage(file);const obj=type==='player'?player:enemy;obj.photo=data;obj.image=loadImage(data);$(type==='player'?'playerName':'enemyName').value=obj.name;updatePortraits();updateHUD();draw();notice('Photo ready. Select Save '+(type==='player'?'boxer':'opponent')+' to keep it for later.');}catch(e){notice(e.message||'Could not process that photo.');}}
 async function openCamera(type){
@@ -670,10 +706,14 @@ $('takeShot').addEventListener('click',async()=>{
  const cx=c.getContext('2d');cx.clearRect(0,0,outW,outH);
  cx.save();cx.beginPath();cx.ellipse(outW/2,outH/2,outW/2,outH/2,0,0,Math.PI*2);cx.clip();
  cx.translate(outW,0);cx.scale(-1,1);cx.drawImage(v,sx+side*.25,sy+side*.14,cropW,cropH,0,0,outW,outH);cx.restore();
+ if(!c.toBlob){notice('Photo capture is not supported by this browser. Try Upload instead.');return;}
  c.toBlob(async blob=>{
-  if(!blob){notice('Could not capture the photo.');return;}
-  const file=new File([blob],'oval-camera-photo.png',{type:'image/png'});
-  await handleFile(cameraTarget,file);closeCamera();
+  if(!blob){notice('Could not capture the photo. Try again or use Upload.');return;}
+  try{
+    const file=new File([blob],'oval-camera-photo.png',{type:'image/png'});
+    await handleFile(cameraTarget,file);
+    closeCamera();
+  }catch(err){notice('Could not finish the photo. Try Upload instead.');}
  },'image/png');
 });
 $('closeCamera').addEventListener('click',closeCamera);
@@ -687,7 +727,7 @@ $('playerName').addEventListener('change',()=>{player.name=$('playerName').value
 $('enemyName').addEventListener('change',()=>{enemy.name=$('enemyName').value.trim().slice(0,18)||'The Brick Wall';updateHUD();draw();});
 function distance(){
  const dx=Math.abs((state.playerPos+state.playerX)-state.enemyPos);
- const dy=Math.abs((state.playerY||0)-(state.enemyY||0))*0.72;
+ const dy=Math.abs((state.playerY||0)-(state.enemyY||0))*0.60;
  return Math.sqrt(dx*dx+dy*dy);
 }
 function hitEnemy(kind){
@@ -712,7 +752,7 @@ function hitEnemy(kind){
  }
  if(state.enemy<=0){
  state.over=true;state.won=true;state.victoryPose=1;playVictory();crowdCheer();stopRingMusic();
- refereeSpeak('The winner by knockout is '+player.name+'! Raise that hand!');
+ refereeSpeak('And the winner by knockout, in the blue corner, '+player.name+'!');
 }
  updateHUD();
 }
@@ -727,13 +767,13 @@ function dodge(dir){
 }
 function finish(win){
  state.over=true;state.won=win;state.enemyPunch=0;
- if(win){state.victoryPose=1;refereeSpeak('The winner is '+player.name+'! Raise that hand!');}
- else {state.victoryPose=1;refereeSpeak('The winner is '+enemy.name+'! Give him a hand!');}
+ if(win){state.victoryPose=1;playVictory();crowdCheer();stopRingMusic();refereeSpeak('And the winner, in the blue corner, '+player.name+'!');}
+ else {state.victoryPose=1;playDefeat();crowdCheer();stopRingMusic();refereeSpeak('And the winner, in the red corner, '+enemy.name+'!');}
 }
 function duck(){if(state.over)return;state.duck=.5;if(state.phase==='attack'&&state.attackType==='head'){state.phase='open';state.phaseTime=1.65;state.enemyPunch=0;say('You ducked under the hook! COUNTER NOW!');}else if(state.phase==='attack'&&state.attackType==='body'){state.player=Math.max(0,state.player-(state.attackType==='head'?1.5:2.5));state.downs++;showDamageNotice('YOU WERE HIT! -7 HEALTH','#ff7373');impactFlash();playKnockdown();say('Body shot! Ducking into a body punch is a bad trade.');}else say('You crouch low. Watch for a body shot.');updateHUD();if(state.player<=0)finish(false);}
 function block(){if(state.over)return;state.block=.4;playBlock();if(state.phase==='attack'){state.player=Math.max(0,state.player-2);state.phase='recover';state.phaseTime=.75;state.enemyPunch=0;say('You blocked most of the hit, but lost a little ground.');}else say('Guard up. Blocking is safer, but a dodge creates a better counter chance.');updateHUD();}
 function action(a){if(a==='left')dodge(-1);if(a==='right')dodge(1);
-if(a==='up'||a==='down'){state.playerY=Math.max(-64,Math.min(52,(state.playerY||0)+(a==='up'?-14:14)));draw();return;}
+if(a==='up'||a==='down'){state.playerY=Math.max(-112,Math.min(58,(state.playerY||0)+(a==='up'?-16:16)));draw();return;}
 if(a==='duck')duck();if(a==='block')block();if(a==='jab')hitEnemy('jab');if(a==='body')hitEnemy('body');}
 let moveHold=null;
 document.querySelectorAll('[data-action]').forEach(b=>{
@@ -767,7 +807,7 @@ let last=0;function moveOpponent(dt){
  state.enemyDepthClock=(state.enemyDepthClock||0)+dt;
  if(!Number.isFinite(state.enemyTargetY)||state.enemyDepthClock>1.15){
    state.enemyDepthClock=0;
-   state.enemyTargetY=Math.max(-58,Math.min(46,(state.playerY||0)+(Math.random()-.5)*28));
+   state.enemyTargetY=Math.max(-108,Math.min(54,(state.playerY||0)+(Math.random()-.5)*20));
  }
  const currentY=state.enemyY||0,dy=state.enemyTargetY-currentY;
  state.enemyY=currentY+Math.sign(dy)*Math.min(Math.abs(dy),dt*11*speed);
