@@ -138,12 +138,12 @@ input,select,button{max-width:100%;min-width:0}
 </head>
 <body class="menu-active">
 <main>
-<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.9.6</p>
+<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.9.7</p>
 
 <section id="titleScreen" class="title-screen" role="dialog" aria-label="Retro Ring main menu">
   <div class="title-logo">RETRO RING</div>
   <div class="title-tagline">3D-INSPIRED ARCADE BOXING</div>
-  <div class="version-stamp">VERSION 1.9.6</div>
+  <div class="version-stamp">VERSION 1.9.7</div>
   <div class="title-fighters" aria-hidden="true">
     <svg class="splash-ring-art" viewBox="0 0 320 118" role="img" aria-label="Two retro arcade boxers facing off in a boxing ring">
       <defs><linearGradient id="ringBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#302741"/><stop offset="1" stop-color="#100d19"/></linearGradient></defs>
@@ -525,6 +525,20 @@ function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
  ctx.restore();
 }
 
+function refereeSpeak(line){
+ say(line);
+ try{
+   if('speechSynthesis' in window && typeof SpeechSynthesisUtterance!=='undefined'){
+     window.speechSynthesis.cancel();
+     const u=new SpeechSynthesisUtterance(line);
+     u.rate=.88;u.pitch=.82;u.volume=1;
+     const voices=window.speechSynthesis.getVoices();
+     const voice=voices.find(v=>/en-US/i.test(v.lang)&&/male|david|daniel|alex|fred/i.test(v.name))||voices.find(v=>/en-US/i.test(v.lang));
+     if(voice)u.voice=voice;
+     window.speechSynthesis.speak(u);
+   }
+ }catch(e){}
+}
 function drawReferee(x,y,scale,pose='raise'){
  ctx.save();ctx.translate(x,y);ctx.scale(scale*0.9,scale*0.9);
  const swing=Math.sin((state.introTime||0)*7)*.18;
@@ -554,7 +568,7 @@ function drawReferee(x,y,scale,pose='raise'){
 
 function draw(){
  ctx.save();
- // Version 1.9.6: taller playfield with the ring enlarged vertically.
+ // Version 1.9.7: taller playfield with the ring enlarged vertically.
  rect(0,0,W,H,'#100e1a');
  const sky=ctx.createLinearGradient(0,0,0,118);sky.addColorStop(0,'#171526');sky.addColorStop(1,'#332746');
  rect(0,0,W,108,'#20192e');ctx.fillStyle=sky;ctx.fillRect(0,0,W,108);
@@ -879,23 +893,14 @@ function tick(ts){
 const dt=Math.min(.05,(ts-last)/1000||0);last=ts;
 if((state.introTime||0)>0){
  state.introTime=Math.max(0,state.introTime-dt);
- if(state.introTime===0){state.phase='ready';state.phaseTime=.75;playBell();refereeSpeak('Seconds away. Fight!');}
+ if(state.introTime===0){state.phase='ready';state.phaseTime=1.15;playBell();refereeSpeak('Ding ding! Fight!');}
  draw();requestAnimationFrame(tick);return;
 }
-moveOpponent(dt);if(!state.over){state.stamina=Math.min(100,state.stamina+dt*8);state.phaseTime-=dt;state.playerHitCooldown=Math.max(0,(state.playerHitCooldown||0)-dt);state.punch=Math.max(0,state.punch-dt);state.bodyPunch=Math.max(0,state.bodyPunch-dt);state.enemyPunch=Math.max(0,state.enemyPunch-dt*1.5);state.enemyBlock=Math.max(0,(state.enemyBlock||0)-dt);state.flash=Math.max(0,state.flash-dt);state.enemyStun=Math.max(0,state.enemyStun-dt);state.enemyRetreat=Math.max(0,(state.enemyRetreat||0)-dt);state.enemyHeadRecoil=Math.max(0,(state.enemyHeadRecoil||0)-dt);state.enemyBodyRecoil=Math.max(0,(state.enemyBodyRecoil||0)-dt);state.playerHeadRecoil=Math.max(0,(state.playerHeadRecoil||0)-dt);state.playerBodyRecoil=Math.max(0,(state.playerBodyRecoil||0)-dt);state.duck=Math.max(0,state.duck-dt);state.block=Math.max(0,state.block-dt);state.playerX*=Math.max(0,1-dt*5);state.playerPos=Math.max(20,Math.min(364,state.playerPos));
- if(state.phaseTime<=0){if(state.phase==='ready'){state.phase='windup';state.phaseTime=(state.enemySpeedScale?0.92/state.enemySpeedScale:0.92);state.attackType=Math.random()<.65?'head':'body';say(state.attackType==='head'?'He is loading up a HEAD shot. Dodge sideways or duck.':'He is aiming for the BODY. Dodge sideways or block.');}
- else if(state.phase==='windup'){state.phase='attack';state.phaseTime=(.72/(state.enemySpeedScale||1));state.enemyPunch=.42;}
- else if(state.phase==='attack'){if(state.block>0){state.player=Math.max(0,state.player-1);say('You absorbed part of the attack.');}else if(state.playerX!==0||(state.duck>0&&state.attackType==='head')){state.phase='open';state.phaseTime=1.65;say('He missed! There is your opening — PUNCH!');}else if(distance()>116){state.phase='recover';state.phaseTime=(.62/(state.enemySpeedScale||1));say('His punch fell short because you were out of range.');}else{
- const diff=$('difficultySelect')?.value||'easy';
- const moving=Math.abs((state.playerX||0))>1 || (state.lastPlayerPos!==undefined&&Math.abs(state.playerPos-state.lastPlayerPos)>5);
- const rawDamage=state.attackType==='head'?5.5:7.0;
- const hitDamage=rawDamage*(state.enemyDamageScale||.85)*(moving?.68:1);
- state.player=Math.max(0,state.player-hitDamage);
- state.playerHeadRecoil=state.attackType==='head'?.34:0;state.playerBodyRecoil=state.attackType==='body'?.3:0;
- state.downs++;playKnockdown();state.phase='recover';state.phaseTime=.62/(state.enemySpeedScale||1);
- say(state.attackType==='head'?'He lands a head shot! Dodge or block to avoid the next one.':'He lands a body shot! Keep moving or block.');
-}state.enemyPunch=0;if(state.player<=0)finish(false);}
- else if(state.phase==='open'){state.phase='recover';state.phaseTime=.5;say('The opening closed. Prepare for his next attack.');}else{state.phase='ready';state.phaseTime=.8/state.enemySpeedScale;state.playerX=0;if(distance()>76)state.enemyPos=Math.max(state.playerPos+42,state.enemyPos-10);}}
+moveOpponent(dt);if(!state.over){state.stamina=Math.min(100,state.stamina+dt*8);state.phaseTime-=dt;state.playerHitCooldown=Math.max(0,(state.playerHitCooldown||0)-dt);state.punch=Math.max(0,state.punch-dt);state.bodyPunch=Math.max(0,state.bodyPunch-dt);state.enemyPunch=Math.max(0,state.enemyPunch-dt*1.5);state.flash=Math.max(0,state.flash-dt);state.enemyStun=Math.max(0,state.enemyStun-dt);state.duck=Math.max(0,state.duck-dt);state.block=Math.max(0,state.block-dt);state.playerX*=Math.max(0,1-dt*5);state.playerPos=Math.max(20,Math.min(364,state.playerPos));
+ if(state.phaseTime<=0){if(state.phase==='ready'){state.phase='windup';state.phaseTime=(state.enemySpeedScale?1.55/state.enemySpeedScale:1.55);state.attackType=Math.random()<.65?'head':'body';say(state.attackType==='head'?'He is loading up a HEAD shot. Dodge sideways or duck.':'He is aiming for the BODY. Dodge sideways or block.');}
+ else if(state.phase==='windup'){state.phase='attack';state.phaseTime=(.8/(state.enemySpeedScale||1));state.enemyPunch=.32;}
+ else if(state.phase==='attack'){if(state.block>0){state.player=Math.max(0,state.player-1);say('You absorbed part of the attack.');}else if(state.playerX!==0||(state.duck>0&&state.attackType==='head')){state.phase='open';state.phaseTime=1.65;say('He missed! There is your opening — PUNCH!');}else if(distance()>92){state.phase='recover';state.phaseTime=(.85/(state.enemySpeedScale||1));say('His punch fell short because you were out of range.');}else{state.player=Math.max(0,state.player-(state.attackType==='head'?1.5:2.5));state.downs++;playKnockdown();state.phase='recover';state.phaseTime=.9/(state.enemySpeedScale||1);say(state.attackType==='head'?'Clean shot to the head! Dodge sooner next time.':'Heavy body shot! Move sideways or block that one.');}state.enemyPunch=0;if(state.player<=0)finish(false);}
+ else if(state.phase==='open'){state.phase='recover';state.phaseTime=.65;say('The opening closed. Prepare for his next attack.');}else{state.phase='ready';state.phaseTime=1.15;state.playerX=0;if(distance()>76)state.enemyPos=Math.max(state.playerPos+42,state.enemyPos-10);}}
  updateHUD();}draw();requestAnimationFrame(tick);}
 
 function attachMainMenu(){
