@@ -42,7 +42,7 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
 
 @media(max-width:760px){.layout{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:1fr;gap:10px}.panel{margin-bottom:0}.full{grid-column:auto}}
 @media(max-width:480px){body{padding:8px}.sidebar{display:grid;grid-template-columns:1fr}.panel{margin-bottom:0}.name-row{font-size:9px}button{font-size:11px}.meter-card{padding:7px}}
-.camera-stage{position:relative;width:min(100%,390px);aspect-ratio:1/1;margin:8px auto 0;background:#090710;overflow:hidden;border-radius:12px}.camera-stage video{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1)}.oval-guide{position:absolute;left:22%;top:14%;width:56%;height:68%;border:3px solid #ffc857;border-radius:50%;box-shadow:0 0 0 999px #09071066;pointer-events:none;display:flex;align-items:flex-end;justify-content:center}.oval-guide span{position:absolute;bottom:-28px;white-space:nowrap;background:#090710dd;color:#fff0c2;padding:4px 8px;border-radius:5px;font-size:11px;letter-spacing:.5px}.camera-panel .hint{margin-top:34px}.portrait{object-fit:cover}
+.camera-stage{position:relative;width:min(100%,390px);aspect-ratio:1/1;margin:8px auto 0;background:#090710;overflow:hidden;border-radius:12px}.camera-stage video{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1)}.oval-guide{position:absolute;left:25%;top:14%;width:50%;height:72%;border:3px solid #ffc857;border-radius:50%;box-shadow:0 0 0 999px #09071066;pointer-events:none;display:flex;align-items:flex-end;justify-content:center}.oval-guide span{position:absolute;bottom:-28px;white-space:nowrap;background:#090710dd;color:#fff0c2;padding:4px 8px;border-radius:5px;font-size:11px;letter-spacing:.5px}.camera-panel .hint{margin-top:34px}.portrait{object-fit:cover}
 
 .soundbar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:8px 0 10px;padding:0 2px}
 .sound-toggle{font-family:inherit;font-size:12px;padding:8px 10px;min-height:38px;border:2px solid #8b7ba2;background:#302741;color:#fff0c2;border-radius:5px;touch-action:manipulation}
@@ -77,18 +77,18 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
 #game{image-rendering:auto}
 .portrait{image-rendering:auto}
 .camera-stage{border-radius:14px}
-.oval-guide{border-radius:50%;aspect-ratio:40/48}
+.oval-guide{border-radius:50%;aspect-ratio:36/51}
 
 </style>
 </head>
 <body>
 <main>
-<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.3.3</p>
+<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.3.4</p>
 
 <section id="titleScreen" class="title-screen" role="dialog" aria-label="Retro Ring main menu">
   <div class="title-logo">RETRO RING</div>
   <div class="title-tagline">8-BIT ARCADE BOXING</div>
-  <div class="version-stamp">VERSION 1.3.3</div>
+  <div class="version-stamp">VERSION 1.3.4</div>
   <div class="title-fighters" aria-hidden="true">🥊　VS　🥊</div>
   <div class="title-panel">
     <label for="difficultySelect">DIFFICULTY</label>
@@ -204,14 +204,14 @@ function tone(freq,duration,type='square',volume=.2,when=0,slide=0,dest='sfx'){
  o.connect(g);g.connect(dest==='music'?ringAudio.musicGain:ringAudio.sfxGain);o.start(t);o.stop(t+duration+.025);
 }
 function bellSound(){tone(880,.85,'sine',.38,0,-100);tone(1320,.7,'sine',.2,.02,-200);tone(1760,.3,'triangle',.1,.04,-400);}
-function punchSound(kind,hit){if(!hit){tone(165,.09,'square',.08,0,-80);return;}if(kind==='body'){tone(105,.14,'triangle',.28,0,-45);tone(68,.18,'sine',.17,.02,-20);}else{tone(210,.11,'square',.18,0,-110);tone(110,.13,'triangle',.2,.02,-40);}}
-function blockSound(){tone(410,.06,'square',.14,0,-150);tone(245,.08,'triangle',.12,.03,-80);}
+function punchSound(kind,hit){if(!hit){tone(240,.07,'square',.09,0,-150);return;}if(kind==='body'){tone(92,.16,'triangle',.30,0,-55);tone(58,.20,'sine',.22,.015,-25);tone(155,.06,'square',.08,.025,-70);}else{tone(285,.075,'square',.20,0,-175);tone(145,.12,'triangle',.25,.012,-65);tone(360,.045,'square',.09,.025,-120);}}
+function blockSound(){tone(520,.045,'square',.16,0,-240);tone(310,.08,'triangle',.17,.02,-130);tone(180,.07,'sine',.10,.035,-60);}
 function knockdownSound(){tone(145,.28,'sawtooth',.2,0,-100);tone(65,.3,'sine',.2,.04,-25);}
 function victorySound(){[523,659,784,1047].forEach((f,i)=>tone(f,.2,'square',.14,i*.14));}
 function defeatSound(){[392,330,262,196].forEach((f,i)=>tone(f,.23,'triangle',.14,i*.18));}
-const ringMelody=[659,0,784,0,988,784,659,0,523,0,659,784,0,587,659,0,523,0,392,0,523,659,0,494];
-const ringBass=[131,0,131,0,165,0,165,0,110,0,110,0,147,0,147,0];
-function musicTick(){if(!ringAudio.ctx||!ringAudio.enabled||!ringAudio.musicOn)return;const i=ringAudio.step++,m=ringMelody[i%ringMelody.length],b=ringBass[i%ringBass.length];if(m)tone(m,.17,'square',.15,0,0,'music');if(b)tone(b,.19,'triangle',.09,0,0,'music');}
+const ringMelody=[392,0,392,523,0,466,392,0,311,392,0,466,523,0,392,0,349,0,392,466,0,523,466,0,311,0,349,392,0,466,392,0];
+const ringBass=[98,0,98,0,117,0,117,0,78,0,78,0,92,0,92,0,87,0,87,0,104,0,104,0,69,0,69,0,82,0,82,0];
+function musicTick(){if(!ringAudio.ctx||!ringAudio.enabled||!ringAudio.musicOn)return;const i=ringAudio.step++,m=ringMelody[i%ringMelody.length],b=ringBass[i%bassLength()];if(m)tone(m,.13,'square',.16,0,0,'music');if(b)tone(b,.17,'triangle',.12,0,0,'music');}\nfunction bassLength(){return ringBass.length;}
 function startRingMusic(){if(!ringAudio.ctx||!ringAudio.enabled||!ringAudio.musicOn||ringAudio.seqTimer)return;ringAudio.step=0;musicTick();ringAudio.seqTimer=setInterval(musicTick,230);}
 function stopRingMusic(){if(ringAudio.seqTimer){clearInterval(ringAudio.seqTimer);ringAudio.seqTimer=null;}}
 function playPunch(kind,hit){if(!ringAudio.enabled)return;if(ringAudio.ctx&&ringAudio.ctx.state==='suspended')ringAudio.ctx.resume();if(ringAudio.sfxOn)punchSound(kind,hit);}
@@ -267,7 +267,7 @@ function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
  rect(-15,-59,3,19,skin);rect(12,-59,3,19,skin);
  rect(-21,-59,7,23,skin);rect(14,-59,7,23,skin);
  // Head base and large face area (approx 40% of overall upper-body visual height).
- const hx=-20,hy=-108,hw=40,hh=48;
+ const hx=-18,hy=-110,hw=36,hh=51;
  if(photo && photo.complete && photo.naturalWidth){
    // Real-photo head: oval outline and clipped photo, with no square backing.
    ctx.save();ctx.beginPath();ctx.ellipse(hx+hw/2,hy+hh/2,hw/2+0.7,hh/2+0.7,0,0,Math.PI*2);ctx.fillStyle='#d6c1a0';ctx.fill();ctx.restore();
@@ -307,10 +307,10 @@ function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
  // Gloves and arms animate distinctly for every action.
  if(pose==='punch'){
    // Long, unmistakable straight punch: shoulder -> forearm -> glove extends toward the opponent.
-   rect(9,-61,12,12,skin);
-   rect(17,-62,23,12,skin);
-   rect(36,-65,21,18,gloves);
-   rect(51,-62,6,9,'#fff0c2');
+   rect(8,-78,13,12,skin);
+   rect(16,-88,22,13,skin);
+   rect(34,-94,22,20,gloves);
+   rect(50,-89,7,10,'#fff0c2');
    // Guarding arm remains near the body.
    rect(-19,-56,9,18,skin);rect(-25,-43,15,12,gloves);
  } else if(pose==='body'){
@@ -356,7 +356,7 @@ function draw(){
  // Impact feedback is placed at the fighters' actual contact point, at head or body height.
  if(state.flash>0){
    const ix=Math.min(340,Math.max(42,(state.playerPos+state.playerX+state.enemyPos)/2));
-   const iy=state.bodyPunch>0?402:354;
+   const iy=state.bodyPunch>0?402:315;
    txt('✦',ix,iy,28,'#ffc857','center');
    txt(state.bodyPunch>0?'WHAM!':'POW!',ix,iy-22,12,'#fff0c2','center');
  }
@@ -421,11 +421,11 @@ $('takeShot').addEventListener('click',async()=>{
  // Crop a centered square from the source, then keep only an oval portrait.
  const side=Math.min(v.videoWidth,v.videoHeight),sx=(v.videoWidth-side)/2,sy=(v.videoHeight-side)/2;
  // Save only the oval's bounding box, not the full square around it. This makes the face fill the game head.
- const cropW=side*.56,cropH=side*.68,outW=Math.round(cropW),outH=Math.round(cropH);
+ const cropW=side*.50,cropH=side*.72,outW=Math.round(cropW),outH=Math.round(cropH);
  c.width=outW;c.height=outH;
  const cx=c.getContext('2d');cx.clearRect(0,0,outW,outH);
  cx.save();cx.beginPath();cx.ellipse(outW/2,outH/2,outW/2,outH/2,0,0,Math.PI*2);cx.clip();
- cx.translate(outW,0);cx.scale(-1,1);cx.drawImage(v,sx+side*.22,sy+side*.14,cropW,cropH,0,0,outW,outH);cx.restore();
+ cx.translate(outW,0);cx.scale(-1,1);cx.drawImage(v,sx+side*.25,sy+side*.14,cropW,cropH,0,0,outW,outH);cx.restore();
  c.toBlob(async blob=>{
   if(!blob){notice('Could not capture the photo.');return;}
   const file=new File([blob],'oval-camera-photo.png',{type:'image/png'});
@@ -454,13 +454,13 @@ function hitEnemy(kind){
  const close=range<112;
  if(state.phase==='open'){
    const dmg=(kind==='jab'?5:8)*(close?1:0.9);
-   state.enemy=Math.max(0,state.enemy-dmg);state.flash=.58;state.enemyStun=.28;playPunch(kind,true);
+   state.enemy=Math.max(0,state.enemy-dmg);state.flash=.58;state.enemyStun=kind==='jab'?.42:.32;state.enemyFlinch=kind==='jab'?.22:0;playPunch(kind,true);
    say(kind==='jab'?'CLEAN JAB! You caught him during his opening.':'BIG BODY SHOT! That counter landed hard.');
    state.phase='recover';state.phaseTime=1.25;
  }else if(state.phase==='windup'){
-   const dmg=kind==='jab'?8:11;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.48;state.enemyStun=.2;playPunch(kind,true);say('HIT! You interrupted his setup with a clean punch!');
+   const dmg=kind==='jab'?8:11;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.48;state.enemyStun=kind==='jab'?.4:.3;state.enemyFlinch=kind==='jab'?.22:0;playPunch(kind,true);say('HIT! You interrupted his setup with a clean punch!');
  }else{
-   const dmg=kind==='jab'?7:10;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.4;state.enemyStun=.16;playPunch(kind,true);say('SOLID HIT! Counters during OPEN! do much more damage.');
+   const dmg=kind==='jab'?7:10;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.4;state.enemyStun=kind==='jab'?.4:.3;state.enemyFlinch=kind==='jab'?.22:0;playPunch(kind,true);say('SOLID HIT! Counters during OPEN! do much more damage.');
  }
  if(state.enemy<=0){state.over=true;state.won=true;playVictory();stopRingMusic();say('KNOCKOUT! '+player.name+' takes the fight!');}
  updateHUD();
