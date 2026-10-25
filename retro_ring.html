@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#090d13">
-<title>Retro Ring — 3D Boxing · v3.0.0</title>
+<title>Retro Ring — 3D Boxing · v3.1.0</title>
 <style>
 :root{color-scheme:dark;--gold:#e7bd68;--red:#e64c4c;--blue:#54a8d8}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080b10;color:#f3f4f6;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;touch-action:none}
@@ -27,14 +27,14 @@
 </head>
 <body>
 <canvas id="game"></canvas>
-<div id="loading">RETRO RING <small id="loadingStatus">Loading 3D engine…</small><small>VERSION 3.0.0</small></div>
+<div id="loading">RETRO RING <small id="loadingStatus">Loading 3D engine…</small><small>VERSION 3.1.0</small></div>
 <div class="hud" id="hud" hidden>
   <div class="fighterHud"><div class="name">YOU · RED CORNER</div><div class="bar"><div id="pHealth" class="fill you"></div></div><div class="subbar"><div id="pStamina" class="stamina"></div></div></div>
   <div><div id="round">ROUND 1 / 3</div><div id="clock">3:00</div></div>
   <div class="fighterHud right"><div class="name">CHALLENGER · BLUE</div><div class="bar"><div id="eHealth" class="fill enemy"></div></div><div class="subbar"><div id="eStamina" class="stamina"></div></div></div>
 </div>
 <div id="message"></div>
-<div id="menu"><div class="panel"><div class="eyebrow">3D BOXING REBUILD · VERSION 3.0.0</div><h1>RETRO RING</h1><p>Closer fight camera, articulated boxer rigs, upgraded glove and muscle detail, and cinematic arena lighting.</p><div class="row"><label for="difficulty">DIFFICULTY</label><select id="difficulty"><option value="easy">Easy</option><option value="normal" selected>Normal</option><option value="hard">Hard</option></select></div><button id="start">START FIGHT</button><p class="note">Designed for iPhone Safari. Requires internet to load the Three.js engine. Boxer rigs are built into the game.</p></div></div>
+<div id="menu"><div class="panel"><div class="eyebrow">3D BOXING REBUILD · VERSION 3.1.0</div><h1>RETRO RING</h1><p>1990s arcade boxing: bold caricatured fighters, oversized gloves, chunky boots, punch combos, and a full-ring side view.</p><div class="row"><label for="difficulty">DIFFICULTY</label><select id="difficulty"><option value="easy">Easy</option><option value="normal" selected>Normal</option><option value="hard">Hard</option></select></div><button id="start">START FIGHT</button><p class="note">Designed for iPhone Safari. Requires internet to load the Three.js engine. Boxer rigs are built into the game.</p></div></div>
 <div id="controls" hidden>
   <div class="cluster move">
     <button class="ctrl" style="grid-column:2;grid-row:1" data-hold="up">UP</button>
@@ -77,7 +77,7 @@ const mats={};
 let impactTime=0,impactStrength=0;
 const impactFX=[];
 // Version 3.0 uses a self-contained articulated fighter rig; no 38 MB model downloads.
-// Fighter rigs are built locally so Safari never waits for third-party GLB assets.
+// Arcade-style fighters are built into the game. No character downloads; Three.js still requires internet access.
 function material(color,roughness=.65,metalness=0){return new THREE.MeshStandardMaterial({color,roughness,metalness});}
 function mesh(geo,mat,parent,x=0,y=0,z=0){const m=new THREE.Mesh(geo,mat);m.position.set(x,y,z);parent.add(m);return m;}
 function box(parent,w,h,d,mat,x,y,z){return mesh(new THREE.BoxGeometry(w,h,d),mat,parent,x,y,z);}
@@ -85,7 +85,7 @@ function sphere(parent,r,mat,x,y,z,sx=1,sy=1,sz=1){const m=mesh(new THREE.Sphere
 function capsuleBetween(parent,a,b,r,mat){const v=new THREE.Vector3().subVectors(b,a),m=mesh(new THREE.CylinderGeometry(r,r,v.length(),12),mat,parent);m.position.copy(a).add(b).multiplyScalar(.5);m.quaternion.setFromUnitVectors(new THREE.Vector3(0,1,0),v.normalize());return m;}
 function buildArena(){
  scene=new THREE.Scene();scene.background=new THREE.Color(0x080c13);scene.fog=new THREE.Fog(0x080c13,13,34);
- camera=new THREE.PerspectiveCamera(36,innerWidth/innerHeight,.1,100);camera.position.set(0,4.2,10.7);camera.lookAt(0,1.45,0);
+ camera=new THREE.PerspectiveCamera(32,innerWidth/innerHeight,.1,100);camera.position.set(0,3.7,13.6);camera.lookAt(0,1.55,0);
  renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:false,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.7));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.22;
  scene.add(new THREE.HemisphereLight(0x9eacc8,0x17131a,2.0));
  const key=new THREE.DirectionalLight(0xffe4bb,3.3);key.position.set(-4,9,6);key.castShadow=true;key.shadow.mapSize.set(1536,1536);key.shadow.camera.left=-7;key.shadow.camera.right=7;key.shadow.camera.top=8;key.shadow.camera.bottom=-5;scene.add(key);
@@ -152,13 +152,13 @@ function buildFighter(isPlayer){
  const joint=material(isPlayer?0x7d322b:0x56636f,.5);
  const torso=new THREE.Group();root.add(torso);torso.position.y=1.52;
  const hips=new THREE.Group();root.add(hips);hips.position.y=.72;
- sphere(torso,.45,bodyMat,0,0,0,.91,1.18,.59);
+ sphere(torso,.48,bodyMat,0,0,0,1.02,1.13,.72);
  // More defined athletic silhouette and subtle muscle planes.
  sphere(torso,.22,bodyMat,-.31,.31,.12,1.12,.72,.8);
  sphere(torso,.22,bodyMat,.31,.31,.12,1.12,.72,.8);
  for(let yy of [-.12,-.27,-.41])for(let xx of [-.115,.115])sphere(torso,.085,bodyMat,xx,yy,.245,.88,.72,.38);
  sphere(torso,.22,skin,0,.56,0,1.08,.75,.78); // neck
- sphere(torso,.30,skin,0,.88,0,.86,1.02,.84);
+ sphere(torso,.355,skin,0,.91,0,.92,1.02,.88);
  // Jaw and cheek planes add a more human facial silhouette.
  sphere(torso,.235,skin,0,.75,.055,1,.72,.8);
  sphere(torso,.105,skin,-.19,.83,.16,.8,.9,.6);sphere(torso,.105,skin,.19,.83,.16,.8,.9,.6); // head
@@ -169,14 +169,19 @@ function buildFighter(isPlayer){
  sphere(torso,.09,skin,-.17,.82,.205,1.0,.62,.45);sphere(torso,.09,skin,.17,.82,.205,1.0,.62,.45);
  sphere(torso,.045,material(0x5a3930,.7),-.286,.9,.035,.7,1,.6);sphere(torso,.045,material(0x5a3930,.7),.286,.9,.035,.7,1,.6);
  const hair=material(isPlayer?0x211d1b:0x2a2523);
- sphere(torso,.315,hair,0,1.075,-.015,.9,.5,.9);
+ sphere(torso,.365,hair,0,1.105,-.015,1.0,.48,.95);
+ // Oversized arcade-era hair silhouette and sideburns.
+ sphere(torso,.17,hair,-.24,1.16,-.015,1.0,.75,.85);sphere(torso,.17,hair,.24,1.16,-.015,1.0,.75,.85);
+ // Broad cartoon eyebrows and a visible confident mouth.
+ box(torso,.13,.035,.03,hair,-.115,.99,.292);box(torso,.13,.035,.03,hair,.115,.99,.292);
  // face eyes / brow toward camera
- for(const x of [-.115,.115]){sphere(torso,.027,material(0x17191d),x,.93,.262,1,.7,.5);box(torso,.09,.025,.025,hair,x,.99,.258);}
- const mouth=box(torso,.11,.018,.025,material(0x5c2925),0,.69,.27);
+ for(const x of [-.115,.115]){sphere(torso,.038,material(0xf4e6ce),x,.935,.285,1,.9,.6);sphere(torso,.019,material(0x17191d),x,.935,.311,1,.9,.7);}
+ const mouth=box(torso,.14,.026,.025,material(0x4b2024),0,.69,.285);
+ sphere(torso,.12,skin,0,.67,.24,1.1,.55,.5); // exaggerated chin
  // shorts
  box(torso,.72,.43,.53,shorts,0,-.68,0);
  box(torso,.75,.08,.55,trim,0,-.45,0);
- box(torso,.018,.38,.012,trim,-.22,-.68,.272);box(torso,.018,.38,.012,trim,.22,-.68,.272);
+ box(torso,.045,.38,.018,trim,-.29,-.68,.278);box(torso,.045,.38,.018,trim,.29,-.68,.278);
  // Corner patches and a bold waistband emblem help the trunks read as tailored sportswear.
  box(torso,.13,.12,.018,trim,-.25,-.66,.278);box(torso,.13,.12,.018,trim,.25,-.66,.278);
  box(torso,.18,.11,.02,material(isPlayer?0xf2d58d:0xdbe8f5,.38),0,-.66,.285);
@@ -186,7 +191,8 @@ function buildFighter(isPlayer){
   const leg=new THREE.Group();leg.position.set(side*.2,-.82,0);torso.add(leg);
   capsuleBetween(leg,new THREE.Vector3(0,0,0),new THREE.Vector3(0,-.48,0),.14,skin);
   capsuleBetween(leg,new THREE.Vector3(0,-.45,0),new THREE.Vector3(side*.02,-.77,.08),.105,skin);
-  box(leg,.25,.13,.42,boot,side*.02,-.79,.16);
+  box(leg,.29,.16,.46,boot,side*.02,-.79,.16);
+  box(leg,.22,.035,.018,trim,side*.02,-.75,.394);
   legs.push(leg);
  }
  const arms=[];
@@ -197,8 +203,8 @@ function buildFighter(isPlayer){
   sphere(arm,.12,bodyMat,side*.16,-.31,.07,1.0,1.15,.92); // forearm muscle
   capsuleBetween(arm,new THREE.Vector3(0,0,0),new THREE.Vector3(side*.17,-.27,.02),.15,skin);
   capsuleBetween(arm,new THREE.Vector3(side*.17,-.27,.02),new THREE.Vector3(side*.12,-.47,.15),.115,skin);
-  sphere(arm,.205,glove,side*.12,-.48,.23,1.03,1.0,1.08); // padded glove
-  sphere(arm,.09,glove,side*.22,-.51,.29,.9,.8,1.0); // thumb pad
+  sphere(arm,.235,glove,side*.12,-.48,.23,1.08,1.0,1.12); // padded glove
+  sphere(arm,.105,glove,side*.235,-.51,.30,.9,.8,1.0); // thumb pad
   // Raised glove knuckle panel and stitched cuff detail.
   sphere(arm,.125,material(isPlayer?0xd94a4f:0x4a9fd0,.3,.04),side*.12,-.45,.34,1.0,.72,.45);
   // cuff
@@ -212,13 +218,13 @@ function buildFighter(isPlayer){
  return {root,torso,hips,arms,legs,skin,bodyMat,glove,shadow,isPlayer,baseY:1.52,anim:0,hit:0,guard:0,walk:0,attack:0,attackType:'head',stagger:0};
 }
 function spawnImpact(x,z,color=0xffe3ad){
- impactTime=.18;impactStrength=.13;
+ impactTime=.22;impactStrength=.19;
  const group=new THREE.Group();group.position.set(x,1.65,z);scene.add(group);
  const mat=new THREE.MeshBasicMaterial({color,transparent:true,opacity:.95});
  const ring=mesh(new THREE.TorusGeometry(.12,.025,6,24),mat,group);ring.scale.set(1.3,1,1);ring.rotation.x=.18;
  const sparks=[];
- for(let i=0;i<7;i++){
-  const a=i*Math.PI*2/7,sp=mesh(new THREE.SphereGeometry(.025,6,5),mat.clone(),group,Math.cos(a)*.18,Math.sin(a)*.18,0);
+ for(let i=0;i<10;i++){
+  const a=i*Math.PI*2/10,sp=mesh(new THREE.SphereGeometry(.025,6,5),mat.clone(),group,Math.cos(a)*.22,Math.sin(a)*.22,0);
   sparks.push({mesh:sp,vx:Math.cos(a)*(1.2+Math.random()),vy:Math.sin(a)*(1.2+Math.random())});
  }
  impactFX.push({group,ring,sparks,life:.22,mat});
@@ -300,19 +306,32 @@ function updateFighter(f,dt,isPlayer){
  f.legs.forEach((leg,i)=>{leg.rotation.x=moving?Math.sin(f.anim*10+i*Math.PI)*.32:Math.sin(f.anim*2+i)*.025;});
  f.arms.forEach((arm,i)=>{
   const side=i===0?-1:1;
+  const lead=i===0;
   let x=side*.08,y=0,z=0;
+  const guarding=f.guard>0||(isPlayer&&input.block);
   if(f.attack>0){
-   const prog=1-f.attack/.24;const thrust=Math.sin(Math.min(1,prog*1.35)*Math.PI/2);
-   x+=side*(f.attackType==='head'?.2:.08)-side*.04;
-   z+=thrust*(f.attackType==='head'?.58:.42);
-   y+=f.attackType==='head'?.13:-.22;
-   if(i===0)z+=thrust*.22;
-  }else if(f.guard>0|| (isPlayer&&input.block)){
-   z+=.12;y+=.08;
-  }else{z+=.02+Math.sin(f.anim*4+i)*.025;y+=Math.sin(f.anim*4+i)*.025;}
-  arm.rotation.x=-z*1.15;arm.rotation.y=x*1.2;arm.rotation.z=-y*1.1;
+   const prog=1-f.attack/.24;
+   const extension=Math.sin(Math.min(1,prog*1.18)*Math.PI/2);
+   const recovery=Math.max(0,(prog-.58)/.42);
+   const punching=lead?1:.34;
+   x+=side*(.05+extension*(f.attackType==='head'?.27:.12))*punching;
+   z+=extension*(f.attackType==='head'?.82:.62)*punching;
+   y+=extension*(f.attackType==='head'?.16:-.25)*punching;
+   // Non-punching hand stays high, with a brief recoil after contact.
+   if(!lead){z+=.10-extension*.08;y+=.12;}
+   arm.rotation.x=-z*1.18;arm.rotation.y=x*1.35;arm.rotation.z=-y*1.2;
+   arm.rotation.x+=recovery*.08;
+  }else if(guarding){
+   arm.rotation.x=-.22;arm.rotation.y=side*.07;arm.rotation.z=-side*.16;
+  }else{
+   const bob=Math.sin(f.anim*4+i*Math.PI)*.035;
+   arm.rotation.x=-.09+bob;arm.rotation.y=side*.04;arm.rotation.z=-side*.06+bob;
+  }
  });
- if(f.hit>0){f.torso.rotation.z=Math.sin(f.anim*45)*.12;f.torso.position.y+=Math.sin(f.anim*40)*.025;}
+ // Body rhythm and planted stance create a readable arcade idle loop.
+ f.torso.rotation.y=THREE.MathUtils.lerp(f.torso.rotation.y, f.attack>0?(f.attackType==='head'?.22:.3):Math.sin(f.anim*2.3)*.045, Math.min(1,dt*10));
+ f.hips.rotation.x=THREE.MathUtils.lerp(f.hips.rotation.x,moving?Math.sin(f.anim*10)*.035:0,Math.min(1,dt*7));
+ if(f.hit>0){f.torso.rotation.z=Math.sin(f.anim*45)*.12;f.torso.rotation.y+=Math.sin(f.anim*18)*.08;f.torso.position.y+=Math.sin(f.anim*40)*.035;f.root.rotation.x=Math.sin(f.anim*26)*.035;}else{f.root.rotation.x=THREE.MathUtils.lerp(f.root.rotation.x,0,Math.min(1,dt*8));}
 }
 function update(dt){
  updateImpactFX(dt);
@@ -331,14 +350,14 @@ function update(dt){
  enemy.root.rotation.y=THREE.MathUtils.lerp(enemy.root.rotation.y,Math.PI+Math.atan2(game.pX-game.eX,1)*.15,dt*3);
  if(game.dodge>0)player.root.position.z+=Math.sin(game.dodge*16)*.025;
  updateFighter(player,dt,true);updateFighter(enemy,dt,false);
- camera.position.z=THREE.MathUtils.lerp(camera.position.z,10.8+Math.min(.7,Math.abs(dx)*.12),dt);const shake=impactTime>0?Math.sin(performance.now()*.09)*impactStrength:0;
+ camera.position.z=THREE.MathUtils.lerp(camera.position.z,13.6+Math.min(.45,Math.abs(dx)*.08),dt);const shake=impactTime>0?Math.sin(performance.now()*.09)*impactStrength:0;
  camera.position.x=THREE.MathUtils.lerp(camera.position.x,(game.pX+game.eX)*.15+shake,dt*1.4);
  camera.lookAt((game.pX+game.eX)*.1+shake*.5,1.25,-.45);
  setHud();
  if(game.pHealth<=0)endFight(false);
 }
 function loop(now){raf=0;const dt=Math.min(.04,(now-last)/1000||0);last=now;update(dt);if(renderer&&scene&&camera){renderer.render(scene,camera);}raf=requestAnimationFrame(loop);}
-function resize(){if(!renderer||!camera)return;camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<500?39:36;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.65));}
+function resize(){if(!renderer||!camera)return;camera.aspect=innerWidth/innerHeight;camera.fov=innerWidth<500?35:32;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.65));}
 $('start').addEventListener('click',start);$('again').addEventListener('click',()=>{ $('result').style.display='none';$('menu').style.display='flex';$('hud').hidden=true;running=false;});
 window.addEventListener('resize',resize);
 try{if(window.THREE){buildArena();resize();$('loading').style.display='none';}else{$('loading').innerHTML='LOADING 3D ENGINE…<small>If this remains visible, check your internet connection.</small>';const timer=setInterval(()=>{if(window.THREE){clearInterval(timer);buildArena();resize();$('loading').style.display='none';}},100);setTimeout(()=>{if(!window.THREE)$('loading').innerHTML='3D GRAPHICS COULD NOT LOAD<small>Check your internet connection and reload the file.</small>';},9000);}}catch(e){console.error(e);$('loading').innerHTML='COULD NOT INITIALIZE 3D<small>Try a newer browser or reload the game.</small>';}
