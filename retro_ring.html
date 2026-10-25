@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#090d13">
-<title>Retro Ring — 3D Boxing</title>
+<title>Retro Ring — 3D Boxing · v2.4.1</title>
 <style>
 :root{color-scheme:dark;--gold:#e7bd68;--red:#e64c4c;--blue:#54a8d8}
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080b10;color:#f3f4f6;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;touch-action:none}
@@ -27,14 +27,14 @@
 </head>
 <body>
 <canvas id="game"></canvas>
-<div id="loading">RETRO RING <small>Building the 3D arena…</small></div>
+<div id="loading">RETRO RING <small id="loadingStatus">Loading 3D engine…</small><small>VERSION 2.4.1</small></div>
 <div class="hud" id="hud" hidden>
   <div class="fighterHud"><div class="name">YOU · RED CORNER</div><div class="bar"><div id="pHealth" class="fill you"></div></div><div class="subbar"><div id="pStamina" class="stamina"></div></div></div>
   <div><div id="round">ROUND 1 / 3</div><div id="clock">3:00</div></div>
   <div class="fighterHud right"><div class="name">CHALLENGER · BLUE</div><div class="bar"><div id="eHealth" class="fill enemy"></div></div><div class="subbar"><div id="eStamina" class="stamina"></div></div></div>
 </div>
 <div id="message"></div>
-<div id="menu"><div class="panel"><div class="eyebrow">3D BOXING PROTOTYPE · VERSION 2.4.0</div><h1>RETRO RING</h1><p>A browser boxing prototype with textured human boxer models, arena lighting, and 3D movement.</p><div class="row"><label for="difficulty">DIFFICULTY</label><select id="difficulty"><option value="easy">Easy</option><option value="normal" selected>Normal</option><option value="hard">Hard</option></select></div><button id="start">START FIGHT</button><p class="note">Designed for iPhone Safari. Requires internet to load Three.js and the detailed boxer models (about 38 MB combined).</p></div></div>
+<div id="menu"><div class="panel"><div class="eyebrow">3D BOXING PROTOTYPE · VERSION 2.4.1</div><h1>RETRO RING</h1><p>A browser boxing prototype with textured human boxer models, arena lighting, and 3D movement.</p><div class="row"><label for="difficulty">DIFFICULTY</label><select id="difficulty"><option value="easy">Easy</option><option value="normal" selected>Normal</option><option value="hard">Hard</option></select></div><button id="start">START FIGHT</button><p class="note">Designed for iPhone Safari. Requires internet to load Three.js and the detailed boxer models (about 38 MB combined).</p></div></div>
 <div id="controls" hidden>
   <div class="cluster move">
     <button class="ctrl" style="grid-column:2;grid-row:1" data-hold="up">UP</button>
@@ -50,6 +50,17 @@
   </div>
 </div>
 <div id="result"><div class="resultBox"><h2 id="resultTitle">FIGHT OVER</h2><p id="resultText"></p><button id="again">FIGHT AGAIN</button></div></div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js"}}</script>
+<script>
+// If module loading fails, avoid leaving the screen on an endless loading message.
+window.setTimeout(() => {
+  const loading = document.getElementById("loading");
+  const status = document.getElementById("loadingStatus");
+  if (loading && status && loading.style.display !== "none") {
+    status.textContent = "Still loading? Open this file in Safari with an internet connection.";
+  }
+}, 15000);
+</script>
 <script type="module">
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
 import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js';
