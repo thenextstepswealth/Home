@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Retro Ring — Photo Boxer Prototype</title>
+<title>Retro Ring — Arcade Boxer Upgrade</title>
 <style>
 :root{color-scheme:dark;--cream:#fff0c2;--gold:#ffc857;--red:#f25f5c;--blue:#4ea5d9;--green:#8ac926}
 *{box-sizing:border-box}body{margin:0;min-height:100vh;overflow-x:hidden;background:radial-gradient(ellipse at top,#302747,#12111c 70%);color:var(--cream);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;display:flex;justify-content:center;padding:16px}
@@ -138,12 +138,12 @@ input,select,button{max-width:100%;min-width:0}
 </head>
 <body class="menu-active">
 <main>
-<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.8.9</p>
+<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.9.0</p>
 
 <section id="titleScreen" class="title-screen" role="dialog" aria-label="Retro Ring main menu">
   <div class="title-logo">RETRO RING</div>
   <div class="title-tagline">3D-INSPIRED ARCADE BOXING</div>
-  <div class="version-stamp">VERSION 1.8.9</div>
+  <div class="version-stamp">VERSION 1.9.0</div>
   <div class="title-fighters" aria-hidden="true">
     <svg class="splash-ring-art" viewBox="0 0 320 118" role="img" aria-label="Two retro arcade boxers facing off in a boxing ring">
       <defs><linearGradient id="ringBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#302741"/><stop offset="1" stop-color="#100d19"/></linearGradient></defs>
@@ -411,111 +411,111 @@ function txt(s,x,y,size=8,c='#fff0c2',align='left'){ctx.fillStyle=c;ctx.font=`bo
 function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
  ctx.save();ctx.translate(x,y);ctx.scale(flip?-scale:scale,scale);
  const [skin,shorts,gloves,boots]=palette;
- // Ground shadow, tapered legs, visible knees and rounded boots.
- ctx.fillStyle='#151222';ctx.beginPath();ctx.ellipse(0,3,20,4,0,0,Math.PI*2);ctx.fill();
- // Shorts have a curved hem and slightly flared sides.
- ctx.beginPath();ctx.moveTo(-14,-34);ctx.quadraticCurveTo(-17,-27,-14,-18);ctx.lineTo(-8,-15);ctx.lineTo(-2,-18);ctx.lineTo(1,-29);ctx.lineTo(4,-18);ctx.lineTo(10,-15);ctx.lineTo(15,-19);ctx.quadraticCurveTo(17,-28,14,-34);ctx.closePath();ctx.fillStyle=shorts;ctx.fill();
- // Shaped calves and thighs; contours and highlights keep them from reading as rectangles.
- ctx.beginPath();ctx.moveTo(-11,-19);ctx.quadraticCurveTo(-13,-13,-11,-7);ctx.quadraticCurveTo(-10,-2,-13,0);ctx.quadraticCurveTo(-8,3,-2,1);ctx.quadraticCurveTo(0,-4,-3,-9);ctx.lineTo(-3,-18);ctx.closePath();ctx.fillStyle=skin;ctx.fill();
- ctx.beginPath();ctx.moveTo(4,-18);ctx.quadraticCurveTo(2,-12,5,-7);ctx.quadraticCurveTo(7,-3,5,0);ctx.quadraticCurveTo(10,3,15,0);ctx.quadraticCurveTo(17,-5,13,-10);ctx.lineTo(13,-19);ctx.closePath();ctx.fillStyle=skin;ctx.fill();
- ctx.strokeStyle='rgba(50,25,25,.35)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(-10,-10);ctx.quadraticCurveTo(-7,-8,-4,-10);ctx.moveTo(7,-10);ctx.quadraticCurveTo(10,-8,13,-10);ctx.stroke();
- // Rounded boxing boots with curved toes and a sole.
- ctx.beginPath();ctx.moveTo(-13,-3);ctx.quadraticCurveTo(-17,-2,-18,1);ctx.quadraticCurveTo(-12,5,-2,3);ctx.quadraticCurveTo(0,1,-3,-2);ctx.closePath();ctx.fillStyle=boots;ctx.fill();
- ctx.beginPath();ctx.moveTo(5,-2);ctx.quadraticCurveTo(2,1,4,3);ctx.quadraticCurveTo(13,5,18,1);ctx.quadraticCurveTo(17,-2,13,-3);ctx.closePath();ctx.fillStyle=boots;ctx.fill();
- ctx.strokeStyle='#171321';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(-17,2);ctx.lineTo(-2,3);ctx.moveTo(4,3);ctx.lineTo(18,2);ctx.stroke();
- ctx.beginPath();ctx.moveTo(-14,-34);ctx.quadraticCurveTo(0,-30,14,-34);ctx.closePath();ctx.fillStyle=skin;ctx.fill();
- // Broader torso: the head is intentionally oversized for readable, playful arcade portraits.
- // Rounded shoulder silhouette and layered torso shading for a cleaner 16-bit look.
- ctx.save();if(pose==='hit-body'){ctx.translate(0,3);ctx.rotate(-0.055);}else if(pose==='hit-head'){ctx.rotate(-0.025);}ctx.beginPath();ctx.moveTo(-17,-61);ctx.quadraticCurveTo(-22,-60,-21,-49);ctx.lineTo(-18,-35);ctx.quadraticCurveTo(0,-31,18,-35);ctx.lineTo(21,-49);ctx.quadraticCurveTo(22,-60,17,-61);ctx.closePath();
- const torsoGrad=ctx.createLinearGradient(-22,-60,22,-34);torsoGrad.addColorStop(0,skin);torsoGrad.addColorStop(.5,skin==='#d98c62'?'#c98059':'#99563f');torsoGrad.addColorStop(1,skin==='#d98c62'?'#b96e50':'#804531');ctx.fillStyle=torsoGrad;ctx.fill();
- rect(-15,-59,3,19,skin);rect(12,-59,3,19,skin);
- rect(-21,-59,7,23,skin);rect(14,-59,7,23,skin);ctx.restore();
- // Head base and large face area (approx 40% of overall upper-body visual height).
- if(pose==='hit-head'){ctx.save();ctx.translate(-5,-2);ctx.rotate(-0.10);}
- const hx=-18,hy=-110,hw=36,hh=51;
- if(photo && photo.complete && photo.naturalWidth){
-   // Real-photo head: oval outline and clipped photo, with no square backing.
-   ctx.save();ctx.beginPath();ctx.ellipse(hx+hw/2,hy+hh/2,hw/2+0.7,hh/2+0.7,0,0,Math.PI*2);ctx.fillStyle='#d6c1a0';ctx.fill();ctx.restore();
-   ctx.save();ctx.beginPath();ctx.ellipse(hx+hw/2,hy+hh/2,hw/2,hh/2,0,0,Math.PI*2);ctx.clip();
-   // Cover-crop the source to the tall oval's aspect ratio so the oval is filled edge-to-edge.
-   const targetRatio=hw/hh, sourceRatio=photo.naturalWidth/photo.naturalHeight;
-   let sx=0,sy=0,sw=photo.naturalWidth,sh=photo.naturalHeight;
-   if(sourceRatio>targetRatio){sw=photo.naturalHeight*targetRatio;sx=(photo.naturalWidth-sw)/2;}
-   else{sh=photo.naturalWidth/targetRatio;sy=(photo.naturalHeight-sh)/2;}
-   ctx.drawImage(photo,sx,sy,sw,sh,hx,hy,hw,hh);
-   ctx.restore();
- } else {
-   // More natural oval, layered like a 16-bit console sprite rather than a square block.
-   const cx=hx+hw/2,cy=hy+hh/2;
-   ctx.save();
-   ctx.beginPath();ctx.ellipse(cx,cy,hw*.48,hh*.49,0,0,Math.PI*2);
-   ctx.fillStyle='#28202c';ctx.fill();
-   ctx.beginPath();ctx.ellipse(cx,cy+1,hw*.43,hh*.46,0,0,Math.PI*2);
-   const faceGrad=ctx.createLinearGradient(hx,hy,hx+hw,hy+hh);
-   faceGrad.addColorStop(0,skin==='#d98c62'?'#f0b184':'#bd8060');
-   faceGrad.addColorStop(.55,skin);
-   faceGrad.addColorStop(1,skin==='#d98c62'?'#b96e50':'#8e4d38');
-   ctx.fillStyle=faceGrad;ctx.fill();
-   // Hairline / hair cap follows the skull curve.
-   ctx.beginPath();ctx.ellipse(cx,hy+7,hw*.44,hh*.25,0,Math.PI,Math.PI*2);
-   ctx.lineTo(hx+hw*.94,hy+12);ctx.quadraticCurveTo(cx,hy+3,hx+hw*.06,hy+12);ctx.closePath();
-   ctx.fillStyle='#28202c';ctx.fill();
-   // Brows, eyes, nose, cheeks and mouth use crisp but finer detail.
-   rect(hx+6,hy+15,9,2,'#543329');rect(hx+24,hy+15,9,2,'#543329');
-   rect(hx+7,hy+18,7,3,'#fff0c2');rect(hx+26,hy+18,7,3,'#fff0c2');
-   rect(hx+9,hy+19,3,3,'#29202a');rect(hx+28,hy+19,3,3,'#29202a');
-   ctx.beginPath();ctx.moveTo(cx,hy+20);ctx.lineTo(cx-3,hy+28);ctx.lineTo(cx+2,hy+29);ctx.strokeStyle='#8a4c39';ctx.lineWidth=1.6;ctx.stroke();
-   rect(hx+8,hy+32,7,2,'#c98775');rect(hx+25,hy+32,7,2,'#c98775');
-   ctx.beginPath();ctx.moveTo(hx+11,hy+37);ctx.quadraticCurveTo(cx,hy+41,hx+29,hy+37);ctx.strokeStyle='#5a2f2b';ctx.lineWidth=2;ctx.stroke();
-   ctx.restore();
+ const isBlue=shorts==='#355c7d';
+ const outline='#241625', highlight=skin==='#d98c62'?'#f6c49a':'#e8a17d', shade=skin==='#d98c62'?'#a85f45':'#77412f';
+ const trim=isBlue?'#ffc857':'#f5e8d4';
+ const bob=pose==='idle'?Math.sin((state.introTime||0)*7)*.8:0;
+ ctx.translate(0,bob);
+ // Thick, graphic ground shadow.
+ ctx.fillStyle='rgba(10,8,20,.32)';ctx.beginPath();ctx.ellipse(0,3,23,5,0,0,Math.PI*2);ctx.fill();
+ // Boots: chunky arcade silhouettes with toe caps, soles and laces.
+ function boot(bx,by,dir){
+   ctx.fillStyle=outline;ctx.beginPath();ctx.moveTo(bx-7,by-5);ctx.quadraticCurveTo(bx-10,by-1,bx-8,by+2);ctx.quadraticCurveTo(bx+1,by+5,bx+9,by+1);ctx.lineTo(bx+8,by-5);ctx.closePath();ctx.fill();
+   ctx.fillStyle=boots;ctx.beginPath();ctx.moveTo(bx-7,by-8);ctx.quadraticCurveTo(bx-9,by-3,bx-6,by);ctx.quadraticCurveTo(bx+1,by+3,bx+8,by);ctx.lineTo(bx+7,by-8);ctx.closePath();ctx.fill();
+   ctx.strokeStyle=trim;ctx.lineWidth=.9;for(let i=0;i<3;i++){ctx.beginPath();ctx.moveTo(bx-3+i*2,by-6);ctx.lineTo(bx+2+i*2,by-3);ctx.stroke()}
  }
- // Gloves and arms animate distinctly for every action.
- if(pose==='punch'){
-   // Long, unmistakable straight punch: shoulder -> forearm -> glove extends toward the opponent.
-   // Shoulder, bent elbow, forearm and glove are drawn as one rounded, articulated arm.
-   ctx.lineCap='round';ctx.lineJoin='round';
-   ctx.strokeStyle='#4c3028';ctx.lineWidth=14;ctx.beginPath();ctx.moveTo(9,-69);ctx.lineTo(19,-82);ctx.lineTo(38,-86);ctx.stroke();
-   ctx.strokeStyle=skin;ctx.lineWidth=10;ctx.beginPath();ctx.moveTo(9,-69);ctx.lineTo(19,-82);ctx.lineTo(38,-86);ctx.stroke();
-   ctx.fillStyle=gloves;ctx.beginPath();ctx.ellipse(43,-87,11,9,-.16,0,Math.PI*2);ctx.fill();
-   ctx.strokeStyle='#b9d9ff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(49,-91);ctx.lineTo(53,-88);ctx.stroke();
-   // Guarding arm remains near the body.
-   rect(-19,-56,9,18,skin);rect(-25,-43,15,12,gloves);
- } else if(pose==='body'){
-   // Clearly extended lower body punch, aimed at the opponent's ribs.
-   rect(9,-48,12,12,skin);
-   rect(17,-46,22,12,skin);
-   rect(35,-49,21,18,gloves);
-   rect(50,-46,6,9,'#fff0c2');
-   rect(-19,-56,9,18,skin);rect(-25,-43,15,12,gloves);
- } else if(pose==='block'){
-   rect(-22,-69,10,20,skin);rect(-25,-81,15,15,gloves);
-   rect(12,-69,10,20,skin);rect(10,-81,15,15,gloves);
- } else {
-   rect(-22,-57,9,20,skin);rect(-27,-42,15,12,gloves);
-   rect(13,-57,9,20,skin);rect(14,-42,15,12,gloves);
+ // Legs with shaped calves, knees, highlights and separate stance.
+ const stride=pose==='punch'?2:pose==='hit-body'?-2:0;
+ ctx.fillStyle=outline;
+ ctx.beginPath();ctx.moveTo(-12,-23);ctx.quadraticCurveTo(-17,-13,-13,-5);ctx.lineTo(-8,-3);ctx.lineTo(-1,-6);ctx.lineTo(-3,-23);ctx.closePath();ctx.fill();
+ ctx.beginPath();ctx.moveTo(3,-23);ctx.quadraticCurveTo(1,-13,5,-5);ctx.lineTo(11,-3);ctx.lineTo(15,-7);ctx.lineTo(12,-23);ctx.closePath();ctx.fill();
+ ctx.fillStyle=skin;
+ ctx.beginPath();ctx.moveTo(-11,-23);ctx.quadraticCurveTo(-14,-13,-11,-6);ctx.quadraticCurveTo(-7,-3,-2,-6);ctx.lineTo(-4,-23);ctx.closePath();ctx.fill();
+ ctx.beginPath();ctx.moveTo(4,-23);ctx.quadraticCurveTo(2,-13,6,-6);ctx.quadraticCurveTo(10,-3,13,-7);ctx.lineTo(11,-23);ctx.closePath();ctx.fill();
+ ctx.fillStyle=highlight;ctx.fillRect(-10,-17,2,7);ctx.fillRect(7,-17,2,7);
+ boot(-7+stride,-3,1);boot(10-stride,-3,1);
+ // Trunks with flared hems, side stripe, waistband and belt badge.
+ ctx.fillStyle=outline;ctx.beginPath();ctx.moveTo(-15,-39);ctx.quadraticCurveTo(-18,-31,-15,-21);ctx.lineTo(-5,-18);ctx.lineTo(0,-25);ctx.lineTo(5,-18);ctx.lineTo(15,-21);ctx.quadraticCurveTo(18,-31,15,-39);ctx.closePath();ctx.fill();
+ ctx.fillStyle=shorts;ctx.beginPath();ctx.moveTo(-13,-38);ctx.quadraticCurveTo(-16,-30,-13,-22);ctx.lineTo(-5,-20);ctx.lineTo(0,-27);ctx.lineTo(5,-20);ctx.lineTo(13,-22);ctx.quadraticCurveTo(16,-30,13,-38);ctx.closePath();ctx.fill();
+ ctx.fillStyle=trim;ctx.fillRect(-14,-39,28,4);ctx.fillRect(-14,-24,7,2);ctx.fillRect(7,-24,7,2);
+ ctx.fillStyle=outline;ctx.fillRect(-3,-37,6,4);ctx.fillStyle='#fff0c2';ctx.fillRect(-1,-36,2,2);
+ // Torso silhouette, wide shoulders and tapered waist.
+ ctx.fillStyle=outline;ctx.beginPath();ctx.moveTo(-12,-67);ctx.quadraticCurveTo(-22,-67,-22,-56);ctx.lineTo(-18,-42);ctx.quadraticCurveTo(0,-37,18,-42);ctx.lineTo(22,-56);ctx.quadraticCurveTo(22,-67,12,-67);ctx.lineTo(7,-70);ctx.lineTo(-7,-70);ctx.closePath();ctx.fill();
+ const tg=ctx.createLinearGradient(-22,-67,22,-40);tg.addColorStop(0,highlight);tg.addColorStop(.42,skin);tg.addColorStop(1,shade);
+ ctx.fillStyle=tg;ctx.beginPath();ctx.moveTo(-11,-66);ctx.quadraticCurveTo(-20,-66,-19,-56);ctx.lineTo(-16,-44);ctx.quadraticCurveTo(0,-39,16,-44);ctx.lineTo(19,-56);ctx.quadraticCurveTo(20,-66,11,-66);ctx.lineTo(6,-68);ctx.lineTo(-6,-68);ctx.closePath();ctx.fill();
+ // Deltoids, pecs and abdominal definition.
+ ctx.fillStyle=highlight;ctx.beginPath();ctx.ellipse(-14,-63,7,7,-.25,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(14,-63,7,7,.25,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle=shade;ctx.beginPath();ctx.ellipse(-6,-57,7,4,.12,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(6,-57,7,4,-.12,0,Math.PI*2);ctx.fill();
+ ctx.strokeStyle='rgba(45,20,25,.45)';ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(0,-55);ctx.lineTo(0,-43);ctx.moveTo(-7,-49);ctx.lineTo(-2,-49);ctx.moveTo(2,-49);ctx.lineTo(7,-49);ctx.stroke();
+ // Neck and ears.
+ ctx.fillStyle=outline;ctx.fillRect(-5,-77,10,12);ctx.fillStyle=skin;ctx.fillRect(-4,-77,8,11);
+ // Head: broad cartoon jaw, cheekbones and a distinctive hair silhouette.
+ if(pose==='hit-head'){ctx.save();ctx.translate(-4,-2);ctx.rotate(-.12)}
+ const hx=-17,hy=-111,hw=34,hh=37,cx=0,cy=hy+18;
+ if(photo&&photo.complete&&photo.naturalWidth){
+   ctx.save();ctx.beginPath();ctx.ellipse(cx,cy,17,19,0,0,Math.PI*2);ctx.clip();
+   const tr=34/38,sr=photo.naturalWidth/photo.naturalHeight;let sx=0,sy=0,sw=photo.naturalWidth,sh=photo.naturalHeight;
+   if(sr>tr){sw=photo.naturalHeight*tr;sx=(photo.naturalWidth-sw)/2}else{sh=photo.naturalWidth/tr;sy=(photo.naturalHeight-sh)/2}
+   ctx.drawImage(photo,sx,sy,sw,sh,hx,hy,hw,38);ctx.restore();
+ }else{
+   ctx.fillStyle=outline;ctx.beginPath();ctx.moveTo(-15,-108);ctx.quadraticCurveTo(-20,-122,-10,-130);ctx.quadraticCurveTo(0,-136,11,-129);ctx.quadraticCurveTo(20,-122,15,-108);ctx.lineTo(12,-91);ctx.quadraticCurveTo(0,-84,-12,-91);ctx.closePath();ctx.fill();
+   const fg=ctx.createLinearGradient(-17,-130,16,-88);fg.addColorStop(0,highlight);fg.addColorStop(.55,skin);fg.addColorStop(1,shade);
+   ctx.fillStyle=fg;ctx.beginPath();ctx.moveTo(-14,-108);ctx.quadraticCurveTo(-18,-121,-9,-128);ctx.quadraticCurveTo(0,-133,10,-127);ctx.quadraticCurveTo(18,-120,14,-108);ctx.lineTo(11,-94);ctx.quadraticCurveTo(0,-87,-11,-94);ctx.closePath();ctx.fill();
+   // ears and cheek accents
+   ctx.fillStyle=shade;ctx.beginPath();ctx.ellipse(-15,-108,4,6,0,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(15,-108,4,6,0,0,Math.PI*2);ctx.fill();
+   ctx.fillStyle=highlight;ctx.beginPath();ctx.ellipse(-10,-104,4,2,0,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.ellipse(10,-104,4,2,0,0,Math.PI*2);ctx.fill();
+   // Hair style differs by corner: blue corner gets a swept quiff; red gets a spiky crew cut.
+   ctx.fillStyle=isBlue?'#25202c':'#351d24';ctx.beginPath();
+   if(isBlue){ctx.moveTo(-16,-113);ctx.quadraticCurveTo(-22,-132,-7,-135);ctx.quadraticCurveTo(2,-141,8,-131);ctx.quadraticCurveTo(17,-132,17,-115);ctx.lineTo(8,-120);ctx.lineTo(-5,-122);ctx.lineTo(-13,-116)}
+   else{ctx.moveTo(-16,-113);ctx.lineTo(-17,-125);ctx.lineTo(-10,-123);ctx.lineTo(-7,-134);ctx.lineTo(0,-126);ctx.lineTo(7,-135);ctx.lineTo(10,-124);ctx.lineTo(17,-128);ctx.lineTo(15,-113);ctx.lineTo(7,-119);ctx.lineTo(-7,-119)}
+   ctx.closePath();ctx.fill();
+   ctx.strokeStyle='#59404b';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(-9,-127);ctx.lineTo(-4,-123);ctx.moveTo(3,-129);ctx.lineTo(7,-123);ctx.stroke();
+   // Expressive brows and eyes, angled slightly toward opponent.
+   ctx.fillStyle='#2a1820';ctx.beginPath();ctx.moveTo(-12,-115);ctx.lineTo(-3,-117);ctx.lineTo(-3,-114);ctx.lineTo(-12,-112);ctx.closePath();ctx.fill();
+   ctx.beginPath();ctx.moveTo(3,-117);ctx.lineTo(12,-115);ctx.lineTo(12,-112);ctx.lineTo(3,-114);ctx.closePath();ctx.fill();
+   ctx.fillStyle='#fff0c2';ctx.fillRect(-10,-112,6,3);ctx.fillRect(4,-112,6,3);ctx.fillStyle='#211721';ctx.fillRect(-7,-112,2,3);ctx.fillRect(5,-112,2,3);
+   ctx.strokeStyle=shade;ctx.lineWidth=1.3;ctx.beginPath();ctx.moveTo(0,-109);ctx.lineTo(-2,-103);ctx.lineTo(2,-102);ctx.stroke();
+   // Confident grin, dark mouth and bright teeth.
+   ctx.fillStyle='#55232a';ctx.beginPath();ctx.moveTo(-7,-97);ctx.quadraticCurveTo(0,-93,7,-97);ctx.lineTo(5,-93);ctx.quadraticCurveTo(0,-91,-5,-93);ctx.closePath();ctx.fill();
+   ctx.fillStyle='#fff0d8';ctx.fillRect(-4,-96,8,2);
+   // Small chin highlight
+   ctx.fillStyle=highlight;ctx.beginPath();ctx.ellipse(0,-91,4,1.5,0,0,Math.PI*2);ctx.fill();
  }
- rect(-17,-34,34,5,'#fff0c2');
  if(pose==='hit-head')ctx.restore();
+ // Arms are thick articulated silhouettes; front glove is deliberately oversized and expressive.
+ function arm(side,mode){
+   ctx.save();ctx.translate(side*17,-64);
+   let shoulder=side<0?-.12:.18, elbow=side<0?-.2:.35;
+   if(mode==='block'){shoulder=side<0?-.8:-.9;elbow=-.2}
+   if(mode==='punch'&&side>0){shoulder=-.45;elbow=-.25}
+   if(mode==='body'&&side>0){shoulder=.25;elbow=.65}
+   if(mode==='hit-head'){shoulder=side<0?.35:-.4}
+   ctx.rotate(shoulder);
+   ctx.strokeStyle=outline;ctx.lineWidth=10;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(side*5,10);ctx.lineTo(side*7,18);ctx.stroke();
+   ctx.strokeStyle=skin;ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(side*5,10);ctx.lineTo(side*7,18);ctx.stroke();
+   ctx.translate(side*7,18);ctx.rotate(elbow);
+   const gx=side*1,gy=7;
+   ctx.fillStyle=outline;ctx.beginPath();ctx.ellipse(gx,gy,10,9,-.2,0,Math.PI*2);ctx.fill();
+   const gg=ctx.createLinearGradient(gx-8,gy-8,gx+8,gy+8);gg.addColorStop(0,'#ffffff');gg.addColorStop(.18,gloves);gg.addColorStop(.72,gloves);gg.addColorStop(1,isBlue?'#164a9a':'#a91534');
+   ctx.fillStyle=gg;ctx.beginPath();ctx.ellipse(gx,gy,8.8,7.8,-.2,0,Math.PI*2);ctx.fill();
+   ctx.strokeStyle='rgba(255,255,255,.65)';ctx.lineWidth=1.2;ctx.beginPath();ctx.arc(gx-1,gy-2,4.5,3.5,5.6);ctx.stroke();
+   ctx.fillStyle=trim;ctx.fillRect(gx-6,gy+5,12,3);
+   ctx.fillStyle=outline;ctx.fillRect(gx-1,gy+5,2,3);
+   ctx.restore();
+ }
+ if(pose==='punch'){
+   // Long straight right cross with shoulder rotation and a larger glove.
+   ctx.save();ctx.translate(12,-64);ctx.rotate(-.28);
+   ctx.strokeStyle=outline;ctx.lineWidth=12;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(10,7);ctx.lineTo(25,8);ctx.stroke();
+   ctx.strokeStyle=skin;ctx.lineWidth=8;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(10,7);ctx.lineTo(25,8);ctx.stroke();
+   ctx.fillStyle=outline;ctx.beginPath();ctx.ellipse(32,8,12,10,-.1,0,Math.PI*2);ctx.fill();
+   const gg=ctx.createLinearGradient(23,0,42,17);gg.addColorStop(0,'#fff');gg.addColorStop(.2,gloves);gg.addColorStop(1,isBlue?'#164a9a':'#a91534');ctx.fillStyle=gg;ctx.beginPath();ctx.ellipse(32,8,10.5,8.5,-.1,0,Math.PI*2);ctx.fill();
+   ctx.strokeStyle='rgba(255,255,255,.7)';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(29,5,5,3.4,5.7);ctx.stroke();ctx.fillStyle=trim;ctx.fillRect(25,14,13,3);
+   ctx.restore();arm(-1,pose);
+ }else if(pose==='body'){arm(-1,pose);ctx.save();ctx.translate(14,-51);ctx.rotate(.15);ctx.strokeStyle=outline;ctx.lineWidth=12;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(13,5);ctx.lineTo(25,5);ctx.stroke();ctx.strokeStyle=skin;ctx.lineWidth=8;ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(13,5);ctx.lineTo(25,5);ctx.stroke();ctx.fillStyle=outline;ctx.beginPath();ctx.ellipse(31,5,11,9,0,0,Math.PI*2);ctx.fill();ctx.fillStyle=gloves;ctx.beginPath();ctx.ellipse(31,5,9,7,0,0,Math.PI*2);ctx.fill();ctx.fillStyle=trim;ctx.fillRect(25,11,12,3);ctx.restore()
+ }else{arm(-1,pose);arm(1,pose)}
+ // Glove cuffs / wrist tape are always readable above the shorts line.
  ctx.restore();
-}
-
-
-function refereeSpeak(line){
- say(line);
- try{
-   if('speechSynthesis' in window && typeof SpeechSynthesisUtterance!=='undefined'){
-     window.speechSynthesis.cancel();
-     const u=new SpeechSynthesisUtterance(line);
-     const voices=window.speechSynthesis.getVoices();
-     const english=voices.filter(v=>/^en(-|_)/i.test(v.lang));
-     const voice=english.find(v=>/premium|enhanced|natural|neural/i.test(v.name+' '+(v.voiceURI||'')))||
-       english.find(v=>/Samantha|Daniel|Alex|Aaron|Evan|Tom|Nathan|Google US English/i.test(v.name))||
-       english.find(v=>/en-US/i.test(v.lang))||english[0];
-     if(voice)u.voice=voice;
-     u.rate=.82;u.pitch=.72;u.volume=1;
-     window.speechSynthesis.speak(u);
-   }
- }catch(e){}
 }
 
 function drawReferee(x,y,scale,pose='raise'){
