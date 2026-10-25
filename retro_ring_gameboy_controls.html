@@ -49,23 +49,16 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
 .sound-toggle.primary{background:#6f3c68;border-color:#d49acb}
 .sound-toggle:active{transform:translateY(1px)}
 
-.title-screen{border:3px solid #8b7ba2;background:linear-gradient(180deg,#251c39,#120f1c);padding:22px 16px 20px;margin:12px 0 16px;text-align:center;box-shadow:0 0 0 4px #090710}
+.title-screen{position:fixed;inset:0;z-index:20;overflow:auto;background:linear-gradient(180deg,#251c39,#100d18);padding:calc(18px + env(safe-area-inset-top)) 16px calc(24px + env(safe-area-inset-bottom));text-align:center;display:flex;flex-direction:column;justify-content:center;box-shadow:inset 0 0 0 5px #8b7ba2}
+.title-screen[hidden]{display:none!important}
 .title-logo{font-size:clamp(32px,9vw,54px);font-weight:900;letter-spacing:3px;color:#ffc857;text-shadow:3px 3px #9b4c7a,5px 5px #090710}
 .title-tagline{font-size:12px;letter-spacing:3px;color:#c6b7d9;margin-top:4px}
-.version-stamp{display:inline-block;margin-top:8px;padding:5px 9px;border:1px solid #8b7ba2;border-radius:4px;color:#ffc857;font-size:11px;letter-spacing:1px;background:#120f1c}
-.title-fighters{font-size:clamp(40px,12vw,72px);padding:24px 0;text-shadow:3px 3px #8b7ba2}
-.title-panel{max-width:460px;margin:auto;border:2px solid #5e4c70;background:#171321;padding:16px;display:flex;flex-direction:column;gap:12px;text-align:left}
+.version-stamp{display:inline-block;align-self:center;margin-top:8px;padding:5px 9px;border:1px solid #8b7ba2;border-radius:4px;color:#ffc857;font-size:11px;letter-spacing:1px;background:#120f1c}
+.title-fighters{font-size:clamp(40px,12vw,72px);padding:12px 0;text-shadow:3px 3px #8b7ba2}
+.title-panel{width:min(100%,460px);margin:0 auto;border:2px solid #5e4c70;background:#171321;padding:14px;display:flex;flex-direction:column;gap:11px;text-align:left}
 .title-panel label{color:#ffc857;font-weight:bold;font-size:13px}
 .menu-select{width:100%;min-height:46px;background:#292137;color:#fff0c2;border:2px solid #8b7ba2;padding:10px;font:inherit}
-.menu-button,.menu-toggle,.start-button{min-height:48px;border:2px solid #8b7ba2;background:#302741;color:#fff0c2;font:inherit;font-weight:bold;padding:10px;touch-action:manipulation}
-.menu-audio-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.menu-toggle[aria-pressed="true"]{background:#24563d;border-color:#7ed6a4}
-.menu-toggle[aria-pressed="false"]{background:#493044;border-color:#9b718c}
-.start-button{min-height:60px;background:#7c3d6d;border-color:#ffc857;color:#fff0c2;font-size:18px;letter-spacing:1px}
-.menu-help{font-size:12px;line-height:1.5;color:#b6a9c9;margin:0}
-.game-shell[hidden]{display:none!important}
-
-
+.menu-button,.start-button{min-height:50px;border:2px solid #8b7ba2;background:#302741;color:#fff0c2;font:inherit;font-weight:bold;padding:10px;touch-action:manipulation}
 .toggle-list{display:flex;flex-direction:column;gap:10px}
 .switch-row{position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px;padding:10px 12px;border:2px solid #5e4c70;background:#211a2d;border-radius:8px;cursor:pointer;touch-action:manipulation}
 .switch-row span:first-child{display:flex;flex-direction:column;gap:4px}
@@ -77,17 +70,19 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
 .switch-input:checked+.switch-track{background:#28734c;border-color:#7ed6a4}
 .switch-input:checked+.switch-track span{transform:translateX(26px);background:#fff}
 .switch-input:focus-visible+.switch-track{outline:3px solid #ffc857;outline-offset:3px}
-.menu-button{min-height:52px}
+.start-button{min-height:62px;background:#7c3d6d;border-color:#ffc857;font-size:18px;letter-spacing:1px}
+.menu-help{font-size:12px;line-height:1.5;color:#b6a9c9;margin:0}
 
 </style>
 </head>
 <body>
 <main>
-<h1>RETRO RING</h1>
-<section id="titleScreen" class="title-screen">
+<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.3.2</p>
+
+<section id="titleScreen" class="title-screen" role="dialog" aria-label="Retro Ring main menu">
   <div class="title-logo">RETRO RING</div>
   <div class="title-tagline">8-BIT ARCADE BOXING</div>
-  <div class="version-stamp">VERSION 1.3.1</div>
+  <div class="version-stamp">VERSION 1.3.2</div>
   <div class="title-fighters" aria-hidden="true">🥊　VS　🥊</div>
   <div class="title-panel">
     <label for="difficultySelect">DIFFICULTY</label>
@@ -96,7 +91,7 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
       <option value="normal" selected>NORMAL — arcade challenge</option>
       <option value="hard">HARD — tougher opponent</option>
     </select>
-    <button id="menuSound" class="menu-button">ENABLE AUDIO</button>
+    <button id="menuSound" class="menu-button" type="button">ENABLE AUDIO</button>
     <div class="toggle-list">
       <label class="switch-row" for="menuMusic">
         <span><strong>BACKGROUND MUSIC</strong><small>Retro arcade tune</small></span>
@@ -109,12 +104,11 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
         <span class="switch-track" aria-hidden="true"><span></span></span>
       </label>
     </div>
-    <button id="startGame" class="start-button">START GAME ▶</button>
-    <p class="menu-help">Choose your boxer and opponent below, then start the fight.</p>
+    <button id="startGame" class="start-button" type="button">START GAME ▶</button>
+    <p class="menu-help">Start the fight, then use the boxer panels to take or upload photos.</p>
   </div>
 </section>
-<div id="gameShell" class="game-shell" hidden>
-<p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.3.1</p>
+
 <div class="soundbar" aria-label="Audio controls">
 <button id="soundEnable" class="sound-toggle primary">♫ Enable Sound</button>
 <button id="musicToggle" class="sound-toggle" aria-pressed="true">Music: ON</button>
@@ -184,7 +178,6 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
 <div id="cameraDialog" style="display:none;position:fixed;inset:0;background:#090710ee;z-index:5;align-items:center;justify-content:center;padding:16px">
 <div class="panel camera-panel" style="width:min(100%,520px);margin:0"><h2 id="cameraTitle">TAKE A PICTURE</h2><div class="camera-stage"><video id="video" autoplay playsinline></video><div class="oval-guide"><span>FIT FACE INSIDE OVAL</span></div></div><canvas id="captureCanvas" width="320" height="320" style="display:none"></canvas><div class="actions" style="margin-top:10px"><button id="takeShot" class="primary">Capture photo</button><button id="closeCamera">Cancel</button></div><div class="hint">Hold the phone at a comfortable arm’s length and center your face inside the smaller oval, with the top of the head and chin visible. Only the oval area is kept for the boxer’s head. Camera access requires permission and usually HTTPS or localhost.</div></div>
 </div>
-</div>
 <script>
 (() => {
 const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;
@@ -231,55 +224,276 @@ function wakeRingAudio(withBell=false){
 }
 function attachRingAudioControls(){
  const en=document.getElementById('soundEnable'),mu=document.getElementById('musicToggle'),sf=document.getElementById('sfxToggle');
- const men=document.getElementById('menuSound'),mm=document.getElementById('menuMusic'),ms=document.getElementById('menuSfx');
- function enableAudio(){
-   initRingAudio();
-   if(!ringAudio.ctx){if(men)men.textContent='AUDIO NOT SUPPORTED';if(en)en.textContent='AUDIO NOT SUPPORTED';return;}
-   ringAudio.enabled=true;
-   const p=ringAudio.ctx.resume();
-   const after=()=>{if(ringAudio.musicOn)startRingMusic();if(ringAudio.sfxOn)bellSound();};
-   if(p&&typeof p.then==='function')p.then(after).catch(()=>{});else after();
-   if(en)en.textContent='♫ SOUND ENABLED';
-   if(men)men.textContent='SOUND ENABLED ✓';
- }
- if(en)en.addEventListener('click',enableAudio);
- if(men)men.addEventListener('click',enableAudio);
- function syncMusic(on){
-   ringAudio.musicOn=on;
-   if(mu){mu.textContent='Music: '+(on?'ON':'OFF');mu.setAttribute('aria-pressed',String(on));}
-   if(mm)mm.checked=on;
-   if(on){enableAudio();startRingMusic();}else stopRingMusic();
- }
- function syncSfx(on){
-   ringAudio.sfxOn=on;
-   if(sf){sf.textContent='Effects: '+(on?'ON':'OFF');sf.setAttribute('aria-pressed',String(on));}
-   if(ms)ms.checked=on;
- }
- if(mu)mu.addEventListener('click',()=>syncMusic(!ringAudio.musicOn));
- if(sf)sf.addEventListener('click',()=>syncSfx(!ringAudio.sfxOn));
- if(mm)mm.addEventListener('change',()=>syncMusic(mm.checked));
- if(ms)ms.addEventListener('change',()=>syncSfx(ms.checked));
-}
-function attachTitleScreen(){
- const start=document.getElementById('startGame'),title=document.getElementById('titleScreen'),shell=document.getElementById('gameShell');
- if(!start||!title||!shell)return;
- start.addEventListener('click',()=>{
-   wakeRingAudio(false);
-   title.hidden=true;shell.hidden=false;
-   if(ringAudio.musicOn)startRingMusic();
-   if(typeof resetGame==='function')resetGame();
-   if(typeof updateHUD==='function')updateHUD();
-   window.scrollTo(0,0);
- });
- const diff=document.getElementById('difficultySelect');
- if(diff)diff.addEventListener('change',()=>{
-   if(typeof state==='undefined')return;
-   if(diff.value==='easy'){state.enemyDamageScale=.65;state.enemySpeedScale=.75;}
-   else if(diff.value==='hard'){state.enemyDamageScale=1.35;state.enemySpeedScale=1.25;}
-   else {state.enemyDamageScale=1;state.enemySpeedScale=1;}
- });
+ if(en)en.addEventListener('click',()=>{wakeRingAudio(true);en.textContent='♫ Sound Enabled';setTimeout(()=>{if(ringAudio.enabled&&ringAudio.sfxOn)tone(880,.22,'square',.25);},120);});
+ if(mu)mu.addEventListener('click',()=>{ringAudio.musicOn=!ringAudio.musicOn;mu.textContent='Music: '+(ringAudio.musicOn?'ON':'OFF');mu.setAttribute('aria-pressed',String(ringAudio.musicOn));if(ringAudio.musicOn)wakeRingAudio(false);else stopRingMusic();});
+ if(sf)sf.addEventListener('click',()=>{ringAudio.sfxOn=!ringAudio.sfxOn;sf.textContent='Effects: '+(ringAudio.sfxOn?'ON':'OFF');sf.setAttribute('aria-pressed',String(ringAudio.sfxOn));});
+ // Safari often blocks audio until a gesture. Any first tap on the game controls unlocks audio too.
+ document.addEventListener('pointerdown',function firstGesture(){
+   if(!ringAudio.enabled){wakeRingAudio(true);}
+   document.removeEventListener('pointerdown',firstGesture,true);
+ },true);
 }
 
+const $=id=>document.getElementById(id),W=384,H=560;
+const DEFAULT_PLAYER={name:'Rookie Ray',photo:null},DEFAULT_ENEMY={name:'The Brick Wall',photo:null};
+let player={...DEFAULT_PLAYER},enemy={...DEFAULT_ENEMY},cameraStream=null,cameraTarget='player';
+const STORAGE_KEY='retroRing.boxers.v1';
+let state;
+function fresh(){return {player:100,enemy:100,stamina:100,downs:0,phase:'ready',phaseTime:2.0,attackType:'head',playerX:0,playerPos:118,enemyPos:266,enemyStun:0,duck:0,block:0,punch:0,bodyPunch:0,enemyPunch:0,enemyAttackType:'head',playerHitCooldown:0,flash:0,over:false,won:false,log:'DING DING! The Brick Wall is watching you. Wait for his tell, dodge, then counter.'};}
+state=fresh();
+function say(s){state.log=s;$('log').textContent=s;}
+function notice(s){$('notice').textContent=s;}
+function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),w,h);}
+function txt(s,x,y,size=8,c='#fff0c2',align='left'){ctx.fillStyle=c;ctx.font=`bold ${size}px monospace`;ctx.textAlign=align;ctx.fillText(s,x,y);}
+function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
+ ctx.save();ctx.translate(x,y);ctx.scale(flip?-scale:scale,scale);
+ const [skin,shorts,gloves,boots]=palette;
+ // Ground shadow, legs and shorts.
+ rect(-17,2,34,5,'#151222');
+ rect(-13,-13,10,15,skin);rect(3,-13,10,15,skin);
+ rect(-16,0,14,5,boots);rect(2,0,14,5,boots);
+ rect(-15,-31,13,20,shorts);rect(2,-31,13,20,shorts);
+ rect(-14,-34,28,4,skin);
+ // Broader torso: the head is intentionally oversized for readable, playful arcade portraits.
+ rect(-18,-62,36,30,skin);
+ rect(-15,-59,30,23,skin==='#d98c62'?'#b96e50':'#8e4d38');
+ rect(-21,-59,7,23,skin);rect(14,-59,7,23,skin);
+ // Head base and large face area (approx 40% of overall upper-body visual height).
+ const hx=-20,hy=-108,hw=40,hh=48;
+ if(photo && photo.complete && photo.naturalWidth){
+   // Real-photo head: oval outline and clipped photo, with no square backing.
+   ctx.save();ctx.beginPath();ctx.ellipse(hx+hw/2,hy+hh/2,hw/2+0.7,hh/2+0.7,0,0,Math.PI*2);ctx.fillStyle='#d6c1a0';ctx.fill();ctx.restore();
+   ctx.save();ctx.beginPath();ctx.ellipse(hx+hw/2,hy+hh/2,hw/2,hh/2,0,0,Math.PI*2);ctx.clip();
+   // Cover-crop the source to the tall oval's aspect ratio so the oval is filled edge-to-edge.
+   const targetRatio=hw/hh, sourceRatio=photo.naturalWidth/photo.naturalHeight;
+   let sx=0,sy=0,sw=photo.naturalWidth,sh=photo.naturalHeight;
+   if(sourceRatio>targetRatio){sw=photo.naturalHeight*targetRatio;sx=(photo.naturalWidth-sw)/2;}
+   else{sh=photo.naturalWidth/targetRatio;sy=(photo.naturalHeight-sh)/2;}
+   ctx.drawImage(photo,sx,sy,sw,sh,hx,hy,hw,hh);
+   ctx.restore();
+ } else {
+   rect(hx-2,hy-3,hw+4,hh+5,'#28202c');rect(hx,hy,hw,hh,skin);
+   rect(hx-2,hy-3,hw+4,10,'#28202c');rect(hx+1,hy+3,7,4,'#28202c');
+   rect(hx+5,hy+14,5,3,'#fff0c2');rect(hx+23,hy+14,5,3,'#fff0c2');
+   rect(hx+13,hy+20,7,5,'#8a4c39');rect(hx+9,hy+29,15,4,'#5a2f2b');
+ }
+ // Gloves and arms animate distinctly for every action.
+ if(pose==='punch'){
+   // Long, unmistakable straight punch: shoulder -> forearm -> glove extends toward the opponent.
+   rect(9,-61,12,12,skin);
+   rect(17,-62,23,12,skin);
+   rect(36,-65,21,18,gloves);
+   rect(51,-62,6,9,'#fff0c2');
+   // Guarding arm remains near the body.
+   rect(-19,-56,9,18,skin);rect(-25,-43,15,12,gloves);
+ } else if(pose==='body'){
+   // Clearly extended lower body punch, aimed at the opponent's ribs.
+   rect(9,-48,12,12,skin);
+   rect(17,-46,22,12,skin);
+   rect(35,-49,21,18,gloves);
+   rect(50,-46,6,9,'#fff0c2');
+   rect(-19,-56,9,18,skin);rect(-25,-43,15,12,gloves);
+ } else if(pose==='block'){
+   rect(-22,-69,10,20,skin);rect(-25,-81,15,15,gloves);
+   rect(12,-69,10,20,skin);rect(10,-81,15,15,gloves);
+ } else {
+   rect(-22,-57,9,20,skin);rect(-27,-42,15,12,gloves);
+   rect(13,-57,9,20,skin);rect(14,-42,15,12,gloves);
+ }
+ rect(-17,-34,34,5,'#fff0c2');
+ ctx.restore();
+}
+function draw(){
+ ctx.save();ctx.scale(1,0.875);
+ rect(0,0,W,640,'#211a31');
+ // Arena lights, crowd and classic head-on arcade presentation.
+ for(let i=0;i<54;i++)rect((i*37)%W,34+(i*31)%160,2,2,i%2?'#5b496d':'#3c3454');
+ rect(0,184,W,105,'#332a48');
+ for(let i=0;i<48;i++){const x=i*8;rect(x,188+(i%4)*4,5,13,'#5d4669');rect(x+1,183+(i%3)*3,3,6,'#e4a16b');}
+ rect(28,18,64,4,'#8b7ba2');rect(292,18,64,4,'#8b7ba2');rect(45,22,18,9,'#fff0c2');rect(321,22,18,9,'#fff0c2');
+ txt('ROUND 1',192,16,9,'#ffc857','center');txt('FIGHT!',192,31,12,'#fff0c2','center');
+ const banner=state.over?(state.won?'KNOCKOUT! YOU WIN!':'TKO! TRY AGAIN'):state.phase==='windup'?'WATCH THE TELL!':state.phase==='open'?'OPEN! COUNTER NOW':state.phase==='attack'?'INCOMING!':state.phase==='recover'?'RESETTING...':'FIGHT!';
+ const bc=state.phase==='windup'?'#ffc857':state.phase==='open'?'#8ac926':state.phase==='attack'?'#f25f5c':'#fff0c2';
+ rect(67,43,250,20,'#151321');txt(banner,192,57,9,bc,'center');
+ // Large ring floor occupies the majority of the viewport.
+ rect(10,300,364,280,'#d6c1a0');rect(18,309,348,260,'#eee0bd');
+ for(let i=0;i<4;i++)rect(10,290+i*15,364,4,['#f25f5c','#fff0c2','#4ea5d9','#f25f5c'][i]);
+ rect(10,290,5,291,'#fff0c2');rect(369,290,5,291,'#fff0c2');
+ for(let x=24;x<364;x+=18)rect(x,324,1,236,'#d1bd9d');
+ for(let y=340;y<566;y+=18)rect(18,y,348,1,'#d1bd9d');
+ // Perspective feet anchors; characters are large and move laterally across the ring.
+ const playerY=state.duck>0?491:508, enemyY=508;
+ drawFighter(state.playerPos+state.playerX,playerY,2.35,['#d98c62','#355c7d','#4ea5d9','#2b2435'],state.punch>0.105?(state.bodyPunch>0?'body':'punch'):state.block>0?'block':'idle',false,player.image);
+ drawFighter(state.enemyPos-(state.enemyPunch>0?18:0)+(state.enemyStun>0?8:0),enemyY,2.4,['#a96b4d','#7a345d','#f25f5c','#2b2435'],state.enemyPunch>0.13?(state.enemyAttackType==='body'?'body':'punch'):'idle',true,enemy.image);
+ // Foreground punch trails guarantee the striking arm/glove remains visible at contact instead of disappearing behind the opponent.
+ // Impact feedback is placed at the fighters' actual contact point, at head or body height.
+ if(state.flash>0){
+   const ix=Math.min(340,Math.max(42,(state.playerPos+state.playerX+state.enemyPos)/2));
+   const iy=state.bodyPunch>0?402:354;
+   txt('✦',ix,iy,28,'#ffc857','center');
+   txt(state.bodyPunch>0?'WHAM!':'POW!',ix,iy-22,12,'#fff0c2','center');
+ }
+ txt(player.name.toUpperCase().slice(0,18),state.playerPos+state.playerX,566,8,'#355c7d','center');
+ txt(enemy.name.toUpperCase().slice(0,18),state.enemyPos,566,8,'#7a345d','center');
+ if(!state.over&&state.phase==='windup'){rect(128,69,128,5,'#51435f');rect(128,69,128*Math.max(0,state.phaseTime/1.25),5,'#ffc857');}
+ if(state.over){rect(48,105,288,76,'#151321');rect(52,109,280,68,'#352b49');txt(state.won?'CHAMPION!':'DOWN FOR THE COUNT',192,133,14,state.won?'#ffc857':'#f25f5c','center');txt(state.won?'THE CROWD GOES WILD':'TAP RESTART TO FIGHT AGAIN',192,156,8,'#fff0c2','center');}
+ for(let y=0;y<640;y+=4)rect(0,y,W,1,'#00000012');
+ ctx.restore();
+}
+function updateHUD(){
+ $('playerHealth').style.width=state.player+'%';$('playerPct').textContent=Math.ceil(state.player)+'%';$('enemyHealth').style.width=state.enemy+'%';$('enemyPct').textContent=Math.ceil(state.enemy)+'%';
+ $('stamina').style.width=state.stamina+'%';$('staminaPct').textContent=Math.ceil(state.stamina)+'%';$('downs').textContent=state.downs+' / 3';
+ $('playerNameHud').textContent='YOU: '+player.name.toUpperCase().slice(0,18);$('enemyNameHud').textContent=enemy.name.toUpperCase().slice(0,18);
+}
+function loadImage(data){if(!data)return null;const im=new Image();im.onload=()=>{draw();};im.onerror=()=>notice('The photo could not be displayed. Try a JPG or PNG image.');im.src=data;return im;}
+function readSaved(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY)||'{"player":[],"enemy":[]}')}catch{return {player:[],enemy:[]}}}
+function writeSaved(data){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(data));return true}catch(e){notice('Could not save: browser storage may be full. Try a smaller photo.');return false}}
+function refreshSelects(){
+ const db=readSaved();
+ for(const type of ['player','enemy']){const sel=$(type==='player'?'savedPlayer':'savedEnemy');sel.innerHTML='<option value="">— Select a saved '+(type==='player'?'boxer':'opponent')+' —</option>';
+ (db[type]||[]).forEach((c,i)=>{const op=document.createElement('option');op.value=String(i);op.textContent=c.name||((type==='player'?'Boxer ':'Opponent ')+(i+1));sel.appendChild(op);});}
+}
+function applyPhoto(type,data){const obj=type==='player'?player:enemy;obj.photo=data;obj.image=loadImage(data);const im=$(type==='player'?'playerPreview':'enemyPreview');if(data){im.src=data;im.style.visibility='visible';}else{im.removeAttribute('src');im.style.visibility='hidden';}updateHUD();draw();}
+function updatePortraits(){
+ $('playerPreview').style.visibility=player.photo?'visible':'hidden';$('enemyPreview').style.visibility=enemy.photo?'visible':'hidden';
+ if(player.photo){$('playerPreview').src=player.photo;player.image=player.image||loadImage(player.photo);}else{$('playerPreview').removeAttribute('src');player.image=null;}
+ if(enemy.photo){$('enemyPreview').src=enemy.photo;enemy.image=enemy.image||loadImage(enemy.photo);}else{$('enemyPreview').removeAttribute('src');enemy.image=null;}
+}
+function loadSaved(type){
+ const sel=$(type==='player'?'savedPlayer':'savedEnemy'),idx=sel.value;if(idx===''){notice('Choose a saved character first.');return;}
+ const db=readSaved(),item=(db[type]||[])[Number(idx)];if(!item)return;
+ const obj=type==='player'?player:enemy;obj.name=item.name;$(type==='player'?'playerName':'enemyName').value=item.name;obj.photo=item.photo||null;obj.image=loadImage(obj.photo);updatePortraits();updateHUD();draw();notice('Loaded '+item.name+'.');
+}
+function saveCharacter(type){
+ const obj=type==='player'?player:enemy;obj.name=($(type==='player'?'playerName':'enemyName').value.trim()||(type==='player'?'Rookie Ray':'The Brick Wall')).slice(0,18);
+ const db=readSaved();db[type]=db[type]||[];
+ const found=db[type].findIndex(c=>c.name.toLowerCase()===obj.name.toLowerCase());
+ const record={name:obj.name,photo:obj.photo||null};
+ if(found>=0)db[type][found]=record;else db[type].push(record);
+ if(writeSaved(db)){refreshSelects();notice('Saved "'+obj.name+'" on this device.');}
+ updateHUD();draw();
+}
+function clearPhoto(type){const obj=type==='player'?player:enemy;obj.photo=null;obj.image=null;applyPhoto(type,null);notice('Photo removed. The default pixel-art head will be used.');}
+function compressImage(file){
+ return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=()=>reject(Error('Could not read that image.'));reader.onload=()=>{const im=new Image();im.onerror=()=>reject(Error('That file is not a supported image.'));im.onload=()=>{const max=420,scale=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*scale));c.height=Math.max(1,Math.round(im.height*scale));const cx=c.getContext('2d');cx.clearRect(0,0,c.width,c.height);cx.drawImage(im,0,0,c.width,c.height);const keepAlpha=(file.type==='image/png'||file.type==='image/webp');resolve(keepAlpha?c.toDataURL('image/png'):c.toDataURL('image/jpeg',.82));};im.src=reader.result;};reader.readAsDataURL(file);});
+}
+async function handleFile(type,file){if(!file)return;if(!file.type.startsWith('image/')){notice('Please choose an image file.');return;}try{const data=await compressImage(file);const obj=type==='player'?player:enemy;obj.photo=data;obj.image=loadImage(data);$(type==='player'?'playerName':'enemyName').value=obj.name;updatePortraits();updateHUD();draw();notice('Photo ready. Select Save '+(type==='player'?'boxer':'opponent')+' to keep it for later.');}catch(e){notice(e.message||'Could not process that photo.');}}
+async function openCamera(type){
+ cameraTarget=type;
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){notice('Camera access is not available here. Use Upload photo instead (camera usually requires HTTPS or localhost).');$(type==='player'?'playerFile':'enemyFile').click();return;}
+ try{
+  cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false});
+  $('video').srcObject=cameraStream;$('cameraTitle').textContent='TAKE '+(type==='player'?'YOUR':'OPPONENT')+' PICTURE';
+  $('cameraDialog').style.display='flex';notice('Camera ready. Frame the face and capture when ready.');
+ }catch(err){notice('Camera permission was denied or unavailable. Use Upload photo instead.');}
+}
+function closeCamera(){$('cameraDialog').style.display='none';if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null;}$('video').srcObject=null;}
+$('takeShot').addEventListener('click',async()=>{
+ const v=$('video'),c=$('captureCanvas');
+ if(!v.videoWidth){notice('Camera is still starting. Try again in a moment.');return;}
+ // Crop a centered square from the source, then keep only an oval portrait.
+ const side=Math.min(v.videoWidth,v.videoHeight),sx=(v.videoWidth-side)/2,sy=(v.videoHeight-side)/2;
+ // Save only the oval's bounding box, not the full square around it. This makes the face fill the game head.
+ const cropW=side*.44,cropH=side*.68,outW=Math.round(cropW),outH=Math.round(cropH);
+ c.width=outW;c.height=outH;
+ const cx=c.getContext('2d');cx.clearRect(0,0,outW,outH);
+ cx.save();cx.beginPath();cx.ellipse(outW/2,outH/2,outW/2,outH/2,0,0,Math.PI*2);cx.clip();
+ cx.drawImage(v,sx+side*.28,sy+side*.14,cropW,cropH,0,0,outW,outH);cx.restore();
+ c.toBlob(async blob=>{
+  if(!blob){notice('Could not capture the photo.');return;}
+  const file=new File([blob],'oval-camera-photo.png',{type:'image/png'});
+  await handleFile(cameraTarget,file);closeCamera();
+ },'image/png');
+});
+$('closeCamera').addEventListener('click',closeCamera);
+$('cameraPlayer').addEventListener('click',()=>openCamera('player'));$('cameraEnemy').addEventListener('click',()=>openCamera('enemy'));
+$('uploadPlayer').addEventListener('click',()=>$('playerFile').click());$('uploadEnemy').addEventListener('click',()=>$('enemyFile').click());
+$('playerFile').addEventListener('change',e=>{handleFile('player',e.target.files[0]);e.target.value='';});$('enemyFile').addEventListener('change',e=>{handleFile('enemy',e.target.files[0]);e.target.value='';});
+$('savePlayer').addEventListener('click',()=>saveCharacter('player'));$('saveEnemy').addEventListener('click',()=>saveCharacter('enemy'));
+$('loadPlayer').addEventListener('click',()=>loadSaved('player'));$('loadEnemy').addEventListener('click',()=>loadSaved('enemy'));
+$('clearPlayer').addEventListener('click',()=>clearPhoto('player'));$('clearEnemy').addEventListener('click',()=>clearPhoto('enemy'));
+$('playerName').addEventListener('change',()=>{player.name=$('playerName').value.trim().slice(0,18)||'Rookie Ray';updateHUD();draw();});
+$('enemyName').addEventListener('change',()=>{enemy.name=$('enemyName').value.trim().slice(0,18)||'The Brick Wall';updateHUD();draw();});
+function distance(){return Math.abs((state.playerPos+state.playerX)-state.enemyPos);}
+function hitEnemy(kind){
+ if(state.over)return;
+ // Animate every attempted punch so the control always produces visible feedback.
+ if(state.playerHitCooldown>0)return;state.playerHitCooldown=.16;state.punch=.24;state.bodyPunch=kind==='body'?.24:0;
+ if(state.stamina<9){say('You are exhausted! Recover your stamina before throwing another punch.');return;}
+ state.stamina=Math.max(0,state.stamina-(kind==='jab'?3:5));
+ // Character art is scaled larger than the logical movement coordinates; use a range that matches what players see.
+ const range=distance();
+ if(range>158){playPunch(kind,false);say('PUNCH MISSED — move closer to connect.');updateHUD();return;}
+ const close=range<112;
+ if(state.phase==='open'){
+   const dmg=(kind==='jab'?5:8)*(close?1:0.9);
+   state.enemy=Math.max(0,state.enemy-dmg);state.flash=.58;state.enemyStun=.28;playPunch(kind,true);
+   say(kind==='jab'?'CLEAN JAB! You caught him during his opening.':'BIG BODY SHOT! That counter landed hard.');
+   state.phase='recover';state.phaseTime=1.25;
+ }else if(state.phase==='windup'){
+   const dmg=kind==='jab'?8:11;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.48;state.enemyStun=.2;playPunch(kind,true);say('HIT! You interrupted his setup with a clean punch!');
+ }else{
+   const dmg=kind==='jab'?7:10;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.4;state.enemyStun=.16;playPunch(kind,true);say('SOLID HIT! Counters during OPEN! do much more damage.');
+ }
+ if(state.enemy<=0){state.over=true;state.won=true;playVictory();stopRingMusic();say('KNOCKOUT! '+player.name+' takes the fight!');}
+ updateHUD();
+}
+function dodge(dir){
+ if(state.over)return;
+ // Move toward/away depending on relative position; D-pad left/right physically moves the player.
+ const step=dir*18;
+ state.playerPos=Math.max(54,Math.min(286,state.playerPos+step));
+ state.playerX=0;
+ if(state.phase==='attack'&&Math.abs(state.playerPos-state.enemyPos)>82){state.phase='open';state.phaseTime=1.5;state.enemyPunch=0;say('Perfect dodge! He missed — COUNTER NOW!');}
+ else say(dir<0?'You move left. Get within range to land punches.':'You move right. Get within range to land punches.');
+}
+function finish(win){state.over=true;state.won=win;state.enemyPunch=0;if(!win)say('You are out of it. Reset and study his attack cues.');}
+function duck(){if(state.over)return;state.duck=.5;if(state.phase==='attack'&&state.attackType==='head'){state.phase='open';state.phaseTime=1.5;state.enemyPunch=0;say('You ducked under the hook! COUNTER NOW!');}else if(state.phase==='attack'&&state.attackType==='body'){state.player=Math.max(0,state.player-13);state.downs++;playKnockdown();say('Body shot! Ducking into a body punch is a bad trade.');}else say('You crouch low. Watch for a body shot.');updateHUD();if(state.player<=0||state.downs>=3)finish(false);}
+function block(){if(state.over)return;state.block=.4;playBlock();if(state.phase==='attack'){state.player=Math.max(0,state.player-2);state.phase='recover';state.phaseTime=.75;state.enemyPunch=0;say('You blocked most of the hit, but lost a little ground.');}else say('Guard up. Blocking is safer, but a dodge creates a better counter chance.');updateHUD();}
+function action(a){if(a==='left')dodge(-1);if(a==='right')dodge(1);if(a==='duck')duck();if(a==='block')block();if(a==='jab')hitEnemy('jab');if(a==='body')hitEnemy('body');}
+let moveHold=null;
+document.querySelectorAll('[data-action]').forEach(b=>{
+ b.addEventListener('pointerdown',e=>{e.preventDefault();const a=b.dataset.action;action(a);b.classList.add('active');
+   if(a==='left'||a==='right'){clearInterval(moveHold);moveHold=setInterval(()=>action(a),170);}
+ });
+ const stop=()=>{b.classList.remove('active');if(b.dataset.action==='left'||b.dataset.action==='right'){clearInterval(moveHold);moveHold=null;}};
+ b.addEventListener('pointerup',stop);b.addEventListener('pointerleave',stop);b.addEventListener('pointercancel',stop);
+});
+$('restart').addEventListener('click',()=>{state=fresh();say(state.log);updateHUD();draw();});$('resetGame').addEventListener('click',()=>{state=fresh();say('Fight reset. Your selected photo characters are still in place.');updateHUD();draw();});
+let keys={};window.addEventListener('keydown',e=>{const map={'ArrowLeft':'left','ArrowRight':'right','ArrowDown':'duck','j':'jab','J':'jab','k':'body','K':'body','l':'block','L':'block',' ':'block'};if(map[e.key]){e.preventDefault();if(!keys[e.key])action(map[e.key]);keys[e.key]=true;}});window.addEventListener('keyup',e=>keys[e.key]=false);
+let last=0;function tick(ts){const dt=Math.min(.05,(ts-last)/1000||0);last=ts;if(!state.over){state.stamina=Math.min(100,state.stamina+dt*8);state.phaseTime-=dt;state.playerHitCooldown=Math.max(0,(state.playerHitCooldown||0)-dt);state.punch=Math.max(0,state.punch-dt);state.bodyPunch=Math.max(0,state.bodyPunch-dt);state.enemyPunch=Math.max(0,state.enemyPunch-dt*1.5);state.flash=Math.max(0,state.flash-dt);state.enemyStun=Math.max(0,state.enemyStun-dt);state.duck=Math.max(0,state.duck-dt);state.block=Math.max(0,state.block-dt);state.playerX*=Math.max(0,1-dt*5);state.playerPos=Math.max(54,Math.min(286,state.playerPos));
+ if(state.phaseTime<=0){if(state.phase==='ready'){state.phase='windup';state.phaseTime=2.1;state.attackType=Math.random()<.65?'head':'body';say(state.attackType==='head'?'He is loading up a HEAD shot. Dodge sideways or duck.':'He is aiming for the BODY. Dodge sideways or block.');}
+ else if(state.phase==='windup'){state.phase='attack';state.phaseTime=.8;state.enemyPunch=.32;}
+ else if(state.phase==='attack'){if(state.block>0){state.player=Math.max(0,state.player-1);say('You absorbed part of the attack.');}else if(state.playerX!==0||(state.duck>0&&state.attackType==='head')){state.phase='open';state.phaseTime=1.5;say('He missed! There is your opening — PUNCH!');}else if(distance()>92){state.phase='recover';state.phaseTime=1.35;say('His punch fell short because you were out of range.');}else{state.player=Math.max(0,state.player-(state.attackType==='head'?2:4));state.downs++;playKnockdown();state.phase='recover';state.phaseTime=1.4;say(state.attackType==='head'?'Clean shot to the head! Dodge sooner next time.':'Heavy body shot! Move sideways or block that one.');}state.enemyPunch=0;if(state.player<=0||state.downs>=3)finish(false);}
+ else if(state.phase==='open'){state.phase='recover';state.phaseTime=.65;say('The opening closed. Prepare for his next attack.');}else{state.phase='ready';state.phaseTime=2.2;state.playerX=0;if(distance()>76)state.enemyPos=Math.max(state.playerPos+42,state.enemyPos-10);}}
+ updateHUD();}draw();requestAnimationFrame(tick);}
+
+function attachMainMenu(){
+ const title=$('titleScreen'),start=$('startGame'),enable=$('menuSound');
+ const music=$('menuMusic'),sfx=$('menuSfx'),difficulty=$('difficultySelect');
+ if(enable)enable.addEventListener('click',()=>{
+   wakeRingAudio(true);
+   enable.textContent='AUDIO ENABLED ✓';
+ });
+ if(music)music.addEventListener('change',()=>{
+   ringAudio.musicOn=music.checked;
+   if(music.checked){wakeRingAudio(false);startRingMusic();}
+   else stopRingMusic();
+ });
+ if(sfx)sfx.addEventListener('change',()=>{ringAudio.sfxOn=sfx.checked;});
+ if(difficulty)difficulty.addEventListener('change',()=>{
+   if(difficulty.value==='easy'){state.enemyDamageScale=.65;state.enemySpeedScale=.75;}
+   else if(difficulty.value==='hard'){state.enemyDamageScale=1.35;state.enemySpeedScale=1.25;}
+   else {state.enemyDamageScale=1;state.enemySpeedScale=1;}
+ });
+ if(start)start.addEventListener('click',()=>{
+   // The main game loop and photo handlers are already initialized behind the menu.
+   title.hidden=true;
+   if(ringAudio.musicOn)wakeRingAudio(false);
+   state=fresh();say(state.log);updateHUD();draw();
+   window.scrollTo(0,0);
+ });
+}
 
 function init(){
  player.name=DEFAULT_PLAYER.name;enemy.name=DEFAULT_ENEMY.name;
@@ -288,10 +502,9 @@ function init(){
  refreshSelects();updateHUD();draw();requestAnimationFrame(tick);
 }
 attachRingAudioControls();
-attachTitleScreen();
+attachMainMenu();
 init();
 })();
-
 </script>
 </body>
 </html>
