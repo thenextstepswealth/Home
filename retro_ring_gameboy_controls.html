@@ -47,7 +47,7 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
 </head>
 <body>
 <main>
-<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.1.0</p>
+<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.1.1</p>
 <div class="layout">
 <section class="main-game">
 <div class="cabinet"><canvas id="game" width="384" height="560" aria-label="Retro pixel art boxing match"></canvas></div>
@@ -143,7 +143,7 @@ function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
  const hx=-20,hy=-106,hw=40,hh=46;
  if(photo && photo.complete && photo.naturalWidth){
    // Real-photo head: oval outline and clipped photo, with no square backing.
-   ctx.save();ctx.beginPath();ctx.ellipse(hx+hw/2,hy+hh/2,hw/2+1.5,hh/2+1.5,0,0,Math.PI*2);ctx.fillStyle='#28202c';ctx.fill();ctx.restore();
+   ctx.save();ctx.beginPath();ctx.ellipse(hx+hw/2,hy+hh/2,hw/2+0.7,hh/2+0.7,0,0,Math.PI*2);ctx.fillStyle='#d6c1a0';ctx.fill();ctx.restore();
    ctx.save();ctx.beginPath();ctx.ellipse(hx+hw/2,hy+hh/2,hw/2,hh/2,0,0,Math.PI*2);ctx.clip();
    // Cover-crop the source to the tall oval's aspect ratio so the oval is filled edge-to-edge.
    const targetRatio=hw/hh, sourceRatio=photo.naturalWidth/photo.naturalHeight;
@@ -201,6 +201,17 @@ function draw(){
  const playerY=state.duck>0?491:508, enemyY=508;
  drawFighter(state.playerPos+state.playerX,playerY,2.35,['#d98c62','#355c7d','#4ea5d9','#2b2435'],state.punch>0?(state.bodyPunch>0?'body':'punch'):state.block>0?'block':'idle',false,player.image);
  drawFighter(state.enemyPos-(state.enemyPunch>0?18:0)+(state.enemyStun>0?8:0),enemyY,2.4,['#a96b4d','#7a345d','#f25f5c','#2b2435'],state.enemyPunch>0?(state.enemyAttackType==='body'?'body':'punch'):'idle',true,enemy.image);
+ // Foreground punch trails guarantee the striking arm/glove remains visible at contact instead of disappearing behind the opponent.
+ if(state.punch>0){
+   const px=state.playerPos+state.playerX;
+   if(state.bodyPunch>0){rect(px+22,468,40,13,'#d98c62');rect(px+54,465,24,20,'#4ea5d9');rect(px+72,469,7,8,'#fff0c2');}
+   else{rect(px+22,426,42,12,'#d98c62');rect(px+55,422,25,20,'#4ea5d9');rect(px+74,426,7,8,'#fff0c2');}
+ }
+ if(state.enemyPunch>0){
+   const ex=state.enemyPos;
+   if(state.enemyAttackType==='body'){rect(ex-62,468,40,13,'#a96b4d');rect(ex-78,465,24,20,'#f25f5c');rect(ex-82,469,7,8,'#fff0c2');}
+   else{rect(ex-62,426,42,12,'#a96b4d');rect(ex-80,422,25,20,'#f25f5c');rect(ex-84,426,7,8,'#fff0c2');}
+ }
  if(state.flash>0){const ix=Math.min(340,Math.max(42,(state.playerPos+state.playerX+state.enemyPos)/2));txt('✦',ix,432,34,'#ffc857','center');txt(state.bodyPunch>0?'WHAM!':'POW!',ix,405,15,'#fff0c2','center');}
  txt(player.name.toUpperCase().slice(0,18),state.playerPos+state.playerX,566,8,'#355c7d','center');
  txt(enemy.name.toUpperCase().slice(0,18),state.enemyPos,566,8,'#7a345d','center');
@@ -262,10 +273,12 @@ $('takeShot').addEventListener('click',async()=>{
  if(!v.videoWidth){notice('Camera is still starting. Try again in a moment.');return;}
  // Crop a centered square from the source, then keep only an oval portrait.
  const side=Math.min(v.videoWidth,v.videoHeight),sx=(v.videoWidth-side)/2,sy=(v.videoHeight-side)/2;
- c.width=side;c.height=side;
- const cx=c.getContext('2d');cx.clearRect(0,0,side,side);
- cx.save();cx.beginPath();cx.ellipse(side/2,side/2,side*.22,side*.31,0,0,Math.PI*2);cx.clip();
- cx.drawImage(v,sx,sy,side,side,0,0,side,side);cx.restore();
+ // Save only the oval's bounding box, not the full square around it. This makes the face fill the game head.
+ const outW=Math.round(side*.44),outH=Math.round(side*.62);
+ c.width=outW;c.height=outH;
+ const cx=c.getContext('2d');cx.clearRect(0,0,outW,outH);
+ cx.save();cx.beginPath();cx.ellipse(outW/2,outH/2,outW/2,outH/2,0,0,Math.PI*2);cx.clip();
+ cx.drawImage(v,sx+side*.28,sy+side*.19,side*.44,side*.62,0,0,outW,outH);cx.restore();
  c.toBlob(async blob=>{
   if(!blob){notice('Could not capture the photo.');return;}
   const file=new File([blob],'oval-camera-photo.png',{type:'image/png'});
@@ -286,17 +299,17 @@ function hitEnemy(kind){
  if(state.over)return;
  if(distance()>68){say('Too far away! Move closer before punching.');return;}
  if(state.stamina<9){say('You are exhausted! Recover your stamina before throwing another punch.');return;}
- state.stamina=Math.max(0,state.stamina-(kind==='jab'?8:13));state.punch=.52;state.bodyPunch=kind==='body'?.32:0;
+ state.stamina=Math.max(0,state.stamina-(kind==='jab'?8:13));state.punch=.78;state.bodyPunch=kind==='body'?.32:0;
  const close=distance()<62;
  if(state.phase==='open'){
    const dmg=(kind==='jab'?22:30)*(close?1:0.8);
-   state.enemy=Math.max(0,state.enemy-dmg);state.flash=.38;state.enemyStun=.28;
+   state.enemy=Math.max(0,state.enemy-dmg);state.flash=.58;state.enemyStun=.28;
    say(kind==='jab'?'CLEAN JAB! You caught him during his opening.':'BIG BODY SHOT! That counter landed hard.');
    state.phase='recover';state.phaseTime=1.25;
  }else if(state.phase==='windup'){
-   const dmg=kind==='jab'?8:11;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.3;state.enemyStun=.2;say('HIT! You interrupted his setup with a clean punch!');
+   const dmg=kind==='jab'?8:11;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.48;state.enemyStun=.2;say('HIT! You interrupted his setup with a clean punch!');
  }else{
-   const dmg=kind==='jab'?7:10;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.24;state.enemyStun=.16;say('SOLID HIT! Counters during OPEN! do much more damage.');
+   const dmg=kind==='jab'?7:10;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.4;state.enemyStun=.16;say('SOLID HIT! Counters during OPEN! do much more damage.');
  }
  if(state.enemy<=0){state.over=true;state.won=true;say('KNOCKOUT! '+player.name+' takes the fight!');}
  updateHUD();
