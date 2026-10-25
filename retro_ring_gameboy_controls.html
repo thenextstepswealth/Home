@@ -138,12 +138,12 @@ input,select,button{max-width:100%;min-width:0}
 </head>
 <body class="menu-active">
 <main>
-<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.9.5</p>
+<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.9.6</p>
 
 <section id="titleScreen" class="title-screen" role="dialog" aria-label="Retro Ring main menu">
   <div class="title-logo">RETRO RING</div>
   <div class="title-tagline">3D-INSPIRED ARCADE BOXING</div>
-  <div class="version-stamp">VERSION 1.9.5</div>
+  <div class="version-stamp">VERSION 1.9.6</div>
   <div class="title-fighters" aria-hidden="true">
     <svg class="splash-ring-art" viewBox="0 0 320 118" role="img" aria-label="Two retro arcade boxers facing off in a boxing ring">
       <defs><linearGradient id="ringBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#302741"/><stop offset="1" stop-color="#100d19"/></linearGradient></defs>
@@ -409,11 +409,11 @@ function notice(s){$('notice').textContent=s;}
 function rect(x,y,w,h,c){ctx.fillStyle=c;ctx.fillRect(Math.round(x),Math.round(y),w,h);}
 function txt(s,x,y,size=8,c='#fff0c2',align='left'){ctx.fillStyle=c;ctx.font=`bold ${size}px monospace`;ctx.textAlign=align;ctx.fillText(s,x,y);}
 function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
+ const [skin,shorts,gloves,boots]=palette;
+ const isBlue=shorts==='#355c7d';
  ctx.save();ctx.translate(x,y);ctx.scale(flip?-scale:scale,scale);
  // Different arcade silhouettes: Rookie Ray is lean; Brick Wall is deliberately broad.
  ctx.scale(isBlue?1.17:0.94,1);
- const [skin,shorts,gloves,boots]=palette;
- const isBlue=shorts==='#355c7d';
  const outline='#1c1421', highlight=skin==='#d98c62'?'#f6c49a':'#e8a17d', shade=skin==='#d98c62'?'#a85f45':'#77412f';
  const trim=isBlue?'#ffc857':'#f5e8d4';
  const bob=pose==='idle'?Math.sin((state.introTime||0)*7)*.8:0;
@@ -554,7 +554,7 @@ function drawReferee(x,y,scale,pose='raise'){
 
 function draw(){
  ctx.save();
- // Version 1.9.5: taller playfield with the ring enlarged vertically.
+ // Version 1.9.6: taller playfield with the ring enlarged vertically.
  rect(0,0,W,H,'#100e1a');
  const sky=ctx.createLinearGradient(0,0,0,118);sky.addColorStop(0,'#171526');sky.addColorStop(1,'#332746');
  rect(0,0,W,108,'#20192e');ctx.fillStyle=sky;ctx.fillRect(0,0,W,108);
