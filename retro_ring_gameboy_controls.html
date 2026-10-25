@@ -6,7 +6,7 @@
 <title>Retro Ring — Arcade Character Pass</title>
 <style>
 :root{color-scheme:dark;--cream:#fff0c2;--gold:#ffc857;--red:#f25f5c;--blue:#4ea5d9;--green:#8ac926}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{touch-action:pan-y pinch-zoom}body,main,.cabinet,.game-cabinet,canvas,.game-cabinet *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.game-cabinet,.game-cabinet *,.game-cabinet canvas{touch-action:none;overscroll-behavior:contain}button,.dpad button,.actions button{touch-action:manipulation}input,select,textarea{user-select:text;-webkit-user-select:text}body{margin:0;min-height:100vh;overflow-x:hidden;background:radial-gradient(ellipse at top,#302747,#12111c 70%);color:var(--cream);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;display:flex;justify-content:center;padding:16px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{touch-action:pan-y pinch-zoom}body,main,.cabinet,.game-cabinet,canvas,.game-cabinet *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}.game-cabinet,.game-cabinet *,.game-cabinet canvas,.controller-panel,.controller-panel *{touch-action:none;overscroll-behavior:contain}button,.dpad button,.actions button{touch-action:manipulation}input,select,textarea{user-select:text;-webkit-user-select:text}body{margin:0;min-height:100vh;overflow-x:hidden;background:radial-gradient(ellipse at top,#302747,#12111c 70%);color:var(--cream);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;display:flex;justify-content:center;padding:16px}
 main{width:min(100%,560px);max-width:560px;min-width:0}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(22px,4vw,34px);letter-spacing:2px;text-shadow:3px 3px #8b3a62}.sub{color:#c5badb;margin:0 0 14px;font-size:12px}
 .layout{display:flex;flex-direction:column;gap:10px;align-items:stretch;width:100%;min-width:0}.main-game{min-width:0}.sidebar{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;align-items:start;width:100%;min-width:0}.cabinet{border:4px solid #8d719b;box-shadow:0 0 0 4px #201b30,0 12px 40px #0009;background:#211d32;padding:10px}canvas{display:block;width:100%;height:auto;aspect-ratio:3/4.8;image-rendering:auto;background:#241e37;border:2px solid #100e18}
 .hud{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 0 6px}.meter-card,.panel{background:#171421;border:2px solid #574667;padding:6px}.name-row{display:flex;justify-content:space-between;gap:5px;font-size:10px;margin-bottom:5px}.bar{height:12px;background:#383145;border:2px solid #07070b;padding:1px}.fill{height:100%;width:100%}#playerHealth{background:var(--blue);box-shadow:0 0 7px #238cff}#enemyHealth{background:var(--red);box-shadow:0 0 7px #f25f5c}#stamina{background:var(--gold)}
@@ -138,12 +138,12 @@ input,select,button{max-width:100%;min-width:0}
 </head>
 <body class="menu-active">
 <main>
-<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.11.20</p>
+<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.11.21</p>
 
 <section id="titleScreen" class="title-screen" role="dialog" aria-label="Retro Ring main menu">
   <div class="title-logo">RETRO RING</div>
   <div class="title-tagline">3D-INSPIRED ARCADE BOXING</div>
-  <div class="version-stamp">VERSION 1.11.20</div>
+  <div class="version-stamp">VERSION 1.11.21</div>
   <div class="title-fighters" aria-hidden="true">
     <svg class="splash-ring-art" viewBox="0 0 320 118" role="img" aria-label="Two retro arcade boxers facing off in a boxing ring"><defs><clipPath id="splashPlayerHeadClip"><ellipse cx="91" cy="28" rx="15" ry="19"/></clipPath><clipPath id="splashEnemyHeadClip"><ellipse cx="228" cy="28" rx="15" ry="19"/></clipPath></defs>
       <defs><linearGradient id="ringBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#302741"/><stop offset="1" stop-color="#100d19"/></linearGradient></defs>
@@ -201,17 +201,17 @@ input,select,button{max-width:100%;min-width:0}
       <div class="splash-photo-card">
         <strong>YOUR BOXER</strong>
         <div class="splash-photo-buttons">
-          <button type="button" onclick="document.getElementById('cameraPlayer').click()">TAKE PHOTO</button>
-          <button type="button" onclick="document.getElementById('uploadPlayer').click()">UPLOAD</button>
-          <button type="button" onclick="document.getElementById('loadPlayer').click()">SAVED</button>
+          <button type="button" data-splash-photo="camera-player">TAKE PHOTO</button>
+          <button type="button" data-splash-photo="upload-player">UPLOAD</button>
+          <button type="button" data-splash-photo="saved-player">SAVED</button>
         </div>
       </div>
       <div class="splash-photo-card">
         <strong>OPPONENT</strong>
         <div class="splash-photo-buttons">
-          <button type="button" onclick="document.getElementById('cameraEnemy').click()">TAKE PHOTO</button>
-          <button type="button" onclick="document.getElementById('uploadEnemy').click()">UPLOAD</button>
-          <button type="button" onclick="document.getElementById('loadEnemy').click()">SAVED</button>
+          <button type="button" data-splash-photo="camera-enemy">TAKE PHOTO</button>
+          <button type="button" data-splash-photo="upload-enemy">UPLOAD</button>
+          <button type="button" data-splash-photo="saved-enemy">SAVED</button>
         </div>
       </div>
     </div>
@@ -579,11 +579,29 @@ arenaBackground.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA8cAAAZaCAI
  },{passive:false});
  cabinet.addEventListener('dblclick',e=>e.preventDefault());
 })();
+// Version 1.11.21: prevent Safari double-tap/pinch zoom inside the entire controls panel.
+(function(){
+ const panel=document.querySelector('.controller-panel');
+ if(!panel)return;
+ ['contextmenu','selectstart','dragstart','dblclick','gesturestart','gesturechange','gestureend'].forEach(type=>{
+   panel.addEventListener(type,e=>e.preventDefault(),{passive:false});
+ });
+ let lastEnd=0;
+ panel.addEventListener('touchend',e=>{
+   const now=Date.now();
+   if(now-lastEnd<700)e.preventDefault();
+   lastEnd=now;
+ },{passive:false});
+ panel.addEventListener('touchmove',e=>{
+   if(e.touches&&e.touches.length>1)e.preventDefault();
+ },{passive:false});
+})();
+
 function draw(){
  ctx.save();
- // Version 1.11.20: taller playfield with the ring enlarged vertically.
+ // Version 1.11.21: taller playfield with the ring enlarged vertically.
  rect(0,0,W,H,'#090e22');
- // Version 1.11.20: embedded pixel-art arena background, fitted to the full playfield.
+ // Version 1.11.21: embedded pixel-art arena background, fitted to the full playfield.
  if(arenaBackground.complete && arenaBackground.naturalWidth){
    // Shift the artwork down slightly while cropping from the top, so the thin blue edge
    // below the crowd sits flush against the gameplay screen's bottom purple border.
@@ -728,7 +746,7 @@ function compressImage(file){
 async function handleFile(type,file){if(!file)return;if(!file.type.startsWith('image/')){notice('Please choose an image file.');return;}try{const data=await compressImage(file);const obj=type==='player'?player:enemy;obj.photo=data;obj.image=loadImage(data);$(type==='player'?'playerName':'enemyName').value=obj.name;updatePortraits();updateHUD();draw();notice('Photo ready. Select Save '+(type==='player'?'boxer':'opponent')+' to keep it for later.');}catch(e){notice(e.message||'Could not process that photo.');}}
 async function openCamera(type){
  cameraTarget=type;
- if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){notice('Camera access is unavailable in this page. Tap Upload photo and choose Take Photo from the iPhone picker.');return;}
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){notice('Opening the iPhone photo picker. Choose Take Photo or Photo Library.');const picker=$(type==='player'?'playerFile':'enemyFile');picker.setAttribute('capture','user');picker.click();return;}
  try{
   cameraStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'user'},width:{ideal:720},height:{ideal:960}},audio:false});
   const video=$('video');video.srcObject=cameraStream;
@@ -761,6 +779,18 @@ $('takeShot').addEventListener('click',async()=>{
  },'image/png');
 });
 $('closeCamera').addEventListener('click',closeCamera);
+// Start-screen photo buttons call the real action directly for iPhone Safari.
+document.querySelectorAll('[data-splash-photo]').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+   const action=btn.dataset.splashPhoto;
+   if(action==='camera-player')openCamera('player');
+   else if(action==='camera-enemy')openCamera('enemy');
+   else if(action==='upload-player')$('playerFile').click();
+   else if(action==='upload-enemy')$('enemyFile').click();
+   else if(action==='saved-player')$('savedPlayer').focus();
+   else if(action==='saved-enemy')$('savedEnemy').focus();
+ });
+});
 $('cameraPlayer').addEventListener('click',()=>openCamera('player'));$('cameraEnemy').addEventListener('click',()=>openCamera('enemy'));
 $('uploadPlayer').addEventListener('click',()=>$('playerFile').click());$('uploadEnemy').addEventListener('click',()=>$('enemyFile').click());
 $('playerFile').addEventListener('change',e=>{handleFile('player',e.target.files[0]);e.target.value='';});$('enemyFile').addEventListener('change',e=>{handleFile('enemy',e.target.files[0]);e.target.value='';});
