@@ -129,12 +129,12 @@ input,select,button{max-width:100%;min-width:0}
 </head>
 <body class="menu-active">
 <main>
-<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.7.1</p>
+<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.8.0</p>
 
 <section id="titleScreen" class="title-screen" role="dialog" aria-label="Retro Ring main menu">
   <div class="title-logo">RETRO RING</div>
   <div class="title-tagline">3D-INSPIRED ARCADE BOXING</div>
-  <div class="version-stamp">VERSION 1.7.1</div>
+  <div class="version-stamp">VERSION 1.8.0</div>
   <div class="title-fighters" aria-hidden="true">
     <svg class="splash-ring-art" viewBox="0 0 320 118" role="img" aria-label="Two retro arcade boxers facing off in a boxing ring">
       <defs><linearGradient id="ringBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#302741"/><stop offset="1" stop-color="#100d19"/></linearGradient></defs>
@@ -322,7 +322,16 @@ function victorySound(){[523,659,784,1047].forEach((f,i)=>tone(f,.2,'square',.14
 function defeatSound(){[392,330,262,196].forEach((f,i)=>tone(f,.23,'triangle',.14,i*.18));}
 const ringMelody=[392,0,392,523,0,466,392,0,311,392,0,466,523,0,392,0,349,0,392,466,0,523,466,0,311,0,349,392,0,466,392,0];
 const ringBass=[98,0,98,0,117,0,117,0,78,0,78,0,92,0,92,0,87,0,87,0,104,0,104,0,69,0,69,0,82,0,82,0];
-function musicTick(){if(!ringAudio.ctx||!ringAudio.enabled||!ringAudio.musicOn)return;const i=ringAudio.step++,m=ringMelody[i%ringMelody.length],b=ringBass[i%bassLength()];if(m)tone(m,.13,'square',.16,0,0,'music');if(b)tone(b,.17,'triangle',.12,0,0,'music');}
+function musicTick(){
+ if(!ringAudio.ctx||!ringAudio.enabled||!ringAudio.musicOn)return;
+ const i=ringAudio.step++,m=ringMelody[i%ringMelody.length],b=ringBass[i%bassLength()];
+ if(m)tone(m,.16,'square',.13,0,0,'music');
+ if(b)tone(b,.20,'triangle',.16,0,0,'music');
+ // A steady arcade drum pulse and brighter off-beat accents.
+ if(i%4===0){tone(78,.10,'sine',.20,0,-28,'music');tone(150,.055,'triangle',.06,.025,-70,'music');}
+ if(i%4===2){tone(190,.055,'square',.055,0,-110,'music');}
+ if(i%8===6)tone(660,.075,'triangle',.07,.02,120,'music');
+}
 function bassLength(){return ringBass.length;}
 function startRingMusic(){if(!ringAudio.ctx||!ringAudio.enabled||!ringAudio.musicOn||ringAudio.seqTimer)return;ringAudio.step=0;musicTick();ringAudio.seqTimer=setInterval(musicTick,230);}
 function stopRingMusic(){if(ringAudio.seqTimer){clearInterval(ringAudio.seqTimer);ringAudio.seqTimer=null;}}
@@ -358,7 +367,7 @@ let player={...DEFAULT_PLAYER},enemy={...DEFAULT_ENEMY},cameraStream=null,camera
 const STORAGE_KEY='retroRing.boxers.v1';
 let state;
 function applyDifficultySettings(){const d=$('difficultySelect')?.value||'easy';state.enemyDamageScale=d==='easy'?0.45:d==='hard'?1.25:0.85;state.enemySpeedScale=d==='easy'?0.65:d==='hard'?1.2:0.85;state.enemyPauseScale=d==='easy'?1.55:d==='hard'?0.8:1;}
-function fresh(){return {player:100,enemy:100,stamina:100,downs:0,phase:'ready',phaseTime:1.25,attackType:'head',playerX:0,playerY:0,playerPos:106,enemyPos:282,playerY:0,enemyY:0,enemyStun:0,duck:0,block:0,punch:0,bodyPunch:0,enemyPunch:0,enemyAttackType:'head',playerHitCooldown:0,flash:0,over:false,won:false,log:'DING DING! The Brick Wall is watching you. Wait for his tell, dodge, then counter.'};}
+function fresh(){return {player:100,enemy:100,stamina:100,downs:0,phase:'ready',phaseTime:1.25,attackType:'head',playerX:0,playerY:0,playerPos:106,enemyPos:282,enemyY:0,enemyStun:0,duck:0,block:0,punch:0,bodyPunch:0,enemyPunch:0,enemyAttackType:'head',playerHitCooldown:0,flash:0,over:false,won:false,introTime:0,victoryPose:0,log:'The referee will start the match. Move left/right and up/down across the taller ring. The opponent reacts to your movement; counter when he leaves an opening.'};}
 state=fresh();
 function say(s){state.log=s;$('log').textContent=s;}
 function notice(s){$('notice').textContent=s;}
@@ -450,42 +459,67 @@ function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
  rect(-17,-34,34,5,'#fff0c2');
  ctx.restore();
 }
+
+function drawReferee(x,y,scale,pose='raise'){
+ ctx.save();ctx.translate(x,y);ctx.scale(scale,scale);
+ const swing=Math.sin((state.introTime||0)*7)*.18;
+ // small ring official in a white shirt, dark trousers and bow tie
+ ctx.fillStyle='rgba(0,0,0,.25)';ctx.beginPath();ctx.ellipse(0,2,10,2.5,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#242238';ctx.fillRect(-5,-17,4,18);ctx.fillRect(2,-17,4,18);
+ ctx.fillStyle='#11111b';ctx.fillRect(-7,-1,7,3);ctx.fillRect(1,-1,7,3);
+ ctx.fillStyle='#eee8dc';ctx.beginPath();ctx.moveTo(-7,-34);ctx.lineTo(7,-34);ctx.lineTo(8,-17);ctx.lineTo(-8,-17);ctx.closePath();ctx.fill();
+ ctx.fillStyle='#d8d0c3';ctx.fillRect(-2,-33,4,13);
+ ctx.fillStyle='#c93243';ctx.beginPath();ctx.moveTo(0,-32);ctx.lineTo(3,-28);ctx.lineTo(0,-21);ctx.lineTo(-3,-28);ctx.closePath();ctx.fill();
+ ctx.fillStyle='#c7835d';ctx.beginPath();ctx.ellipse(0,-40,6,7,0,0,Math.PI*2);ctx.fill();
+ ctx.fillStyle='#3a2630';ctx.beginPath();ctx.arc(0,-43,6,Math.PI,Math.PI*2);ctx.fill();
+ ctx.strokeStyle='#c7835d';ctx.lineWidth=3;ctx.lineCap='round';
+ ctx.beginPath();ctx.moveTo(-7,-31);ctx.lineTo(-12,-23);ctx.lineTo(-13,-17);ctx.stroke();
+ ctx.beginPath();
+ if(pose==='raise'){
+   ctx.moveTo(7,-31);ctx.lineTo(11,-39+swing*5);ctx.lineTo(12,-48+swing*5);
+ }else{
+   ctx.moveTo(7,-31);ctx.lineTo(12,-26);ctx.lineTo(15,-23);
+ }
+ ctx.stroke();
+ ctx.restore();
+}
+
 function draw(){
  ctx.save();
  // Deep arena background and compact scoreboard area within the game canvas.
  rect(0,0,W,H,'#100e1a');
- const sky=ctx.createLinearGradient(0,0,0,190);sky.addColorStop(0,'#171526');sky.addColorStop(1,'#332746');
- rect(0,0,W,170,'#20192e');ctx.fillStyle=sky;ctx.fillRect(0,0,W,170);
+ const sky=ctx.createLinearGradient(0,0,0,166);sky.addColorStop(0,'#171526');sky.addColorStop(1,'#332746');
+ rect(0,0,W,150,'#20192e');ctx.fillStyle=sky;ctx.fillRect(0,0,W,150);
  // Arena spotlights and crowd silhouettes.
  for(let i=0;i<10;i++){
    const x=12+i*40;
-   ctx.beginPath();ctx.moveTo(x,26);ctx.lineTo(x-23,184);ctx.lineTo(x+23,184);ctx.closePath();
+   ctx.beginPath();ctx.moveTo(x,26);ctx.lineTo(x-23,158);ctx.lineTo(x+23,158);ctx.closePath();
    ctx.fillStyle='rgba(255,221,160,.035)';ctx.fill();
  }
  for(let i=0;i<58;i++){
-   const x=i*7, y=142+(i%4)*5;
+   const x=i*7, y=124+(i%4)*5;
    ctx.fillStyle=i%3===0?'#dca36b':i%2?'#59466c':'#8c6c78';
    ctx.beginPath();ctx.ellipse(x+2,y,2.1,3.5,0,0,Math.PI*2);ctx.fill();
  }
- rect(0,169,W,4,'#e4b978');rect(0,174,W,3,'#f4dfb6');
+ rect(0,149,W,4,'#e4b978');rect(0,154,W,3,'#f4dfb6');
  // Ring floor occupies nearly all of the play area, with perspective narrowing toward the back.
- ctx.beginPath();ctx.moveTo(12,188);ctx.lineTo(372,188);ctx.lineTo(398,548);ctx.lineTo(-14,548);ctx.closePath();
- const floor=ctx.createLinearGradient(0,188,0,548);floor.addColorStop(0,'#36c995');floor.addColorStop(.6,'#20b981');floor.addColorStop(1,'#11966e');
+ ctx.beginPath();ctx.moveTo(12,162);ctx.lineTo(372,162);ctx.lineTo(398,548);ctx.lineTo(-14,548);ctx.closePath();
+ const floor=ctx.createLinearGradient(0,162,0,548);floor.addColorStop(0,'#36c995');floor.addColorStop(.6,'#20b981');floor.addColorStop(1,'#11966e');
  ctx.fillStyle=floor;ctx.fill();
  // Mat texture, perspective boards and edge shading.
- ctx.save();ctx.beginPath();ctx.moveTo(12,188);ctx.lineTo(372,188);ctx.lineTo(398,548);ctx.lineTo(-14,548);ctx.closePath();ctx.clip();
- for(let y=205;y<548;y+=22){
-   const t=(y-188)/360, left=12-26*t, right=372+26*t;
+ ctx.save();ctx.beginPath();ctx.moveTo(12,162);ctx.lineTo(372,162);ctx.lineTo(398,548);ctx.lineTo(-14,548);ctx.closePath();ctx.clip();
+ for(let y=180;y<548;y+=22){
+   const t=(y-162)/386, left=12-26*t, right=372+26*t;
    ctx.strokeStyle='rgba(220,255,235,.09)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(left,y);ctx.lineTo(right,y);ctx.stroke();
  }
  for(let x=35;x<384;x+=32){
-   ctx.strokeStyle='rgba(0,75,55,.09)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(192+(x-192)*.25,188);ctx.lineTo(x,548);ctx.stroke();
+   ctx.strokeStyle='rgba(0,75,55,.09)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(192+(x-192)*.25,162);ctx.lineTo(x,548);ctx.stroke();
  }
  ctx.restore();
  // Rope lines follow the perspective of the ring.
  const ropes=['#f4dfb6','#d84f58','#f4dfb6','#4d9fd0'];
  for(let i=0;i<4;i++){
-   const y=190+i*15;
+   const y=166+i*15;
    ctx.strokeStyle=ropes[i];ctx.lineWidth=i===0?4:3;
    ctx.beginPath();ctx.moveTo(12,y);ctx.lineTo(372,y);ctx.stroke();
    ctx.strokeStyle='rgba(255,255,255,.4)';ctx.lineWidth=1;
@@ -493,8 +527,8 @@ function draw(){
  }
  // Corner posts and ropes extending back toward the audience.
  for(const x of [12,372]){
-   ctx.fillStyle='#f3d3a0';ctx.fillRect(x-4,182,8,48);
-   ctx.fillStyle='#fff0c2';ctx.fillRect(x-2,183,3,44);
+   ctx.fillStyle='#f3d3a0';ctx.fillRect(x-4,158,8,48);
+   ctx.fillStyle='#fff0c2';ctx.fillRect(x-2,159,3,44);
  }
  // Status banners are compact, leaving the ring floor visually dominant.
  const banner=state.over?(state.won?'KNOCKOUT! YOU WIN!':'DOWN FOR THE COUNT'):
@@ -506,10 +540,10 @@ function draw(){
    rect(86,42,212,4,'#51435f');rect(86,42,212*Math.max(0,state.phaseTime/1.25),4,'#ffc857');
  }
  // Perspective movement changes apparent size: farther away = smaller and higher; closer = larger and lower.
- const pDepth=Math.max(-24,Math.min(24,state.playerY||0));
+ const pDepth=Math.max(-64,Math.min(52,state.playerY||0));
  const playerScale=2.05;
- const enemyDepth=Math.max(-24,Math.min(24,state.enemyY||0));
- const playerY=(state.duck>0?476:488)+pDepth;
+ const enemyDepth=Math.max(-58,Math.min(46,state.enemyY||0));
+ const playerY=(state.duck>0?468:480)+pDepth;
  const enemyY=448+enemyDepth;
  // Soft contact shadows ground each fighter.
  ctx.fillStyle='rgba(0,45,36,.22)';
@@ -517,6 +551,20 @@ function draw(){
  ctx.beginPath();ctx.ellipse(state.enemyPos,enemyY+3,34,9,0,0,Math.PI*2);ctx.fill();
  drawFighter(state.playerPos+state.playerX,playerY,playerScale,['#d98c62','#355c7d','#4ea5d9','#2b2435'],state.punch>0.105?(state.bodyPunch>0?'body':'punch'):state.block>0?'block':'idle',false,player.image);
  drawFighter(state.enemyPos-(state.enemyPunch>0?16:0)+(state.enemyStun>0?7:0),enemyY,2.15,['#a96b4d','#7a345d','#f25f5c','#2b2435'],state.enemyPunch>0.13?(state.enemyAttackType==='body'?'body':'punch'):'idle',true,enemy.image);
+ if((state.introTime||0)>0){
+   drawReferee(192,Math.max(352,Math.min(405,420+(state.playerY||0)*.25)),1.55,'raise');
+   if(state.introTime>1.5)txt('REFEREE: FIGHT FAIR!',192,300,9,'#fff0c2','center');
+ }
+ if(state.over&&state.won&&state.victoryPose>0){
+   const winnerX=state.playerPos+state.playerX;
+   drawReferee(Math.max(110,Math.min(270,(winnerX+state.enemyPos)/2)),365,1.35,'raise');
+   // Lift the winner's glove for the official decision.
+   ctx.save();ctx.strokeStyle='#c7835d';ctx.lineWidth=5;ctx.lineCap='round';
+   ctx.beginPath();ctx.moveTo(winnerX-3,430+(state.playerY||0));ctx.lineTo(winnerX-17,400+(state.playerY||0));ctx.lineTo(winnerX-21,378+(state.playerY||0));ctx.stroke();
+   ctx.fillStyle='#4ea5d9';ctx.beginPath();ctx.arc(winnerX-21,376+(state.playerY||0),7,0,Math.PI*2);ctx.fill();ctx.restore();
+   txt('WINNER!',192,276,15,'#ffe066','center');
+ }
+
  if(state.flash>0){
    const ix=Math.min(340,Math.max(42,(state.playerPos+state.playerX+state.enemyPos)/2));
    const iy=state.bodyPunch>0?390:326;
@@ -609,7 +657,11 @@ $('loadPlayer').addEventListener('click',()=>loadSaved('player'));$('loadEnemy')
 $('clearPlayer').addEventListener('click',()=>clearPhoto('player'));$('clearEnemy').addEventListener('click',()=>clearPhoto('enemy'));
 $('playerName').addEventListener('change',()=>{player.name=$('playerName').value.trim().slice(0,18)||'Rookie Ray';updateHUD();draw();});
 $('enemyName').addEventListener('change',()=>{enemy.name=$('enemyName').value.trim().slice(0,18)||'The Brick Wall';updateHUD();draw();});
-function distance(){return Math.abs((state.playerPos+state.playerX)-state.enemyPos);}
+function distance(){
+ const dx=Math.abs((state.playerPos+state.playerX)-state.enemyPos);
+ const dy=Math.abs((state.playerY||0)-(state.enemyY||0))*0.72;
+ return Math.sqrt(dx*dx+dy*dy);
+}
 function hitEnemy(kind){
  if(state.over)return;
  // Animate every attempted punch so the control always produces visible feedback.
@@ -630,14 +682,14 @@ function hitEnemy(kind){
  }else{
    const dmg=kind==='jab'?1.5:2.5;state.enemy=Math.max(0,state.enemy-dmg);showDamageNotice('-'+Math.round(dmg)+' OPPONENT HEALTH','#8ac926');impactFlash();state.flash=.4;state.enemyStun=kind==='jab'?.4:.3;state.enemyFlinch=kind==='jab'?.22:0;playPunch(kind,true);say('SOLID HIT! Counters during OPEN! do much more damage.');
  }
- if(state.enemy<=0){state.over=true;state.won=true;playVictory();stopRingMusic();say('KNOCKOUT! '+player.name+' takes the fight!');}
+ if(state.enemy<=0){state.over=true;state.won=true;state.victoryPose=1;playVictory();crowdCheer();stopRingMusic();say('KNOCKOUT! '+player.name+' takes the fight! The referee raises the winner’s hand.');}
  updateHUD();
 }
 function dodge(dir){
  if(state.over)return;
  // Move toward/away depending on relative position; D-pad left/right physically moves the player.
- const step=dir*24;
- state.playerPos=Math.max(28,Math.min(356,state.playerPos+step));
+ const step=dir*30;
+ state.playerPos=Math.max(20,Math.min(364,state.playerPos+step));
  state.playerX=0;
  if(state.phase==='attack'&&Math.abs(state.playerPos-state.enemyPos)>82){state.phase='open';state.phaseTime=1.65;state.enemyPunch=0;say('Perfect dodge! He missed — COUNTER NOW!');}
  else say(dir<0?'You move left. Get within range to land punches.':'You move right. Get within range to land punches.');
@@ -646,36 +698,54 @@ function finish(win){state.over=true;state.won=win;state.enemyPunch=0;if(!win)sa
 function duck(){if(state.over)return;state.duck=.5;if(state.phase==='attack'&&state.attackType==='head'){state.phase='open';state.phaseTime=1.65;state.enemyPunch=0;say('You ducked under the hook! COUNTER NOW!');}else if(state.phase==='attack'&&state.attackType==='body'){state.player=Math.max(0,state.player-(state.attackType==='head'?1.5:2.5));state.downs++;showDamageNotice('YOU WERE HIT! -7 HEALTH','#ff7373');impactFlash();playKnockdown();say('Body shot! Ducking into a body punch is a bad trade.');}else say('You crouch low. Watch for a body shot.');updateHUD();if(state.player<=0)finish(false);}
 function block(){if(state.over)return;state.block=.4;playBlock();if(state.phase==='attack'){state.player=Math.max(0,state.player-2);state.phase='recover';state.phaseTime=.75;state.enemyPunch=0;say('You blocked most of the hit, but lost a little ground.');}else say('Guard up. Blocking is safer, but a dodge creates a better counter chance.');updateHUD();}
 function action(a){if(a==='left')dodge(-1);if(a==='right')dodge(1);
-if(a==='up'||a==='down'){state.playerY=Math.max(-36,Math.min(36,(state.playerY||0)+(a==='up'?-12:12)));draw();return;}
+if(a==='up'||a==='down'){state.playerY=Math.max(-64,Math.min(52,(state.playerY||0)+(a==='up'?-14:14)));draw();return;}
 if(a==='duck')duck();if(a==='block')block();if(a==='jab')hitEnemy('jab');if(a==='body')hitEnemy('body');}
 let moveHold=null;
 document.querySelectorAll('[data-action]').forEach(b=>{
  b.addEventListener('pointerdown',e=>{e.preventDefault();const a=b.dataset.action;action(a);b.classList.add('active');
-   if(a==='left'||a==='right'){clearInterval(moveHold);moveHold=setInterval(()=>action(a),170);}
+   if(a==='left'||a==='right'||a==='up'||a==='down'){clearInterval(moveHold);moveHold=setInterval(()=>action(a),170);}
  });
- const stop=()=>{b.classList.remove('active');if(b.dataset.action==='left'||b.dataset.action==='right'){clearInterval(moveHold);moveHold=null;}};
+ const stop=()=>{b.classList.remove('active');if(['left','right','up','down'].includes(b.dataset.action)){clearInterval(moveHold);moveHold=null;}};
  b.addEventListener('pointerup',stop);b.addEventListener('pointerleave',stop);b.addEventListener('pointercancel',stop);
 });
-function restartFight(){state=fresh();say(state.log);updateHUD();draw();} $('restart').addEventListener('click',restartFight);$('centerRestart').addEventListener('click',restartFight);$('resetGame').addEventListener('click',()=>{state=fresh();say('Fight reset. Your selected photo characters are still in place.');updateHUD();draw();});
+function restartFight(){state=fresh();state.introTime=3.2;say('REFEREE: Fighters ready! Let’s get ready to fight!');updateHUD();draw();} $('restart').addEventListener('click',restartFight);$('centerRestart').addEventListener('click',restartFight);$('resetGame').addEventListener('click',()=>{state=fresh();say('Fight reset. Your selected photo characters are still in place.');updateHUD();draw();});
 let keys={};window.addEventListener('keydown',e=>{const map={'ArrowLeft':'left','ArrowRight':'right','ArrowUp':'up','ArrowDown':'down','j':'jab','J':'jab','k':'body','K':'body','l':'block','L':'block',' ':'block'};if(map[e.key]){e.preventDefault();if(!keys[e.key])action(map[e.key]);keys[e.key]=true;}});window.addEventListener('keyup',e=>keys[e.key]=false);
 let last=0;function moveOpponent(dt){
- if(state.over||dt<=0)return;
- state.enemyMoveClock=(state.enemyMoveClock||0)+dt;
- if(!Number.isFinite(state.enemyTargetX)||state.enemyMoveClock>(state.enemyMovePause||1.0)){
-   state.enemyMoveClock=0;
-   state.enemyMovePause=0.7+Math.random()*0.9;
-   state.enemyTargetX=65+Math.random()*255;
-   state.enemyTargetY=-25+Math.random()*50;
- }
+ if(state.over||dt<=0||(state.introTime||0)>0)return;
  const speed=(state.enemySpeedScale||0.65);
- const dx=state.enemyTargetX-state.enemyPos;
- state.enemyPos+=Math.sign(dx)*Math.min(Math.abs(dx),dt*24*speed);
- const currentY=state.enemyY||0, dy=state.enemyTargetY-currentY;
- state.enemyY=currentY+Math.sign(dy)*Math.min(Math.abs(dy),dt*14*speed);
+ const gap=state.enemyPos-(state.playerPos+state.playerX);
+ const approaching=state.lastPlayerPos!==undefined&&state.playerPos>state.lastPlayerPos;
+ const punching=(state.punch>0||state.bodyPunch>0);
+ // If the player closes in or throws, the opponent backs off; if the player retreats, he advances.
+ let desired;
+ if(gap>=0){
+   desired=state.playerPos+(punching||approaching?142: (gap>120?92:108));
+ }else{
+   desired=state.playerPos-(punching||approaching?142: (Math.abs(gap)>120?92:108));
+ }
+ desired=Math.max(48,Math.min(336,desired));
+ if(state.enemyStun<=0){
+   const dx=desired-state.enemyPos;
+   state.enemyPos+=Math.sign(dx)*Math.min(Math.abs(dx),dt*(punching||approaching?30:20)*speed);
+ }
+ state.lastPlayerPos=state.playerPos;
+ state.enemyDepthClock=(state.enemyDepthClock||0)+dt;
+ if(!Number.isFinite(state.enemyTargetY)||state.enemyDepthClock>1.15){
+   state.enemyDepthClock=0;
+   state.enemyTargetY=Math.max(-58,Math.min(46,(state.playerY||0)+(Math.random()-.5)*28));
+ }
+ const currentY=state.enemyY||0,dy=state.enemyTargetY-currentY;
+ state.enemyY=currentY+Math.sign(dy)*Math.min(Math.abs(dy),dt*11*speed);
 }
+
 function tick(ts){
 const dt=Math.min(.05,(ts-last)/1000||0);last=ts;
-moveOpponent(dt);if(!state.over){state.stamina=Math.min(100,state.stamina+dt*8);state.phaseTime-=dt;state.playerHitCooldown=Math.max(0,(state.playerHitCooldown||0)-dt);state.punch=Math.max(0,state.punch-dt);state.bodyPunch=Math.max(0,state.bodyPunch-dt);state.enemyPunch=Math.max(0,state.enemyPunch-dt*1.5);state.flash=Math.max(0,state.flash-dt);state.enemyStun=Math.max(0,state.enemyStun-dt);state.duck=Math.max(0,state.duck-dt);state.block=Math.max(0,state.block-dt);state.playerX*=Math.max(0,1-dt*5);state.playerPos=Math.max(28,Math.min(356,state.playerPos));
+if((state.introTime||0)>0){
+ state.introTime=Math.max(0,state.introTime-dt);
+ if(state.introTime===0){state.phase='ready';state.phaseTime=1.15;playBell();say('DING DING! FIGHT! Move, dodge, and counter!');}
+ draw();requestAnimationFrame(tick);return;
+}
+moveOpponent(dt);if(!state.over){state.stamina=Math.min(100,state.stamina+dt*8);state.phaseTime-=dt;state.playerHitCooldown=Math.max(0,(state.playerHitCooldown||0)-dt);state.punch=Math.max(0,state.punch-dt);state.bodyPunch=Math.max(0,state.bodyPunch-dt);state.enemyPunch=Math.max(0,state.enemyPunch-dt*1.5);state.flash=Math.max(0,state.flash-dt);state.enemyStun=Math.max(0,state.enemyStun-dt);state.duck=Math.max(0,state.duck-dt);state.block=Math.max(0,state.block-dt);state.playerX*=Math.max(0,1-dt*5);state.playerPos=Math.max(20,Math.min(364,state.playerPos));
  if(state.phaseTime<=0){if(state.phase==='ready'){state.phase='windup';state.phaseTime=(state.enemySpeedScale?1.55/state.enemySpeedScale:1.55);state.attackType=Math.random()<.65?'head':'body';say(state.attackType==='head'?'He is loading up a HEAD shot. Dodge sideways or duck.':'He is aiming for the BODY. Dodge sideways or block.');}
  else if(state.phase==='windup'){state.phase='attack';state.phaseTime=(.8/(state.enemySpeedScale||1));state.enemyPunch=.32;}
  else if(state.phase==='attack'){if(state.block>0){state.player=Math.max(0,state.player-1);say('You absorbed part of the attack.');}else if(state.playerX!==0||(state.duck>0&&state.attackType==='head')){state.phase='open';state.phaseTime=1.65;say('He missed! There is your opening — PUNCH!');}else if(distance()>92){state.phase='recover';state.phaseTime=(.85/(state.enemySpeedScale||1));say('His punch fell short because you were out of range.');}else{state.player=Math.max(0,state.player-(state.attackType==='head'?1.5:2.5));state.downs++;playKnockdown();state.phase='recover';state.phaseTime=.9/(state.enemySpeedScale||1);say(state.attackType==='head'?'Clean shot to the head! Dodge sooner next time.':'Heavy body shot! Move sideways or block that one.');}state.enemyPunch=0;if(state.player<=0)finish(false);}
@@ -704,7 +774,7 @@ function attachMainMenu(){
    // The main game loop and photo handlers are already initialized behind the menu.
    title.hidden=true;document.body.classList.remove('menu-active');
    if(ringAudio.musicOn)wakeRingAudio(false);
-   state=fresh();say(state.log);updateHUD();draw();
+   state=fresh();state.introTime=3.2;say('REFEREE: Fighters ready! Let’s get ready to fight!');updateHUD();draw();
    window.scrollTo(0,0);
  });
 }
