@@ -42,7 +42,7 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
 
 @media(max-width:760px){.layout{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:1fr;gap:10px}.panel{margin-bottom:0}.full{grid-column:auto}}
 @media(max-width:480px){body{padding:8px}.sidebar{display:grid;grid-template-columns:1fr}.panel{margin-bottom:0}.name-row{font-size:9px}button{font-size:11px}.meter-card{padding:7px}}
-.camera-stage{position:relative;width:min(100%,390px);aspect-ratio:1/1;margin:8px auto 0;background:#090710;overflow:hidden;border-radius:12px}.camera-stage video{width:100%;height:100%;object-fit:cover;display:block}.oval-guide{position:absolute;left:28%;top:14%;width:44%;height:68%;border:3px solid #ffc857;border-radius:50%;box-shadow:0 0 0 999px #09071066;pointer-events:none;display:flex;align-items:flex-end;justify-content:center}.oval-guide span{position:absolute;bottom:-28px;white-space:nowrap;background:#090710dd;color:#fff0c2;padding:4px 8px;border-radius:5px;font-size:11px;letter-spacing:.5px}.camera-panel .hint{margin-top:34px}.portrait{object-fit:cover}
+.camera-stage{position:relative;width:min(100%,390px);aspect-ratio:1/1;margin:8px auto 0;background:#090710;overflow:hidden;border-radius:12px}.camera-stage video{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1)}.oval-guide{position:absolute;left:22%;top:14%;width:56%;height:68%;border:3px solid #ffc857;border-radius:50%;box-shadow:0 0 0 999px #09071066;pointer-events:none;display:flex;align-items:flex-end;justify-content:center}.oval-guide span{position:absolute;bottom:-28px;white-space:nowrap;background:#090710dd;color:#fff0c2;padding:4px 8px;border-radius:5px;font-size:11px;letter-spacing:.5px}.camera-panel .hint{margin-top:34px}.portrait{object-fit:cover}
 
 .soundbar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:8px 0 10px;padding:0 2px}
 .sound-toggle{font-family:inherit;font-size:12px;padding:8px 10px;min-height:38px;border:2px solid #8b7ba2;background:#302741;color:#fff0c2;border-radius:5px;touch-action:manipulation}
@@ -73,16 +73,22 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
 .start-button{min-height:62px;background:#7c3d6d;border-color:#ffc857;font-size:18px;letter-spacing:1px}
 .menu-help{font-size:12px;line-height:1.5;color:#b6a9c9;margin:0}
 
+
+#game{image-rendering:auto}
+.portrait{image-rendering:auto}
+.camera-stage{border-radius:14px}
+.oval-guide{border-radius:50%;aspect-ratio:40/48}
+
 </style>
 </head>
 <body>
 <main>
-<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.3.2</p>
+<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.3.3</p>
 
 <section id="titleScreen" class="title-screen" role="dialog" aria-label="Retro Ring main menu">
   <div class="title-logo">RETRO RING</div>
   <div class="title-tagline">8-BIT ARCADE BOXING</div>
-  <div class="version-stamp">VERSION 1.3.2</div>
+  <div class="version-stamp">VERSION 1.3.3</div>
   <div class="title-fighters" aria-hidden="true">🥊　VS　🥊</div>
   <div class="title-panel">
     <label for="difficultySelect">DIFFICULTY</label>
@@ -180,7 +186,7 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
 </div>
 <script>
 (() => {
-const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;
+const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=true;
 
 // Synthesized 8-bit audio. No external files are required; audio starts only after a tap.
 const ringAudio={ctx:null,master:null,musicGain:null,sfxGain:null,musicOn:true,sfxOn:true,enabled:false,seqTimer:null,step:0};
@@ -255,8 +261,10 @@ function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
  rect(-15,-31,13,20,shorts);rect(2,-31,13,20,shorts);
  rect(-14,-34,28,4,skin);
  // Broader torso: the head is intentionally oversized for readable, playful arcade portraits.
- rect(-18,-62,36,30,skin);
- rect(-15,-59,30,23,skin==='#d98c62'?'#b96e50':'#8e4d38');
+ // Rounded shoulder silhouette and layered torso shading for a cleaner 16-bit look.
+ ctx.beginPath();ctx.moveTo(-17,-61);ctx.quadraticCurveTo(-22,-60,-21,-49);ctx.lineTo(-18,-35);ctx.quadraticCurveTo(0,-31,18,-35);ctx.lineTo(21,-49);ctx.quadraticCurveTo(22,-60,17,-61);ctx.closePath();
+ const torsoGrad=ctx.createLinearGradient(-22,-60,22,-34);torsoGrad.addColorStop(0,skin);torsoGrad.addColorStop(.5,skin==='#d98c62'?'#c98059':'#99563f');torsoGrad.addColorStop(1,skin==='#d98c62'?'#b96e50':'#804531');ctx.fillStyle=torsoGrad;ctx.fill();
+ rect(-15,-59,3,19,skin);rect(12,-59,3,19,skin);
  rect(-21,-59,7,23,skin);rect(14,-59,7,23,skin);
  // Head base and large face area (approx 40% of overall upper-body visual height).
  const hx=-20,hy=-108,hw=40,hh=48;
@@ -272,10 +280,29 @@ function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
    ctx.drawImage(photo,sx,sy,sw,sh,hx,hy,hw,hh);
    ctx.restore();
  } else {
-   rect(hx-2,hy-3,hw+4,hh+5,'#28202c');rect(hx,hy,hw,hh,skin);
-   rect(hx-2,hy-3,hw+4,10,'#28202c');rect(hx+1,hy+3,7,4,'#28202c');
-   rect(hx+5,hy+14,5,3,'#fff0c2');rect(hx+23,hy+14,5,3,'#fff0c2');
-   rect(hx+13,hy+20,7,5,'#8a4c39');rect(hx+9,hy+29,15,4,'#5a2f2b');
+   // More natural oval, layered like a 16-bit console sprite rather than a square block.
+   const cx=hx+hw/2,cy=hy+hh/2;
+   ctx.save();
+   ctx.beginPath();ctx.ellipse(cx,cy,hw*.48,hh*.49,0,0,Math.PI*2);
+   ctx.fillStyle='#28202c';ctx.fill();
+   ctx.beginPath();ctx.ellipse(cx,cy+1,hw*.43,hh*.46,0,0,Math.PI*2);
+   const faceGrad=ctx.createLinearGradient(hx,hy,hx+hw,hy+hh);
+   faceGrad.addColorStop(0,skin==='#d98c62'?'#f0b184':'#bd8060');
+   faceGrad.addColorStop(.55,skin);
+   faceGrad.addColorStop(1,skin==='#d98c62'?'#b96e50':'#8e4d38');
+   ctx.fillStyle=faceGrad;ctx.fill();
+   // Hairline / hair cap follows the skull curve.
+   ctx.beginPath();ctx.ellipse(cx,hy+7,hw*.44,hh*.25,0,Math.PI,Math.PI*2);
+   ctx.lineTo(hx+hw*.94,hy+12);ctx.quadraticCurveTo(cx,hy+3,hx+hw*.06,hy+12);ctx.closePath();
+   ctx.fillStyle='#28202c';ctx.fill();
+   // Brows, eyes, nose, cheeks and mouth use crisp but finer detail.
+   rect(hx+6,hy+15,9,2,'#543329');rect(hx+24,hy+15,9,2,'#543329');
+   rect(hx+7,hy+18,7,3,'#fff0c2');rect(hx+26,hy+18,7,3,'#fff0c2');
+   rect(hx+9,hy+19,3,3,'#29202a');rect(hx+28,hy+19,3,3,'#29202a');
+   ctx.beginPath();ctx.moveTo(cx,hy+20);ctx.lineTo(cx-3,hy+28);ctx.lineTo(cx+2,hy+29);ctx.strokeStyle='#8a4c39';ctx.lineWidth=1.6;ctx.stroke();
+   rect(hx+8,hy+32,7,2,'#c98775');rect(hx+25,hy+32,7,2,'#c98775');
+   ctx.beginPath();ctx.moveTo(hx+11,hy+37);ctx.quadraticCurveTo(cx,hy+41,hx+29,hy+37);ctx.strokeStyle='#5a2f2b';ctx.lineWidth=2;ctx.stroke();
+   ctx.restore();
  }
  // Gloves and arms animate distinctly for every action.
  if(pose==='punch'){
@@ -394,11 +421,11 @@ $('takeShot').addEventListener('click',async()=>{
  // Crop a centered square from the source, then keep only an oval portrait.
  const side=Math.min(v.videoWidth,v.videoHeight),sx=(v.videoWidth-side)/2,sy=(v.videoHeight-side)/2;
  // Save only the oval's bounding box, not the full square around it. This makes the face fill the game head.
- const cropW=side*.44,cropH=side*.68,outW=Math.round(cropW),outH=Math.round(cropH);
+ const cropW=side*.56,cropH=side*.68,outW=Math.round(cropW),outH=Math.round(cropH);
  c.width=outW;c.height=outH;
  const cx=c.getContext('2d');cx.clearRect(0,0,outW,outH);
  cx.save();cx.beginPath();cx.ellipse(outW/2,outH/2,outW/2,outH/2,0,0,Math.PI*2);cx.clip();
- cx.drawImage(v,sx+side*.28,sy+side*.14,cropW,cropH,0,0,outW,outH);cx.restore();
+ cx.translate(outW,0);cx.scale(-1,1);cx.drawImage(v,sx+side*.22,sy+side*.14,cropW,cropH,0,0,outW,outH);cx.restore();
  c.toBlob(async blob=>{
   if(!blob){notice('Could not capture the photo.');return;}
   const file=new File([blob],'oval-camera-photo.png',{type:'image/png'});
