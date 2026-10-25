@@ -42,12 +42,12 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
 
 @media(max-width:760px){.layout{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:1fr;gap:10px}.panel{margin-bottom:0}.full{grid-column:auto}}
 @media(max-width:480px){body{padding:8px}.sidebar{display:grid;grid-template-columns:1fr}.panel{margin-bottom:0}.name-row{font-size:9px}button{font-size:11px}.meter-card{padding:7px}}
-.camera-stage{position:relative;width:min(100%,390px);aspect-ratio:1/1;margin:8px auto 0;background:#090710;overflow:hidden;border-radius:12px}.camera-stage video{width:100%;height:100%;object-fit:cover;display:block}.oval-guide{position:absolute;left:22%;top:10%;width:56%;height:78%;border:3px solid #ffc857;border-radius:50%;box-shadow:0 0 0 999px #09071066;pointer-events:none;display:flex;align-items:flex-end;justify-content:center}.oval-guide span{position:absolute;bottom:-28px;white-space:nowrap;background:#090710dd;color:#fff0c2;padding:4px 8px;border-radius:5px;font-size:11px;letter-spacing:.5px}.camera-panel .hint{margin-top:34px}.portrait{object-fit:cover}
+.camera-stage{position:relative;width:min(100%,390px);aspect-ratio:1/1;margin:8px auto 0;background:#090710;overflow:hidden;border-radius:12px}.camera-stage video{width:100%;height:100%;object-fit:cover;display:block}.oval-guide{position:absolute;left:32%;top:18%;width:36%;height:60%;border:3px solid #ffc857;border-radius:50%;box-shadow:0 0 0 999px #09071066;pointer-events:none;display:flex;align-items:flex-end;justify-content:center}.oval-guide span{position:absolute;bottom:-28px;white-space:nowrap;background:#090710dd;color:#fff0c2;padding:4px 8px;border-radius:5px;font-size:11px;letter-spacing:.5px}.camera-panel .hint{margin-top:34px}.portrait{object-fit:cover}
 </style>
 </head>
 <body>
 <main>
-<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.0.8</p>
+<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.1.0</p>
 <div class="layout">
 <section class="main-game">
 <div class="cabinet"><canvas id="game" width="384" height="560" aria-label="Retro pixel art boxing match"></canvas></div>
@@ -110,7 +110,7 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
 </div>
 </main>
 <div id="cameraDialog" style="display:none;position:fixed;inset:0;background:#090710ee;z-index:5;align-items:center;justify-content:center;padding:16px">
-<div class="panel camera-panel" style="width:min(100%,520px);margin:0"><h2 id="cameraTitle">TAKE A PICTURE</h2><div class="camera-stage"><video id="video" autoplay playsinline></video><div class="oval-guide"><span>FIT FACE INSIDE OVAL</span></div></div><canvas id="captureCanvas" width="320" height="320" style="display:none"></canvas><div class="actions" style="margin-top:10px"><button id="takeShot" class="primary">Capture photo</button><button id="closeCamera">Cancel</button></div><div class="hint">Center the face inside the oval, with the top of the head and chin visible. Only the oval area is kept for the boxer’s head. Camera access requires permission and usually HTTPS or localhost.</div></div>
+<div class="panel camera-panel" style="width:min(100%,520px);margin:0"><h2 id="cameraTitle">TAKE A PICTURE</h2><div class="camera-stage"><video id="video" autoplay playsinline></video><div class="oval-guide"><span>FIT FACE INSIDE OVAL</span></div></div><canvas id="captureCanvas" width="320" height="320" style="display:none"></canvas><div class="actions" style="margin-top:10px"><button id="takeShot" class="primary">Capture photo</button><button id="closeCamera">Cancel</button></div><div class="hint">Hold the phone at a comfortable arm’s length and center your face inside the smaller oval, with the top of the head and chin visible. Only the oval area is kept for the boxer’s head. Camera access requires permission and usually HTTPS or localhost.</div></div>
 </div>
 <script>
 (() => {
@@ -120,7 +120,7 @@ const DEFAULT_PLAYER={name:'Rookie Ray',photo:null},DEFAULT_ENEMY={name:'The Bri
 let player={...DEFAULT_PLAYER},enemy={...DEFAULT_ENEMY},cameraStream=null,cameraTarget='player';
 const STORAGE_KEY='retroRing.boxers.v1';
 let state;
-function fresh(){return {player:100,enemy:100,stamina:100,downs:0,phase:'ready',phaseTime:1.2,attackType:'head',playerX:0,playerPos:118,enemyPos:266,enemyStun:0,duck:0,block:0,punch:0,bodyPunch:0,enemyPunch:0,flash:0,over:false,won:false,log:'DING DING! The Brick Wall is watching you. Wait for his tell, dodge, then counter.'};}
+function fresh(){return {player:100,enemy:100,stamina:100,downs:0,phase:'ready',phaseTime:2.0,attackType:'head',playerX:0,playerPos:118,enemyPos:266,enemyStun:0,duck:0,block:0,punch:0,bodyPunch:0,enemyPunch:0,enemyAttackType:'head',flash:0,over:false,won:false,log:'DING DING! The Brick Wall is watching you. Wait for his tell, dodge, then counter.'};}
 state=fresh();
 function say(s){state.log=s;$('log').textContent=s;}
 function notice(s){$('notice').textContent=s;}
@@ -140,32 +140,35 @@ function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
  rect(-15,-59,30,23,skin==='#d98c62'?'#b96e50':'#8e4d38');
  rect(-21,-59,7,23,skin);rect(14,-59,7,23,skin);
  // Head base and large face area (approx 40% of overall upper-body visual height).
- const hx=-17,hy=-103,hw=34,hh=39;
- rect(hx-2,hy-3,hw+4,hh+5,'#28202c');
- rect(hx,hy,hw,hh,skin);
+ const hx=-20,hy=-106,hw=40,hh=46;
  if(photo && photo.complete && photo.naturalWidth){
+   // Real-photo head: oval outline and clipped photo, with no square backing.
+   ctx.save();ctx.beginPath();ctx.ellipse(hx+hw/2,hy+hh/2,hw/2+1.5,hh/2+1.5,0,0,Math.PI*2);ctx.fillStyle='#28202c';ctx.fill();ctx.restore();
    ctx.save();ctx.beginPath();ctx.ellipse(hx+hw/2,hy+hh/2,hw/2,hh/2,0,0,Math.PI*2);ctx.clip();
-   // Center-crop the saved photo into an oval head; transparent corners reveal the head outline.
-   const side=Math.min(photo.naturalWidth,photo.naturalHeight);
-   const sx=(photo.naturalWidth-side)/2, sy=(photo.naturalHeight-side)/2;
-   ctx.drawImage(photo,sx,sy,side,side,hx,hy,hw,hh);
+   // Cover-crop the source to the tall oval's aspect ratio so the oval is filled edge-to-edge.
+   const targetRatio=hw/hh, sourceRatio=photo.naturalWidth/photo.naturalHeight;
+   let sx=0,sy=0,sw=photo.naturalWidth,sh=photo.naturalHeight;
+   if(sourceRatio>targetRatio){sw=photo.naturalHeight*targetRatio;sx=(photo.naturalWidth-sw)/2;}
+   else{sh=photo.naturalWidth/targetRatio;sy=(photo.naturalHeight-sh)/2;}
+   ctx.drawImage(photo,sx,sy,sw,sh,hx,hy,hw,hh);
    ctx.restore();
-   // Pixel-art outline and hairline frame the real face without covering it.
-   rect(hx-2,hy-3,hw+4,4,'#28202c');
-   rect(hx-2,hy-3,3,hh+5,'#28202c');rect(hx+hw-1,hy-3,3,hh+5,'#28202c');
  } else {
+   rect(hx-2,hy-3,hw+4,hh+5,'#28202c');rect(hx,hy,hw,hh,skin);
    rect(hx-2,hy-3,hw+4,10,'#28202c');rect(hx+1,hy+3,7,4,'#28202c');
    rect(hx+5,hy+14,5,3,'#fff0c2');rect(hx+23,hy+14,5,3,'#fff0c2');
    rect(hx+13,hy+20,7,5,'#8a4c39');rect(hx+9,hy+29,15,4,'#5a2f2b');
  }
  // Gloves and arms animate distinctly for every action.
  if(pose==='punch'){
-   // Near arm extends forward horizontally; glove travels out past the torso.
-   rect(13,-58,10,8,skin);rect(19,-62,18,12,gloves);rect(34,-60,5,7,'#fff0c2');
-   rect(3,-54,8,17,skin);rect(0,-42,11,9,gloves);
+   // Clearly extended straight punch at head height.
+   rect(10,-65,12,9,skin);rect(19,-69,25,13,skin);rect(38,-72,18,17,gloves);
+   rect(51,-70,7,8,'#fff0c2');
+   rect(-19,-56,9,18,skin);rect(-25,-43,15,12,gloves);
  } else if(pose==='body'){
-   rect(12,-56,10,12,skin);rect(18,-48,16,11,gloves);rect(31,-46,4,6,'#fff0c2');
-   rect(-19,-56,8,16,skin);rect(-24,-46,14,11,gloves);
+   // Body hook travels forward and lower, toward the opponent's midsection.
+   rect(10,-49,12,10,skin);rect(18,-43,22,13,skin);rect(35,-42,18,16,gloves);
+   rect(48,-40,7,8,'#fff0c2');
+   rect(-19,-56,9,18,skin);rect(-25,-43,15,12,gloves);
  } else if(pose==='block'){
    rect(-22,-69,10,20,skin);rect(-25,-81,15,15,gloves);
    rect(12,-69,10,20,skin);rect(10,-81,15,15,gloves);
@@ -196,9 +199,9 @@ function draw(){
  for(let y=340;y<566;y+=18)rect(18,y,348,1,'#d1bd9d');
  // Perspective feet anchors; characters are large and move laterally across the ring.
  const playerY=state.duck>0?491:508, enemyY=508;
- drawFighter(state.playerPos+state.playerX,playerY,2.35,['#d98c62','#355c7d','#4ea5d9','#2b2435'],state.punch>0?'punch':state.block>0?'block':state.bodyPunch>0?'body':'idle',false,player.image);
- drawFighter(state.enemyPos-(state.enemyPunch>0?18:0)+(state.enemyStun>0?8:0),enemyY,2.4,['#a96b4d','#7a345d','#f25f5c','#2b2435'],state.enemyPunch>0?'punch':'idle',true,enemy.image);
- if(state.flash>0){txt('✦',state.playerPos+state.playerX+50,430,28,'#ffc857','center');txt('POW!',state.playerPos+state.playerX+50,405,13,'#fff0c2','center');}
+ drawFighter(state.playerPos+state.playerX,playerY,2.35,['#d98c62','#355c7d','#4ea5d9','#2b2435'],state.punch>0?(state.bodyPunch>0?'body':'punch'):state.block>0?'block':'idle',false,player.image);
+ drawFighter(state.enemyPos-(state.enemyPunch>0?18:0)+(state.enemyStun>0?8:0),enemyY,2.4,['#a96b4d','#7a345d','#f25f5c','#2b2435'],state.enemyPunch>0?(state.enemyAttackType==='body'?'body':'punch'):'idle',true,enemy.image);
+ if(state.flash>0){const ix=Math.min(340,Math.max(42,(state.playerPos+state.playerX+state.enemyPos)/2));txt('✦',ix,432,34,'#ffc857','center');txt(state.bodyPunch>0?'WHAM!':'POW!',ix,405,15,'#fff0c2','center');}
  txt(player.name.toUpperCase().slice(0,18),state.playerPos+state.playerX,566,8,'#355c7d','center');
  txt(enemy.name.toUpperCase().slice(0,18),state.enemyPos,566,8,'#7a345d','center');
  if(!state.over&&state.phase==='windup'){rect(128,69,128,5,'#51435f');rect(128,69,128*Math.max(0,state.phaseTime/1.25),5,'#ffc857');}
@@ -241,7 +244,7 @@ function saveCharacter(type){
 }
 function clearPhoto(type){const obj=type==='player'?player:enemy;obj.photo=null;obj.image=null;applyPhoto(type,null);notice('Photo removed. The default pixel-art head will be used.');}
 function compressImage(file){
- return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=()=>reject(Error('Could not read that image.'));reader.onload=()=>{const im=new Image();im.onerror=()=>reject(Error('That file is not a supported image.'));im.onload=()=>{const max=420,scale=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*scale));c.height=Math.max(1,Math.round(im.height*scale));c.getContext('2d').drawImage(im,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',.78));};im.src=reader.result;};reader.readAsDataURL(file);});
+ return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=()=>reject(Error('Could not read that image.'));reader.onload=()=>{const im=new Image();im.onerror=()=>reject(Error('That file is not a supported image.'));im.onload=()=>{const max=420,scale=Math.min(1,max/Math.max(im.width,im.height));const c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*scale));c.height=Math.max(1,Math.round(im.height*scale));const cx=c.getContext('2d');cx.clearRect(0,0,c.width,c.height);cx.drawImage(im,0,0,c.width,c.height);const keepAlpha=(file.type==='image/png'||file.type==='image/webp');resolve(keepAlpha?c.toDataURL('image/png'):c.toDataURL('image/jpeg',.82));};im.src=reader.result;};reader.readAsDataURL(file);});
 }
 async function handleFile(type,file){if(!file)return;if(!file.type.startsWith('image/')){notice('Please choose an image file.');return;}try{const data=await compressImage(file);const obj=type==='player'?player:enemy;obj.photo=data;obj.image=loadImage(data);$(type==='player'?'playerName':'enemyName').value=obj.name;updatePortraits();updateHUD();draw();notice('Photo ready. Select Save '+(type==='player'?'boxer':'opponent')+' to keep it for later.');}catch(e){notice(e.message||'Could not process that photo.');}}
 async function openCamera(type){
@@ -261,7 +264,7 @@ $('takeShot').addEventListener('click',async()=>{
  const side=Math.min(v.videoWidth,v.videoHeight),sx=(v.videoWidth-side)/2,sy=(v.videoHeight-side)/2;
  c.width=side;c.height=side;
  const cx=c.getContext('2d');cx.clearRect(0,0,side,side);
- cx.save();cx.beginPath();cx.ellipse(side/2,side/2,side*.34,side*.46,0,0,Math.PI*2);cx.clip();
+ cx.save();cx.beginPath();cx.ellipse(side/2,side/2,side*.22,side*.31,0,0,Math.PI*2);cx.clip();
  cx.drawImage(v,sx,sy,side,side,0,0,side,side);cx.restore();
  c.toBlob(async blob=>{
   if(!blob){notice('Could not capture the photo.');return;}
@@ -283,13 +286,13 @@ function hitEnemy(kind){
  if(state.over)return;
  if(distance()>68){say('Too far away! Move closer before punching.');return;}
  if(state.stamina<9){say('You are exhausted! Recover your stamina before throwing another punch.');return;}
- state.stamina=Math.max(0,state.stamina-(kind==='jab'?8:13));state.punch=.32;state.bodyPunch=kind==='body'?.32:0;
+ state.stamina=Math.max(0,state.stamina-(kind==='jab'?8:13));state.punch=.52;state.bodyPunch=kind==='body'?.32:0;
  const close=distance()<62;
  if(state.phase==='open'){
    const dmg=(kind==='jab'?22:30)*(close?1:0.8);
    state.enemy=Math.max(0,state.enemy-dmg);state.flash=.38;state.enemyStun=.28;
    say(kind==='jab'?'CLEAN JAB! You caught him during his opening.':'BIG BODY SHOT! That counter landed hard.');
-   state.phase='recover';state.phaseTime=.9;
+   state.phase='recover';state.phaseTime=1.25;
  }else if(state.phase==='windup'){
    const dmg=kind==='jab'?8:11;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.3;state.enemyStun=.2;say('HIT! You interrupted his setup with a clean punch!');
  }else{
@@ -324,8 +327,8 @@ let keys={};window.addEventListener('keydown',e=>{const map={'ArrowLeft':'left',
 let last=0;function tick(ts){const dt=Math.min(.05,(ts-last)/1000||0);last=ts;if(!state.over){state.stamina=Math.min(100,state.stamina+dt*8);state.phaseTime-=dt;state.punch=Math.max(0,state.punch-dt);state.bodyPunch=Math.max(0,state.bodyPunch-dt);state.enemyPunch=Math.max(0,state.enemyPunch-dt*1.5);state.flash=Math.max(0,state.flash-dt);state.enemyStun=Math.max(0,state.enemyStun-dt);state.duck=Math.max(0,state.duck-dt);state.block=Math.max(0,state.block-dt);state.playerX*=Math.max(0,1-dt*5);state.playerPos=Math.max(54,Math.min(286,state.playerPos));
  if(state.phaseTime<=0){if(state.phase==='ready'){state.phase='windup';state.phaseTime=1.2;state.attackType=Math.random()<.65?'head':'body';say(state.attackType==='head'?'He is loading up a HEAD shot. Dodge sideways or duck.':'He is aiming for the BODY. Dodge sideways or block.');}
  else if(state.phase==='windup'){state.phase='attack';state.phaseTime=.48;state.enemyPunch=.35;}
- else if(state.phase==='attack'){if(state.block>0){state.player=Math.max(0,state.player-3);say('You absorbed part of the attack.');}else if(state.playerX!==0||(state.duck>0&&state.attackType==='head')){state.phase='open';state.phaseTime=1.1;say('He missed! There is your opening — PUNCH!');}else if(distance()>92){state.phase='recover';state.phaseTime=.8;say('His punch fell short because you were out of range.');}else{state.player=Math.max(0,state.player-(state.attackType==='head'?12:15));state.downs++;state.phase='recover';state.phaseTime=1;say(state.attackType==='head'?'Clean shot to the head! Dodge sooner next time.':'Heavy body shot! Move sideways or block that one.');}state.enemyPunch=0;if(state.player<=0||state.downs>=3)finish(false);}
- else if(state.phase==='open'){state.phase='recover';state.phaseTime=.65;say('The opening closed. Prepare for his next attack.');}else{state.phase='ready';state.phaseTime=.8;state.playerX=0;if(distance()>76)state.enemyPos=Math.max(state.playerPos+42,state.enemyPos-10);}}
+ else if(state.phase==='attack'){if(state.block>0){state.player=Math.max(0,state.player-3);say('You absorbed part of the attack.');}else if(state.playerX!==0||(state.duck>0&&state.attackType==='head')){state.phase='open';state.phaseTime=1.1;say('He missed! There is your opening — PUNCH!');}else if(distance()>92){state.phase='recover';state.phaseTime=1.35;say('His punch fell short because you were out of range.');}else{state.player=Math.max(0,state.player-(state.attackType==='head'?7:9));state.downs++;state.phase='recover';state.phaseTime=1.4;say(state.attackType==='head'?'Clean shot to the head! Dodge sooner next time.':'Heavy body shot! Move sideways or block that one.');}state.enemyPunch=0;if(state.player<=0||state.downs>=3)finish(false);}
+ else if(state.phase==='open'){state.phase='recover';state.phaseTime=.65;say('The opening closed. Prepare for his next attack.');}else{state.phase='ready';state.phaseTime=1.35;state.playerX=0;if(distance()>76)state.enemyPos=Math.max(state.playerPos+42,state.enemyPos-10);}}
  updateHUD();}draw();requestAnimationFrame(tick);}
 function init(){
  player.name=DEFAULT_PLAYER.name;enemy.name=DEFAULT_ENEMY.name;
