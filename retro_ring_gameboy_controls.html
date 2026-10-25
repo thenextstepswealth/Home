@@ -43,11 +43,21 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
 @media(max-width:760px){.layout{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:1fr;gap:10px}.panel{margin-bottom:0}.full{grid-column:auto}}
 @media(max-width:480px){body{padding:8px}.sidebar{display:grid;grid-template-columns:1fr}.panel{margin-bottom:0}.name-row{font-size:9px}button{font-size:11px}.meter-card{padding:7px}}
 .camera-stage{position:relative;width:min(100%,390px);aspect-ratio:1/1;margin:8px auto 0;background:#090710;overflow:hidden;border-radius:12px}.camera-stage video{width:100%;height:100%;object-fit:cover;display:block}.oval-guide{position:absolute;left:28%;top:14%;width:44%;height:68%;border:3px solid #ffc857;border-radius:50%;box-shadow:0 0 0 999px #09071066;pointer-events:none;display:flex;align-items:flex-end;justify-content:center}.oval-guide span{position:absolute;bottom:-28px;white-space:nowrap;background:#090710dd;color:#fff0c2;padding:4px 8px;border-radius:5px;font-size:11px;letter-spacing:.5px}.camera-panel .hint{margin-top:34px}.portrait{object-fit:cover}
+
+.soundbar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin:8px 0 10px;padding:0 2px}
+.sound-toggle{font-family:inherit;font-size:12px;padding:8px 10px;min-height:38px;border:2px solid #8b7ba2;background:#302741;color:#fff0c2;border-radius:5px;touch-action:manipulation}
+.sound-toggle.primary{background:#6f3c68;border-color:#d49acb}
+.sound-toggle:active{transform:translateY(1px)}
 </style>
 </head>
 <body>
 <main>
-<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.1.2</p>
+<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.2.0</p>
+<div class="soundbar" aria-label="Audio controls">
+<button id="soundEnable" class="sound-toggle primary">♫ Enable Sound</button>
+<button id="musicToggle" class="sound-toggle" aria-pressed="true">Music: ON</button>
+<button id="sfxToggle" class="sound-toggle" aria-pressed="true">Effects: ON</button>
+</div>
 <div class="layout">
 <section class="main-game">
 <div class="cabinet"><canvas id="game" width="384" height="560" aria-label="Retro pixel art boxing match"></canvas></div>
@@ -115,6 +125,46 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
 <script>
 (() => {
 const canvas=document.getElementById('game'),ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;
+
+// Synthesized 8-bit audio. No external files are required; audio starts only after a tap.
+const ringAudio={ctx:null,master:null,musicGain:null,sfxGain:null,musicOn:true,sfxOn:true,enabled:false,seqTimer:null,step:0};
+function initRingAudio(){
+ if(ringAudio.ctx){if(ringAudio.ctx.state==='suspended')ringAudio.ctx.resume();ringAudio.enabled=true;return;}
+ const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+ ringAudio.ctx=new AC();ringAudio.master=ringAudio.ctx.createGain();ringAudio.master.gain.value=.8;ringAudio.master.connect(ringAudio.ctx.destination);
+ ringAudio.musicGain=ringAudio.ctx.createGain();ringAudio.musicGain.gain.value=.65;ringAudio.musicGain.connect(ringAudio.master);
+ ringAudio.sfxGain=ringAudio.ctx.createGain();ringAudio.sfxGain.gain.value=.65;ringAudio.sfxGain.connect(ringAudio.master);ringAudio.enabled=true;
+}
+function tone(freq,duration,type='square',volume=.2,when=0,slide=0,dest='sfx'){
+ if(!ringAudio.ctx||!ringAudio.enabled)return;const c=ringAudio.ctx,t=c.currentTime+when,o=c.createOscillator(),g=c.createGain();
+ o.type=type;o.frequency.setValueAtTime(Math.max(35,freq),t);if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(35,freq+slide),t+duration);
+ g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(Math.max(.0002,volume),t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+duration);
+ o.connect(g);g.connect(dest==='music'?ringAudio.musicGain:ringAudio.sfxGain);o.start(t);o.stop(t+duration+.025);
+}
+function bellSound(){tone(880,.85,'sine',.38,0,-100);tone(1320,.7,'sine',.2,.02,-200);tone(1760,.3,'triangle',.1,.04,-400);}
+function punchSound(kind,hit){if(!hit){tone(165,.09,'square',.08,0,-80);return;}if(kind==='body'){tone(105,.14,'triangle',.28,0,-45);tone(68,.18,'sine',.17,.02,-20);}else{tone(210,.11,'square',.18,0,-110);tone(110,.13,'triangle',.2,.02,-40);}}
+function blockSound(){tone(410,.06,'square',.14,0,-150);tone(245,.08,'triangle',.12,.03,-80);}
+function knockdownSound(){tone(145,.28,'sawtooth',.2,0,-100);tone(65,.3,'sine',.2,.04,-25);}
+function victorySound(){[523,659,784,1047].forEach((f,i)=>tone(f,.2,'square',.14,i*.14));}
+function defeatSound(){[392,330,262,196].forEach((f,i)=>tone(f,.23,'triangle',.14,i*.18));}
+const ringMelody=[659,0,784,0,988,784,659,0,523,0,659,784,0,587,659,0,523,0,392,0,523,659,0,494];
+const ringBass=[131,0,131,0,165,0,165,0,110,0,110,0,147,0,147,0];
+function musicTick(){if(!ringAudio.ctx||!ringAudio.enabled||!ringAudio.musicOn)return;const i=ringAudio.step++,m=ringMelody[i%ringMelody.length],b=ringBass[i%ringBass.length];if(m)tone(m,.12,'square',.075,0,0,'music');if(b)tone(b,.14,'triangle',.045,0,0,'music');}
+function startRingMusic(){if(!ringAudio.ctx||!ringAudio.enabled||!ringAudio.musicOn||ringAudio.seqTimer)return;ringAudio.seqTimer=setInterval(musicTick,145);}
+function stopRingMusic(){if(ringAudio.seqTimer){clearInterval(ringAudio.seqTimer);ringAudio.seqTimer=null;}}
+function playPunch(kind,hit){if(ringAudio.sfxOn)punchSound(kind,hit);}
+function playBlock(){if(ringAudio.sfxOn)blockSound();}
+function playBell(){if(ringAudio.sfxOn)bellSound();}
+function playKnockdown(){if(ringAudio.sfxOn)knockdownSound();}
+function playVictory(){if(ringAudio.sfxOn)victorySound();}
+function playDefeat(){if(ringAudio.sfxOn)defeatSound();}
+function attachRingAudioControls(){
+ const en=document.getElementById('soundEnable'),mu=document.getElementById('musicToggle'),sf=document.getElementById('sfxToggle');
+ if(en)en.addEventListener('click',()=>{initRingAudio();if(!ringAudio.ctx){en.textContent='Audio unavailable';return;}ringAudio.ctx.resume();startRingMusic();if(ringAudio.sfxOn)bellSound();en.textContent='♫ Sound Enabled';});
+ if(mu)mu.addEventListener('click',()=>{ringAudio.musicOn=!ringAudio.musicOn;mu.textContent='Music: '+(ringAudio.musicOn?'ON':'OFF');mu.setAttribute('aria-pressed',String(ringAudio.musicOn));if(ringAudio.musicOn){initRingAudio();startRingMusic();}else stopRingMusic();});
+ if(sf)sf.addEventListener('click',()=>{ringAudio.sfxOn=!ringAudio.sfxOn;sf.textContent='Effects: '+(ringAudio.sfxOn?'ON':'OFF');sf.setAttribute('aria-pressed',String(ringAudio.sfxOn));});
+}
+
 const $=id=>document.getElementById(id),W=384,H=560;
 const DEFAULT_PLAYER={name:'Rookie Ray',photo:null},DEFAULT_ENEMY={name:'The Brick Wall',photo:null};
 let player={...DEFAULT_PLAYER},enemy={...DEFAULT_ENEMY},cameraStream=null,cameraTarget='player';
@@ -162,17 +212,17 @@ function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
  if(pose==='punch'){
    // Long, unmistakable straight punch: shoulder -> forearm -> glove extends toward the opponent.
    rect(10,-62,12,11,skin);
-   rect(18,-64,27,11,skin);
-   rect(42,-67,22,17,gloves);
-   rect(59,-64,7,9,'#fff0c2');
+   rect(18,-64,39,12,skin);
+   rect(53,-68,27,19,gloves);
+   rect(75,-65,8,10,'#fff0c2');
    // Guarding arm remains near the body.
    rect(-19,-56,9,18,skin);rect(-25,-43,15,12,gloves);
  } else if(pose==='body'){
    // Clearly extended lower body punch, aimed at the opponent's ribs.
    rect(10,-48,12,11,skin);
-   rect(18,-46,25,12,skin);
-   rect(40,-48,22,17,gloves);
-   rect(57,-45,7,9,'#fff0c2');
+   rect(18,-46,37,13,skin);
+   rect(50,-49,27,19,gloves);
+   rect(72,-46,8,10,'#fff0c2');
    rect(-19,-56,9,18,skin);rect(-25,-43,15,12,gloves);
  } else if(pose==='block'){
    rect(-22,-69,10,20,skin);rect(-25,-81,15,15,gloves);
@@ -209,9 +259,12 @@ function draw(){
  // Foreground punch trails guarantee the striking arm/glove remains visible at contact instead of disappearing behind the opponent.
  if(state.punch>0){
    const px=state.playerPos+state.playerX;
-   // Draw an unmistakable long arm on top of the sprite so it cannot be hidden by the opponent.
-   if(state.bodyPunch>0){rect(px+18,472,66,15,'#d98c62');rect(px+70,466,29,25,'#4ea5d9');rect(px+93,473,8,10,'#fff0c2');}
-   else{rect(px+18,421,70,15,'#d98c62');rect(px+74,414,30,25,'#4ea5d9');rect(px+98,422,8,10,'#fff0c2');}
+   // Explicit, oversized arm overlay makes player input unmistakable. Coordinates are in the 640px scene.
+   const ay=state.bodyPunch>0?472:421;
+   rect(px+18,ay,78,16,'#d98c62');
+   rect(px+82,ay-6,34,28,'#4ea5d9');
+   rect(px+109,ay+2,9,11,'#fff0c2');
+   txt(state.bodyPunch>0?'BODY!':'JAB!',Math.min(340,px+104),ay-14,9,'#ffc857','center');
  }
  if(state.enemyPunch>0){
    const ex=state.enemyPos;
@@ -303,21 +356,25 @@ $('enemyName').addEventListener('change',()=>{enemy.name=$('enemyName').value.tr
 function distance(){return Math.abs((state.playerPos+state.playerX)-state.enemyPos);}
 function hitEnemy(kind){
  if(state.over)return;
- if(distance()>68){say('Too far away! Move closer before punching.');return;}
+ // Animate every attempted punch so the control always produces visible feedback.
+ state.punch=0.82;state.bodyPunch=kind==='body'?0.82:0;
  if(state.stamina<9){say('You are exhausted! Recover your stamina before throwing another punch.');return;}
- state.stamina=Math.max(0,state.stamina-(kind==='jab'?8:13));state.punch=1.0;state.bodyPunch=kind==='body'?.32:0;
- const close=distance()<62;
+ state.stamina=Math.max(0,state.stamina-(kind==='jab'?6:9));
+ // Character art is scaled larger than the logical movement coordinates; use a range that matches what players see.
+ const range=distance();
+ if(range>158){playPunch(kind,false);say('PUNCH MISSED — move closer to connect.');updateHUD();return;}
+ const close=range<112;
  if(state.phase==='open'){
-   const dmg=(kind==='jab'?22:30)*(close?1:0.8);
-   state.enemy=Math.max(0,state.enemy-dmg);state.flash=.58;state.enemyStun=.28;
+   const dmg=(kind==='jab'?22:30)*(close?1:0.9);
+   state.enemy=Math.max(0,state.enemy-dmg);state.flash=.58;state.enemyStun=.28;playPunch(kind,true);
    say(kind==='jab'?'CLEAN JAB! You caught him during his opening.':'BIG BODY SHOT! That counter landed hard.');
    state.phase='recover';state.phaseTime=1.25;
  }else if(state.phase==='windup'){
-   const dmg=kind==='jab'?8:11;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.48;state.enemyStun=.2;say('HIT! You interrupted his setup with a clean punch!');
+   const dmg=kind==='jab'?8:11;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.48;state.enemyStun=.2;playPunch(kind,true);say('HIT! You interrupted his setup with a clean punch!');
  }else{
-   const dmg=kind==='jab'?7:10;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.4;state.enemyStun=.16;say('SOLID HIT! Counters during OPEN! do much more damage.');
+   const dmg=kind==='jab'?7:10;state.enemy=Math.max(0,state.enemy-dmg);state.flash=.4;state.enemyStun=.16;playPunch(kind,true);say('SOLID HIT! Counters during OPEN! do much more damage.');
  }
- if(state.enemy<=0){state.over=true;state.won=true;say('KNOCKOUT! '+player.name+' takes the fight!');}
+ if(state.enemy<=0){state.over=true;state.won=true;playVictory();stopRingMusic();say('KNOCKOUT! '+player.name+' takes the fight!');}
  updateHUD();
 }
 function dodge(dir){
@@ -330,8 +387,8 @@ function dodge(dir){
  else say(dir<0?'You move left. Get within range to land punches.':'You move right. Get within range to land punches.');
 }
 function finish(win){state.over=true;state.won=win;state.enemyPunch=0;if(!win)say('You are out of it. Reset and study his attack cues.');}
-function duck(){if(state.over)return;state.duck=.5;if(state.phase==='attack'&&state.attackType==='head'){state.phase='open';state.phaseTime=1.15;state.enemyPunch=0;say('You ducked under the hook! COUNTER NOW!');}else if(state.phase==='attack'&&state.attackType==='body'){state.player=Math.max(0,state.player-13);state.downs++;say('Body shot! Ducking into a body punch is a bad trade.');}else say('You crouch low. Watch for a body shot.');updateHUD();if(state.player<=0||state.downs>=3)finish(false);}
-function block(){if(state.over)return;state.block=.4;if(state.phase==='attack'){state.player=Math.max(0,state.player-4);state.phase='recover';state.phaseTime=.75;state.enemyPunch=0;say('You blocked most of the hit, but lost a little ground.');}else say('Guard up. Blocking is safer, but a dodge creates a better counter chance.');updateHUD();}
+function duck(){if(state.over)return;state.duck=.5;if(state.phase==='attack'&&state.attackType==='head'){state.phase='open';state.phaseTime=1.15;state.enemyPunch=0;say('You ducked under the hook! COUNTER NOW!');}else if(state.phase==='attack'&&state.attackType==='body'){state.player=Math.max(0,state.player-13);state.downs++;playKnockdown();say('Body shot! Ducking into a body punch is a bad trade.');}else say('You crouch low. Watch for a body shot.');updateHUD();if(state.player<=0||state.downs>=3)finish(false);}
+function block(){if(state.over)return;state.block=.4;playBlock();if(state.phase==='attack'){state.player=Math.max(0,state.player-4);state.phase='recover';state.phaseTime=.75;state.enemyPunch=0;say('You blocked most of the hit, but lost a little ground.');}else say('Guard up. Blocking is safer, but a dodge creates a better counter chance.');updateHUD();}
 function action(a){if(a==='left')dodge(-1);if(a==='right')dodge(1);if(a==='duck')duck();if(a==='block')block();if(a==='jab')hitEnemy('jab');if(a==='body')hitEnemy('body');}
 let moveHold=null;
 document.querySelectorAll('[data-action]').forEach(b=>{
@@ -346,7 +403,7 @@ let keys={};window.addEventListener('keydown',e=>{const map={'ArrowLeft':'left',
 let last=0;function tick(ts){const dt=Math.min(.05,(ts-last)/1000||0);last=ts;if(!state.over){state.stamina=Math.min(100,state.stamina+dt*8);state.phaseTime-=dt;state.punch=Math.max(0,state.punch-dt);state.bodyPunch=Math.max(0,state.bodyPunch-dt);state.enemyPunch=Math.max(0,state.enemyPunch-dt*1.5);state.flash=Math.max(0,state.flash-dt);state.enemyStun=Math.max(0,state.enemyStun-dt);state.duck=Math.max(0,state.duck-dt);state.block=Math.max(0,state.block-dt);state.playerX*=Math.max(0,1-dt*5);state.playerPos=Math.max(54,Math.min(286,state.playerPos));
  if(state.phaseTime<=0){if(state.phase==='ready'){state.phase='windup';state.phaseTime=1.2;state.attackType=Math.random()<.65?'head':'body';say(state.attackType==='head'?'He is loading up a HEAD shot. Dodge sideways or duck.':'He is aiming for the BODY. Dodge sideways or block.');}
  else if(state.phase==='windup'){state.phase='attack';state.phaseTime=.48;state.enemyPunch=.35;}
- else if(state.phase==='attack'){if(state.block>0){state.player=Math.max(0,state.player-3);say('You absorbed part of the attack.');}else if(state.playerX!==0||(state.duck>0&&state.attackType==='head')){state.phase='open';state.phaseTime=1.1;say('He missed! There is your opening — PUNCH!');}else if(distance()>92){state.phase='recover';state.phaseTime=1.35;say('His punch fell short because you were out of range.');}else{state.player=Math.max(0,state.player-(state.attackType==='head'?7:9));state.downs++;state.phase='recover';state.phaseTime=1.4;say(state.attackType==='head'?'Clean shot to the head! Dodge sooner next time.':'Heavy body shot! Move sideways or block that one.');}state.enemyPunch=0;if(state.player<=0||state.downs>=3)finish(false);}
+ else if(state.phase==='attack'){if(state.block>0){state.player=Math.max(0,state.player-3);say('You absorbed part of the attack.');}else if(state.playerX!==0||(state.duck>0&&state.attackType==='head')){state.phase='open';state.phaseTime=1.1;say('He missed! There is your opening — PUNCH!');}else if(distance()>92){state.phase='recover';state.phaseTime=1.35;say('His punch fell short because you were out of range.');}else{state.player=Math.max(0,state.player-(state.attackType==='head'?7:9));state.downs++;playKnockdown();state.phase='recover';state.phaseTime=1.4;say(state.attackType==='head'?'Clean shot to the head! Dodge sooner next time.':'Heavy body shot! Move sideways or block that one.');}state.enemyPunch=0;if(state.player<=0||state.downs>=3)finish(false);}
  else if(state.phase==='open'){state.phase='recover';state.phaseTime=.65;say('The opening closed. Prepare for his next attack.');}else{state.phase='ready';state.phaseTime=1.35;state.playerX=0;if(distance()>76)state.enemyPos=Math.max(state.playerPos+42,state.enemyPos-10);}}
  updateHUD();}draw();requestAnimationFrame(tick);}
 function init(){
@@ -357,6 +414,8 @@ function init(){
 }
 init();
 })();
+
+attachRingAudioControls();
 </script>
 </body>
 </html>
