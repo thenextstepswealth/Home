@@ -6,9 +6,9 @@
 <title>Retro Ring — Photo Boxer Prototype</title>
 <style>
 :root{color-scheme:dark;--cream:#fff0c2;--gold:#ffc857;--red:#f25f5c;--blue:#4ea5d9;--green:#8ac926}
-*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#302747,#12111c 70%);color:var(--cream);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;display:flex;justify-content:center;padding:16px}
-main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(22px,4vw,34px);letter-spacing:2px;text-shadow:3px 3px #8b3a62}.sub{color:#c5badb;margin:0 0 14px;font-size:12px}
-.layout{display:grid;grid-template-columns:1fr;gap:14px;align-items:start}.main-game{min-width:0}.sidebar{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:start}.cabinet{border:4px solid #8d719b;box-shadow:0 0 0 4px #201b30,0 12px 40px #0009;background:#211d32;padding:10px}canvas{display:block;width:100%;height:auto;aspect-ratio:3/4.375;image-rendering:pixelated;background:#241e37;border:2px solid #100e18}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;overflow-x:hidden;background:radial-gradient(ellipse at top,#302747,#12111c 70%);color:var(--cream);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;display:flex;justify-content:center;padding:16px}
+main{width:min(100%,560px);max-width:560px;min-width:0}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(22px,4vw,34px);letter-spacing:2px;text-shadow:3px 3px #8b3a62}.sub{color:#c5badb;margin:0 0 14px;font-size:12px}
+.layout{display:flex;flex-direction:column;gap:10px;align-items:stretch;width:100%;min-width:0}.main-game{min-width:0}.sidebar{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;align-items:start;width:100%;min-width:0}.cabinet{border:4px solid #8d719b;box-shadow:0 0 0 4px #201b30,0 12px 40px #0009;background:#211d32;padding:10px}canvas{display:block;width:100%;height:auto;aspect-ratio:3/4.375;image-rendering:auto;background:#241e37;border:2px solid #100e18}
 .hud{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:0 0 6px}.meter-card,.panel{background:#171421;border:2px solid #574667;padding:6px}.name-row{display:flex;justify-content:space-between;gap:5px;font-size:10px;margin-bottom:5px}.bar{height:12px;background:#383145;border:2px solid #07070b;padding:1px}.fill{height:100%;width:100%}#playerHealth{background:var(--green)}#enemyHealth{background:var(--red)}#stamina{background:var(--gold)}
 .panel{margin-bottom:12px}.panel h2{color:var(--gold);font-size:13px;margin:0 0 9px}.small{font-size:11px;line-height:1.5;color:#c5badb}.controls{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}button,input,select{font:inherit}button{border:2px solid #b8a2cc;background:#352b49;color:#fff0c2;font-weight:bold;min-height:38px;padding:7px;cursor:pointer;box-shadow:0 3px #120f1b;touch-action:manipulation}button:active{transform:translateY(2px);box-shadow:0 1px #120f1b}button.primary{background:#7a345d;border-color:#ffb1a9}.wide{grid-column:span 3}.field{display:block;width:100%;margin:6px 0 9px;background:#252032;color:var(--cream);border:1px solid #7a678b;padding:8px}.actions{display:flex;gap:7px;flex-wrap:wrap}.actions button{flex:1}.photo-preview{display:flex;gap:10px;align-items:center;margin:8px 0}.portrait{width:64px;height:64px;object-fit:cover;border:2px solid #ffc857;background:#302747;image-rendering:auto}.portrait.enemy{border-color:#f25f5c}.notice{min-height:30px;color:#d6cbe8;font-size:11px;line-height:1.5}.log{min-height:56px;line-height:1.5;font-size:11px;color:#d6cbe8}.hint{color:#9d91b0;font-size:10px;line-height:1.5;margin-top:8px}
 
@@ -40,7 +40,7 @@ main{width:min(100%,940px)}h1{margin:0 0 5px;color:var(--gold);font-size:clamp(2
  .controller-panel { padding:9px 8px; }
 }
 
-@media(max-width:760px){.layout{grid-template-columns:1fr}.sidebar{display:grid;grid-template-columns:1fr;gap:10px}.panel{margin-bottom:0}.full{grid-column:auto}}
+@media(max-width:760px){.layout{display:flex;flex-direction:column}.sidebar{grid-template-columns:minmax(0,1fr)}.panel{margin-bottom:0}.full{grid-column:auto}}
 @media(max-width:480px){body{padding:8px}.sidebar{display:grid;grid-template-columns:1fr}.panel{margin-bottom:0}.name-row{font-size:9px}button{font-size:11px}.meter-card{padding:7px}}
 .camera-stage{position:relative;width:min(100%,390px);aspect-ratio:1/1;margin:8px auto 0;background:#090710;overflow:hidden;border-radius:12px}.camera-stage video{width:100%;height:100%;object-fit:cover;display:block;transform:scaleX(-1)}.oval-guide{position:absolute;left:25%;top:14%;width:50%;height:72%;border:3px solid #ffc857;border-radius:50%;box-shadow:0 0 0 999px #09071066;pointer-events:none;display:flex;align-items:flex-end;justify-content:center}.oval-guide span{position:absolute;bottom:-28px;white-space:nowrap;background:#090710dd;color:#fff0c2;padding:4px 8px;border-radius:5px;font-size:11px;letter-spacing:.5px}.camera-panel .hint{margin-top:34px}.portrait{object-fit:cover}
 
@@ -91,14 +91,14 @@ body.menu-active #restart{display:none}#restart{width:auto;min-width:112px}
 @media(max-width:420px){.splash-photo-buttons button{font-size:9px;padding:8px 1px}.title-panel{padding:14px}}
 
 
-/* Version 1.5.2.1: cabinet defines the page width; no horizontal scrolling. */
+/* Version 1.6.0.1: cabinet defines the page width; no horizontal scrolling. */
 html,body{width:100%;max-width:100%;overflow-x:hidden}
 body{padding:10px;margin:0}
 main{width:min(100%,560px);max-width:560px;margin:0 auto;min-width:0}
 .layout{display:flex;flex-direction:column;gap:10px;width:100%;max-width:100%;min-width:0}
 .main-game,.sidebar,.cabinet,.controller-panel{width:100%;max-width:100%;min-width:0}
 .cabinet{padding:5px;border-width:3px}
-canvas#game{width:100%;max-width:100%;height:auto;display:block}
+canvas#game{width:100%;max-width:100%;height:auto;display:block;image-rendering:auto}
 .sidebar{grid-template-columns:minmax(0,1fr);width:100%;min-width:0}
 .panel,.meter-card,.soundbar,.hud{min-width:0;max-width:100%}
 input,select,button{max-width:100%;min-width:0}
@@ -107,7 +107,7 @@ input,select,button{max-width:100%;min-width:0}
 
 
 .game-cabinet{position:relative;overflow:hidden;width:100%;}
-.game-help-corner{position:absolute;top:8px;z-index:2;max-width:30%;padding:5px 6px;background:#100d19d9;border:1px solid #8b7ba2;border-radius:5px;color:#fff0c2;font-size:9px;line-height:1.25;pointer-events:none}
+.game-help-corner{position:absolute;top:8px;z-index:2;max-width:24%;padding:4px 5px;background:#100d19d9;border:1px solid #8b7ba2;border-radius:5px;color:#fff0c2;font-size:9px;line-height:1.25;pointer-events:none}
 .game-help-corner strong,.game-help-corner span,.game-help-corner small{display:block}
 .game-help-corner strong{font-size:9px;color:#ffc857;letter-spacing:.7px}
 .game-help-corner span{font-size:11px;font-weight:bold;margin-top:2px}
@@ -129,12 +129,12 @@ input,select,button{max-width:100%;min-width:0}
 </head>
 <body class="menu-active">
 <main>
-<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.4.0</p>
+<h1>RETRO RING</h1><p class="sub">ARCADE BOXING // PHOTO FIGHTERS // VERSION 1.6.0</p>
 
 <section id="titleScreen" class="title-screen" role="dialog" aria-label="Retro Ring main menu">
   <div class="title-logo">RETRO RING</div>
   <div class="title-tagline">3D-INSPIRED ARCADE BOXING</div>
-  <div class="version-stamp">VERSION 1.4.0</div>
+  <div class="version-stamp">VERSION 1.6.0</div>
   <div class="title-fighters" aria-hidden="true">
     <svg class="splash-ring-art" viewBox="0 0 320 118" role="img" aria-label="Two retro arcade boxers facing off in a boxing ring">
       <defs><linearGradient id="ringBg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#302741"/><stop offset="1" stop-color="#100d19"/></linearGradient></defs>
@@ -170,8 +170,8 @@ input,select,button{max-width:100%;min-width:0}
   <div class="title-panel">
     <label for="difficultySelect">DIFFICULTY</label>
     <select id="difficultySelect" class="menu-select">
-      <option value="easy">EASY — learn the controls</option>
-      <option value="normal" selected>NORMAL — arcade challenge</option>
+      <option value="easy" selected>EASY — learn the controls</option>
+      <option value="normal">NORMAL — arcade challenge</option>
       <option value="hard">HARD — tougher opponent</option>
     </select>
     <button id="menuSound" class="menu-button" type="button">ENABLE AUDIO</button>
@@ -218,52 +218,47 @@ input,select,button{max-width:100%;min-width:0}
 </div>
 <div class="layout">
 <section class="main-game">
-
-    <div class="name-row" style="margin:5px 0 3px"><span>STAMINA</span><span id="staminaPct">100%</span></div>
-    <div class="bar"><div class="fill" id="stamina"></div></div>
+  <div class="hud top-scoreboard">
+    <div class="meter-card">
+      <div class="name-row"><strong id="playerNameHud">YOU: ROOKIE RAY</strong><span id="playerPct">100%</span></div>
+      <div class="bar"><div class="fill" id="playerHealth"></div></div>
+      <div class="name-row" style="margin:5px 0 3px"><span>STAMINA</span><span id="staminaPct">100%</span></div>
+      <div class="bar"><div class="fill" id="stamina"></div></div>
+    </div>
+    <div class="meter-card">
+      <div class="name-row"><strong id="enemyNameHud">THE BRICK WALL</strong><span id="enemyPct">100%</span></div>
+      <div class="bar"><div class="fill" id="enemyHealth"></div></div>
+      <div class="name-row" style="margin-top:7px"><span>HITS TAKEN</span><strong id="downs">0</strong></div>
+    </div>
   </div>
-  <div class="meter-card">
-    <div class="name-row"><strong id="enemyNameHud">THE BRICK WALL</strong><span id="enemyPct">100%</span></div>
-    <div class="bar"><div class="fill" id="enemyHealth"></div></div>
-    <div class="name-row" style="margin-top:7px"><span>HITS TAKEN</span><strong id="downs">0 / 3</strong></div>
+  <div class="cabinet game-cabinet">
+    <div class="game-help-corner help-left"><strong>MOVE</strong><span>◀ ▶ ▲ ▼</span><small>Across and through ring</small></div>
+    <div class="game-help-corner help-right"><strong>PUNCH</strong><span>A / B</span><small>Head / body</small></div>
+    <canvas id="game" width="384" height="560" aria-label="Retro arcade boxing match"></canvas>
+    <div id="damageNotice" class="damage-notice" aria-live="polite"></div>
+    <button id="centerRestart" type="button" class="center-restart" hidden>↻ RESTART FIGHT</button>
   </div>
-</div>
-<div class="hud top-scoreboard">
-  <div class="meter-card">
-    <div class="name-row"><strong id="playerNameHud">YOU: ROOKIE RAY</strong><span id="playerPct">100%</span></div>
-    <div class="bar"><div class="fill" id="playerHealth"></div></div>
-<div class="cabinet game-cabinet">
-  <div class="game-help-corner help-left"><strong>MOVE</strong><span>◀ ▶ ▲ ▼</span><small>Evade and reposition</small></div>
-  <div class="game-help-corner help-right"><strong>PUNCH</strong><span>A / B</span><small>Head / body</small></div>
-  <canvas id="game" width="384" height="560" aria-label="Retro pixel art boxing match"></canvas>
-  <div id="damageNotice" class="damage-notice" aria-live="polite"></div>
-<button id="centerRestart" type="button" class="center-restart" hidden>↻ RESTART FIGHT</button>
-</div>
-<div class="panel controller-panel">
-<h2>ARCADE CONTROLS</h2>
-<div class="gamepad">
-  <div class="dpad" aria-label="Directional pad">
-    <button class="dp up" data-action="up" aria-label="Move farther back">▲</button>
-    <button class="dp left" data-action="left" aria-label="Move or dodge left">◀</button>
-    <button class="dp center" type="button" tabindex="-1" aria-hidden="true"></button>
-    <button class="dp right" data-action="right" aria-label="Move or dodge right">▶</button>
-    <button class="dp down" data-action="down" aria-label="Move closer">▼</button>
+  <div class="panel controller-panel">
+    <h2>ARCADE CONTROLS</h2>
+    <div class="gamepad">
+      <div class="dpad" aria-label="Directional pad">
+        <button class="dp up" data-action="up" aria-label="Move farther back">▲</button>
+        <button class="dp left" data-action="left" aria-label="Move left">◀</button>
+        <button class="dp center" type="button" tabindex="-1" aria-hidden="true"></button>
+        <button class="dp right" data-action="right" aria-label="Move right">▶</button>
+        <button class="dp down" data-action="down" aria-label="Move closer">▼</button>
+      </div>
+      <div class="face-buttons" aria-label="Action buttons">
+        <button class="face x" data-action="block" aria-label="Block">X</button>
+        <button class="face a primary" data-action="jab" aria-label="Head jab">A</button>
+        <button class="face b" data-action="body" aria-label="Body punch">B</button>
+        <span class="button-caption caption-x">BLOCK</span>
+        <span class="button-caption caption-a">JAB</span>
+        <span class="button-caption caption-b">BODY</span>
+      </div>
+    </div>
+    <div class="hint">Touch controls: left/right move across the ring; up/down move farther or closer. X blocks. A throws a head jab; B throws a body punch. Keyboard: arrows move, J jab, K body punch, L block.</div>
   </div>
-  <div class="face-buttons" aria-label="Action buttons">
-    <button class="face x" data-action="block" aria-label="Block">X</button>
-    <button class="face a primary" data-action="jab" aria-label="Head jab">A</button>
-    <button class="face b" data-action="body" aria-label="Body punch">B</button>
-    <span class="button-caption caption-x">BLOCK</span>
-    <span class="button-caption caption-a">JAB</span>
-    <span class="button-caption caption-b">BODY</span>
-  </div>
-</div>
-<div class="hint">Touch controls: hold left/right to move and dodge; use up/down to move farther or closer in the ring; X blocks. A throws a head jab; B throws a body punch. Keyboard: arrows move in all directions, J jab, K body punch, L block.</div>
-</div>
-
-<div class="meter-card"><div class="name-row"><strong id="enemyNameHud">THE BRICK WALL</strong><span id="enemyPct">100%</span></div><div class="bar"><div class="fill" id="enemyHealth"></div></div><div class="name-row" style="margin-top:10px"><span>HITS TAKEN</span><strong id="downs">0 / 3</strong></div></div>
-</div>
-
 </section>
 <aside class="sidebar">
 <div class="panel full">
@@ -362,6 +357,7 @@ const DEFAULT_PLAYER={name:'Rookie Ray',photo:null},DEFAULT_ENEMY={name:'The Bri
 let player={...DEFAULT_PLAYER},enemy={...DEFAULT_ENEMY},cameraStream=null,cameraTarget='player';
 const STORAGE_KEY='retroRing.boxers.v1';
 let state;
+function applyDifficultySettings(){const d=$('difficultySelect')?.value||'easy';state.enemyDamageScale=d==='easy'?0.55:d==='hard'?1.25:0.85;state.enemySpeedScale=d==='easy'?0.65:d==='hard'?1.2:0.85;state.enemyPauseScale=d==='easy'?1.55:d==='hard'?0.8:1;}
 function fresh(){return {player:100,enemy:100,stamina:100,downs:0,phase:'ready',phaseTime:1.25,attackType:'head',playerX:0,playerY:0,playerPos:106,enemyPos:282,enemyStun:0,duck:0,block:0,punch:0,bodyPunch:0,enemyPunch:0,enemyAttackType:'head',playerHitCooldown:0,flash:0,over:false,won:false,log:'DING DING! The Brick Wall is watching you. Wait for his tell, dodge, then counter.'};}
 state=fresh();
 function say(s){state.log=s;$('log').textContent=s;}
@@ -371,12 +367,19 @@ function txt(s,x,y,size=8,c='#fff0c2',align='left'){ctx.fillStyle=c;ctx.font=`bo
 function drawFighter(x,y,scale,palette,pose='idle',flip=false,photo=null){
  ctx.save();ctx.translate(x,y);ctx.scale(flip?-scale:scale,scale);
  const [skin,shorts,gloves,boots]=palette;
- // Ground shadow, legs and shorts.
- rect(-17,2,34,5,'#151222');
- rect(-13,-13,10,15,skin);rect(3,-13,10,15,skin);
- rect(-16,0,14,5,boots);rect(2,0,14,5,boots);
- rect(-15,-31,13,20,shorts);rect(2,-31,13,20,shorts);
- rect(-14,-34,28,4,skin);
+ // Ground shadow, tapered legs, visible knees and rounded boots.
+ ctx.fillStyle='#151222';ctx.beginPath();ctx.ellipse(0,3,20,4,0,0,Math.PI*2);ctx.fill();
+ // Shorts have a curved hem and slightly flared sides.
+ ctx.beginPath();ctx.moveTo(-14,-34);ctx.quadraticCurveTo(-17,-27,-14,-18);ctx.lineTo(-8,-15);ctx.lineTo(-2,-18);ctx.lineTo(1,-29);ctx.lineTo(4,-18);ctx.lineTo(10,-15);ctx.lineTo(15,-19);ctx.quadraticCurveTo(17,-28,14,-34);ctx.closePath();ctx.fillStyle=shorts;ctx.fill();
+ // Shaped calves and thighs; contours and highlights keep them from reading as rectangles.
+ ctx.beginPath();ctx.moveTo(-11,-19);ctx.quadraticCurveTo(-13,-13,-11,-7);ctx.quadraticCurveTo(-10,-2,-13,0);ctx.quadraticCurveTo(-8,3,-2,1);ctx.quadraticCurveTo(0,-4,-3,-9);ctx.lineTo(-3,-18);ctx.closePath();ctx.fillStyle=skin;ctx.fill();
+ ctx.beginPath();ctx.moveTo(4,-18);ctx.quadraticCurveTo(2,-12,5,-7);ctx.quadraticCurveTo(7,-3,5,0);ctx.quadraticCurveTo(10,3,15,0);ctx.quadraticCurveTo(17,-5,13,-10);ctx.lineTo(13,-19);ctx.closePath();ctx.fillStyle=skin;ctx.fill();
+ ctx.strokeStyle='rgba(50,25,25,.35)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(-10,-10);ctx.quadraticCurveTo(-7,-8,-4,-10);ctx.moveTo(7,-10);ctx.quadraticCurveTo(10,-8,13,-10);ctx.stroke();
+ // Rounded boxing boots with curved toes and a sole.
+ ctx.beginPath();ctx.moveTo(-13,-3);ctx.quadraticCurveTo(-17,-2,-18,1);ctx.quadraticCurveTo(-12,5,-2,3);ctx.quadraticCurveTo(0,1,-3,-2);ctx.closePath();ctx.fillStyle=boots;ctx.fill();
+ ctx.beginPath();ctx.moveTo(5,-2);ctx.quadraticCurveTo(2,1,4,3);ctx.quadraticCurveTo(13,5,18,1);ctx.quadraticCurveTo(17,-2,13,-3);ctx.closePath();ctx.fillStyle=boots;ctx.fill();
+ ctx.strokeStyle='#171321';ctx.lineWidth=1.2;ctx.beginPath();ctx.moveTo(-17,2);ctx.lineTo(-2,3);ctx.moveTo(4,3);ctx.lineTo(18,2);ctx.stroke();
+ ctx.beginPath();ctx.moveTo(-14,-34);ctx.quadraticCurveTo(0,-30,14,-34);ctx.closePath();ctx.fillStyle=skin;ctx.fill();
  // Broader torso: the head is intentionally oversized for readable, playful arcade portraits.
  // Rounded shoulder silhouette and layered torso shading for a cleaner 16-bit look.
  ctx.beginPath();ctx.moveTo(-17,-61);ctx.quadraticCurveTo(-22,-60,-21,-49);ctx.lineTo(-18,-35);ctx.quadraticCurveTo(0,-31,18,-35);ctx.lineTo(21,-49);ctx.quadraticCurveTo(22,-60,17,-61);ctx.closePath();
@@ -533,7 +536,7 @@ function draw(){
 function showDamageNotice(text,color){const el=document.getElementById('damageNotice');if(el){el.textContent=text;el.style.color=color||'#fff0c2';}}
 function updateHUD(){
  $('playerHealth').style.width=state.player+'%';$('playerPct').textContent=Math.ceil(state.player)+'%';$('enemyHealth').style.width=state.enemy+'%';$('enemyPct').textContent=Math.ceil(state.enemy)+'%';
- $('stamina').style.width=state.stamina+'%';$('staminaPct').textContent=Math.ceil(state.stamina)+'%';$('downs').textContent=state.downs+' / 3';
+ $('stamina').style.width=state.stamina+'%';$('staminaPct').textContent=Math.ceil(state.stamina)+'%';$('downs').textContent=state.downs;
  $('playerNameHud').textContent='YOU: '+player.name.toUpperCase().slice(0,18);$('enemyNameHud').textContent=enemy.name.toUpperCase().slice(0,18);
 }
 function loadImage(data){if(!data)return null;const im=new Image();im.onload=()=>{draw();};im.onerror=()=>notice('The photo could not be displayed. Try a JPG or PNG image.');im.src=data;return im;}
@@ -617,14 +620,14 @@ function hitEnemy(kind){
  if(range>158){playPunch(kind,false);say('PUNCH MISSED — move closer to connect.');updateHUD();return;}
  const close=range<112;
  if(state.phase==='open'){
-   const dmg=(kind==='jab'?4:7)*(close?1:0.9);
+   const dmg=(kind==='jab'?1.5:2.5)*(close?1:0.9);
    state.enemy=Math.max(0,state.enemy-dmg);showDamageNotice('-'+Math.round(dmg)+' OPPONENT HEALTH','#8ac926');state.flash=.58;state.enemyStun=kind==='jab'?.42:.32;state.enemyFlinch=kind==='jab'?.22:0;playPunch(kind,true);
    say(kind==='jab'?'CLEAN JAB! You caught him during his opening.':'BIG BODY SHOT! That counter landed hard.');
    state.phase='recover';state.phaseTime=.85/(state.enemySpeedScale||1);
  }else if(state.phase==='windup'){
-   const dmg=kind==='jab'?4:7;state.enemy=Math.max(0,state.enemy-dmg);showDamageNotice('-'+Math.round(dmg)+' OPPONENT HEALTH','#8ac926');state.flash=.48;state.enemyStun=kind==='jab'?.4:.3;state.enemyFlinch=kind==='jab'?.22:0;playPunch(kind,true);say('HIT! You interrupted his setup with a clean punch!');
+   const dmg=kind==='jab'?1.5:2.5;state.enemy=Math.max(0,state.enemy-dmg);showDamageNotice('-'+Math.round(dmg)+' OPPONENT HEALTH','#8ac926');state.flash=.48;state.enemyStun=kind==='jab'?.4:.3;state.enemyFlinch=kind==='jab'?.22:0;playPunch(kind,true);say('HIT! You interrupted his setup with a clean punch!');
  }else{
-   const dmg=kind==='jab'?4:7;state.enemy=Math.max(0,state.enemy-dmg);showDamageNotice('-'+Math.round(dmg)+' OPPONENT HEALTH','#8ac926');state.flash=.4;state.enemyStun=kind==='jab'?.4:.3;state.enemyFlinch=kind==='jab'?.22:0;playPunch(kind,true);say('SOLID HIT! Counters during OPEN! do much more damage.');
+   const dmg=kind==='jab'?1.5:2.5;state.enemy=Math.max(0,state.enemy-dmg);showDamageNotice('-'+Math.round(dmg)+' OPPONENT HEALTH','#8ac926');state.flash=.4;state.enemyStun=kind==='jab'?.4:.3;state.enemyFlinch=kind==='jab'?.22:0;playPunch(kind,true);say('SOLID HIT! Counters during OPEN! do much more damage.');
  }
  if(state.enemy<=0){state.over=true;state.won=true;playVictory();stopRingMusic();say('KNOCKOUT! '+player.name+' takes the fight!');}
  updateHUD();
@@ -635,11 +638,11 @@ function dodge(dir){
  const step=dir*24;
  state.playerPos=Math.max(34,Math.min(350,state.playerPos+step));
  state.playerX=0;
- if(state.phase==='attack'&&Math.abs(state.playerPos-state.enemyPos)>82){state.phase='open';state.phaseTime=1.25;state.enemyPunch=0;say('Perfect dodge! He missed — COUNTER NOW!');}
+ if(state.phase==='attack'&&Math.abs(state.playerPos-state.enemyPos)>82){state.phase='open';state.phaseTime=1.65;state.enemyPunch=0;say('Perfect dodge! He missed — COUNTER NOW!');}
  else say(dir<0?'You move left. Get within range to land punches.':'You move right. Get within range to land punches.');
 }
 function finish(win){state.over=true;state.won=win;state.enemyPunch=0;if(!win)say('You are out of it. Reset and study his attack cues.');}
-function duck(){if(state.over)return;state.duck=.5;if(state.phase==='attack'&&state.attackType==='head'){state.phase='open';state.phaseTime=1.25;state.enemyPunch=0;say('You ducked under the hook! COUNTER NOW!');}else if(state.phase==='attack'&&state.attackType==='body'){state.player=Math.max(0,state.player-(state.attackType==='head'?4:7));state.downs++;showDamageNotice('YOU WERE HIT! -7 HEALTH','#ff7373');playKnockdown();say('Body shot! Ducking into a body punch is a bad trade.');}else say('You crouch low. Watch for a body shot.');updateHUD();if(state.player<=0)finish(false);}
+function duck(){if(state.over)return;state.duck=.5;if(state.phase==='attack'&&state.attackType==='head'){state.phase='open';state.phaseTime=1.65;state.enemyPunch=0;say('You ducked under the hook! COUNTER NOW!');}else if(state.phase==='attack'&&state.attackType==='body'){state.player=Math.max(0,state.player-(state.attackType==='head'?1.5:2.5));state.downs++;showDamageNotice('YOU WERE HIT! -7 HEALTH','#ff7373');playKnockdown();say('Body shot! Ducking into a body punch is a bad trade.');}else say('You crouch low. Watch for a body shot.');updateHUD();if(state.player<=0)finish(false);}
 function block(){if(state.over)return;state.block=.4;playBlock();if(state.phase==='attack'){state.player=Math.max(0,state.player-2);state.phase='recover';state.phaseTime=.75;state.enemyPunch=0;say('You blocked most of the hit, but lost a little ground.');}else say('Guard up. Blocking is safer, but a dodge creates a better counter chance.');updateHUD();}
 function action(a){if(a==='left')dodge(-1);if(a==='right')dodge(1);
 if(a==='up'||a==='down'){state.playerY=Math.max(-24,Math.min(24,(state.playerY||0)+(a==='up'?-12:12)));draw();return;}
@@ -657,7 +660,7 @@ let keys={};window.addEventListener('keydown',e=>{const map={'ArrowLeft':'left',
 let last=0;function tick(ts){const dt=Math.min(.05,(ts-last)/1000||0);last=ts;if(!state.over){state.stamina=Math.min(100,state.stamina+dt*8);state.phaseTime-=dt;state.playerHitCooldown=Math.max(0,(state.playerHitCooldown||0)-dt);state.punch=Math.max(0,state.punch-dt);state.bodyPunch=Math.max(0,state.bodyPunch-dt);state.enemyPunch=Math.max(0,state.enemyPunch-dt*1.5);state.flash=Math.max(0,state.flash-dt);state.enemyStun=Math.max(0,state.enemyStun-dt);state.duck=Math.max(0,state.duck-dt);state.block=Math.max(0,state.block-dt);state.playerX*=Math.max(0,1-dt*5);state.playerPos=Math.max(34,Math.min(350,state.playerPos));
  if(state.phaseTime<=0){if(state.phase==='ready'){state.phase='windup';state.phaseTime=(state.enemySpeedScale?1.55/state.enemySpeedScale:1.55);state.attackType=Math.random()<.65?'head':'body';say(state.attackType==='head'?'He is loading up a HEAD shot. Dodge sideways or duck.':'He is aiming for the BODY. Dodge sideways or block.');}
  else if(state.phase==='windup'){state.phase='attack';state.phaseTime=(.8/(state.enemySpeedScale||1));state.enemyPunch=.32;}
- else if(state.phase==='attack'){if(state.block>0){state.player=Math.max(0,state.player-1);say('You absorbed part of the attack.');}else if(state.playerX!==0||(state.duck>0&&state.attackType==='head')){state.phase='open';state.phaseTime=1.25;say('He missed! There is your opening — PUNCH!');}else if(distance()>92){state.phase='recover';state.phaseTime=(.85/(state.enemySpeedScale||1));say('His punch fell short because you were out of range.');}else{state.player=Math.max(0,state.player-(state.attackType==='head'?4:7));state.downs++;playKnockdown();state.phase='recover';state.phaseTime=.9/(state.enemySpeedScale||1);say(state.attackType==='head'?'Clean shot to the head! Dodge sooner next time.':'Heavy body shot! Move sideways or block that one.');}state.enemyPunch=0;if(state.player<=0)finish(false);}
+ else if(state.phase==='attack'){if(state.block>0){state.player=Math.max(0,state.player-1);say('You absorbed part of the attack.');}else if(state.playerX!==0||(state.duck>0&&state.attackType==='head')){state.phase='open';state.phaseTime=1.65;say('He missed! There is your opening — PUNCH!');}else if(distance()>92){state.phase='recover';state.phaseTime=(.85/(state.enemySpeedScale||1));say('His punch fell short because you were out of range.');}else{state.player=Math.max(0,state.player-(state.attackType==='head'?1.5:2.5));state.downs++;playKnockdown();state.phase='recover';state.phaseTime=.9/(state.enemySpeedScale||1);say(state.attackType==='head'?'Clean shot to the head! Dodge sooner next time.':'Heavy body shot! Move sideways or block that one.');}state.enemyPunch=0;if(state.player<=0)finish(false);}
  else if(state.phase==='open'){state.phase='recover';state.phaseTime=.65;say('The opening closed. Prepare for his next attack.');}else{state.phase='ready';state.phaseTime=1.15;state.playerX=0;if(distance()>76)state.enemyPos=Math.max(state.playerPos+42,state.enemyPos-10);}}
  updateHUD();}draw();requestAnimationFrame(tick);}
 
