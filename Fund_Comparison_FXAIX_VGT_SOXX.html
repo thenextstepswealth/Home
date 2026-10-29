@@ -55,6 +55,27 @@ input{width:145px}select{max-width:100%}
 footer{color:var(--muted);font-size:.8rem;padding:5px 0 20px}
 a{color:#245f98}
 @media(max-width:650px){.wrap{width:calc(100% - 20px)}header{padding:23px 0 19px}.panel{border-radius:14px}.barline{grid-template-columns:49px 1fr 63px;gap:7px}.barlabel,.barvalue{font-size:.78rem}.resultcards{grid-template-columns:1fr}.result{display:grid;grid-template-columns:1fr auto;align-items:center}.result-value{margin:0}.result-detail{grid-column:1/-1}.heat{min-width:65px;padding:7px 6px}th,td{padding:10px 9px;font-size:.88rem}}
+
+/* Fund identity colors across the year-by-year balance table */
+#balanceTable th:nth-child(2), #balanceTable td:nth-child(2) { background-color: #eaf2ff; }
+#balanceTable th:nth-child(3), #balanceTable td:nth-child(3) { background-color: #f3f7ff; }
+#balanceTable th:nth-child(4), #balanceTable td:nth-child(4) { background-color: #e5f6ef; }
+#balanceTable th:nth-child(5), #balanceTable td:nth-child(5) { background-color: #f2fbf7; }
+#balanceTable th:nth-child(6), #balanceTable td:nth-child(6) { background-color: #fff0d9; }
+#balanceTable th:nth-child(7), #balanceTable td:nth-child(7) { background-color: #fff8ed; }
+#balanceTable thead tr:first-child th:nth-child(2) { background: #3578c8; color: white; }
+#balanceTable thead tr:first-child th:nth-child(3) { background: #159779; color: white; }
+#balanceTable thead tr:first-child th:nth-child(4) { background: #d58a25; color: white; }
+#balanceTable thead tr:nth-child(2) th:nth-child(1),
+#balanceTable thead tr:nth-child(2) th:nth-child(2) { border-top: 3px solid #3578c8; }
+#balanceTable thead tr:nth-child(2) th:nth-child(3),
+#balanceTable thead tr:nth-child(2) th:nth-child(4) { border-top: 3px solid #159779; }
+#balanceTable thead tr:nth-child(2) th:nth-child(5),
+#balanceTable thead tr:nth-child(2) th:nth-child(6) { border-top: 3px solid #d58a25; }
+#balanceTable td:nth-child(2), #balanceTable td:nth-child(3) { border-left: 1px solid #c5d9fb; }
+#balanceTable td:nth-child(4), #balanceTable td:nth-child(5) { border-left: 1px solid #b8e5d5; }
+#balanceTable td:nth-child(6), #balanceTable td:nth-child(7) { border-left: 1px solid #f2d5a7; }
+
 </style>
 </head>
 <body>
