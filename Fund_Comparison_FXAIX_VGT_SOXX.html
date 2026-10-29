@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#f5f7fb">
+<title>Fund Comparison | FXAIX, VGT & SOXX</title>
+<style>
+:root{--ink:#172438;--muted:#657287;--line:#e0e6ef;--paper:#fff;--bg:#f4f7fb;--fx:#3578c8;--vgt:#159779;--soxx:#d58a25;--navy:#183653}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{width:min(1050px,100% - 28px);margin:0 auto}
+header{padding:30px 0 24px;background:#fff;border-bottom:1px solid var(--line)}
+.kicker{font-size:.75rem;text-transform:uppercase;letter-spacing:.13em;font-weight:800;color:#57718d}
+h1{font-size:clamp(1.8rem,4vw,2.65rem);letter-spacing:-.04em;line-height:1.1;margin:8px 0}
+.subtitle{color:var(--muted);max-width:700px;margin:0}
+main{padding:20px 0 44px}
+.key{display:flex;flex-wrap:wrap;gap:8px;margin:15px 0 20px}
+.key span{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;background:#fff;border:1px solid var(--line);border-radius:999px;font-size:.88rem;font-weight:750}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.fx{color:var(--fx)}.vgt{color:var(--vgt)}.soxx{color:var(--soxx)}
+.dot.fx{background:var(--fx)}.dot.vgt{background:var(--vgt)}.dot.soxx{background:var(--soxx)}
+.panel{background:var(--paper);border:1px solid var(--line);border-radius:17px;padding:clamp(15px,3vw,23px);margin:15px 0;box-shadow:0 4px 16px #17365d08}
+h2{font-size:1.25rem;letter-spacing:-.02em;margin:0 0 5px}
+.desc{color:var(--muted);font-size:.91rem;margin:0 0 17px}
+.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+th,td{padding:12px 13px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{background:#f0f4f9;color:#40546b;font-size:.82rem;font-weight:750}
+th:first-child,td:first-child{text-align:left}
+tbody tr:last-child td{border-bottom:0}
+td:first-child{font-weight:700}
+.num{font-weight:800}.negative{color:#b13c43}.positive{color:#147a5a}
+.trailing td{padding-top:14px;padding-bottom:14px}
+.period{font-weight:750}.subperiod{font-size:.77rem;color:var(--muted);font-weight:500}
+.chart{display:grid;gap:16px}
+.period-group{border-bottom:1px solid var(--line);padding-bottom:15px}.period-group:last-child{border-bottom:0;padding-bottom:0}
+.period-title{font-weight:750;margin-bottom:10px;display:flex;justify-content:space-between;gap:10px}
+.barline{display:grid;grid-template-columns:58px 1fr 72px;gap:9px;align-items:center;margin:8px 0}
+.barlabel{font-size:.83rem;font-weight:800}
+.track{height:15px;background:#eef2f6;border-radius:5px;overflow:hidden}
+.bar{height:100%;border-radius:5px;min-width:2px}
+.bar.fx{background:var(--fx)}.bar.vgt{background:var(--vgt)}.bar.soxx{background:var(--soxx)}
+.barvalue{text-align:right;font-size:.88rem;font-weight:800;font-variant-numeric:tabular-nums}
+.callout{background:#f3f7fb;border-radius:12px;padding:13px 15px;color:#33475f;font-size:.9rem;margin-top:14px}
+.controls{display:flex;align-items:end;flex-wrap:wrap;gap:12px;margin:12px 0 16px}
+label{display:block;color:var(--muted);font-size:.82rem;margin-bottom:5px}
+input,select{font:inherit;border:1px solid #ccd6e2;border-radius:9px;background:#fff;padding:10px 11px;color:var(--ink)}
+input{width:145px}select{max-width:100%}
+.resultcards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.result{border:1px solid var(--line);border-radius:13px;padding:14px}
+.result-name{font-size:.85rem;font-weight:850}.result-value{font-size:clamp(1.25rem,3vw,1.7rem);font-weight:850;letter-spacing:-.03em;margin:5px 0}
+.result-detail{font-size:.82rem;color:var(--muted)}
+.year-cell{font-weight:800!important;text-align:left}
+.heat{border-radius:7px;padding:8px 9px;display:inline-block;min-width:76px;text-align:right;font-weight:800}
+footer{color:var(--muted);font-size:.8rem;padding:5px 0 20px}
+a{color:#245f98}
+@media(max-width:650px){.wrap{width:calc(100% - 20px)}header{padding:23px 0 19px}.panel{border-radius:14px}.barline{grid-template-columns:49px 1fr 63px;gap:7px}.barlabel,.barvalue{font-size:.78rem}.resultcards{grid-template-columns:1fr}.result{display:grid;grid-template-columns:1fr auto;align-items:center}.result-value{margin:0}.result-detail{grid-column:1/-1}.heat{min-width:65px;padding:7px 6px}th,td{padding:10px 9px;font-size:.88rem}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="kicker">Simple visual comparison</div>
+<h1>FXAIX vs. VGT vs. SOXX</h1>
+<p class="subtitle">Compare long-term returns with the ups and downs along the way. Higher returns can come with bigger losses.</p>
+</div></header>
+<main class="wrap">
+<div class="key">
+<span><i class="dot fx"></i><b>FXAIX</b> <span style="font-weight:500">S&amp;P 500</span></span>
+<span><i class="dot vgt"></i><b>VGT</b> <span style="font-weight:500">Technology</span></span>
+<span><i class="dot soxx"></i><b>SOXX</b> <span style="font-weight:500">Semiconductors</span></span>
+</div>
+
+<section class="panel">
+<h2>1. Return comparison</h2>
+<p class="desc">Bar lengths make it easy to compare each fund. 3-, 5- and 10-year returns are annualized; other periods show the total return for that period.</p>
+<div class="table-scroll"><table class="trailing"><thead><tr><th>Period</th><th class="fx">FXAIX</th><th class="vgt">VGT</th><th class="soxx">SOXX</th></tr></thead><tbody id="trailingTable"></tbody></table></div>
+<div style="height:18px"></div>
+<div id="visualBars" class="chart"></div>
+<div class="callout"><b>How to read this:</b> the 10-year average smooths the ride into one number. The annual table below shows how uneven the ride actually was.</div>
+</section>
+
+<section class="panel">
+<h2>2. What happened each year?</h2>
+<p class="desc">Calendar-year returns. Positive years are green; negative years are red. 2026 is year-to-date, not a full year.</p>
+<div class="table-scroll"><table><thead><tr><th>Year</th><th class="fx">FXAIX</th><th class="vgt">VGT</th><th class="soxx">SOXX</th></tr></thead><tbody id="annualTable"></tbody></table></div>
+<div style="height:20px"></div>
+<h2 style="font-size:1.08rem">What would my balance have been each year?</h2>
+<p class="desc">Uses the starting amount you enter below. The table applies each calendar year's return in sequence, then shows that year's dollar gain or loss and year-end balance. Assumes you invested at the start of 2015, stayed invested, and reinvested distributions.</p>
+<div class="table-scroll"><table><thead><tr><th rowspan="2">Year</th><th colspan="2" class="fx">FXAIX</th><th colspan="2" class="vgt">VGT</th><th colspan="2" class="soxx">SOXX</th></tr><tr><th>Change $</th><th>Year-end balance</th><th>Change $</th><th>Year-end balance</th><th>Change $</th><th>Year-end balance</th></tr></thead><tbody id="balanceTable"></tbody></table></div>
+<div class="callout"><b>How to interpret recovery:</b> after a losing year, watch how many years it takes for the year-end balance to exceed its previous peak. This is a year-end comparison, so it does not show the exact day an investment recovered during a year.</div>
+<div class="callout"><b>Example — 2022:</b> all three fell, but the technology and semiconductor funds dropped more. That is the trade-off: more upside in some periods can mean a deeper decline in others.</div>
+</section>
+
+<section class="panel">
+<h2>3. What could that mean for $10,000?</h2>
+<p class="desc">A simple illustration using each fund’s trailing 10-year annualized return. Change the amount or time horizon. This assumes the same return every year, which real markets do not deliver.</p>
+<div class="controls">
+<div><label for="amount">Starting amount ($)</label><input id="amount" type="number" min="1" step="1000" value="10000"></div>
+<div><label for="years">Years invested</label><select id="years"><option value="1">1 year</option><option value="3">3 years</option><option value="5">5 years</option><option value="10" selected>10 years</option><option value="20">20 years</option></select></div>
+</div>
+<div id="results" class="resultcards"></div>
+<div class="callout"><b>Risk check:</b> a 35% loss turns $10,000 into $6,500. The remaining $6,500 must grow about 53.8% to return to $10,000.</div>
+</section>
+<footer>
+Historical calendar-year total-return figures are rounded; 2026 is partial-year YTD. Figures are not live quotes. Providers and return methodologies may differ; verify current figures before investing. Past performance does not predict future results. Expense ratios are approximate: FXAIX 0.015%, VGT 0.09%, SOXX 0.34%. Year-by-year results are historical approximations and can vary slightly by source and reinvestment methodology.
+<br><br>
+Official fund information: <a href="https://fundresearch.fidelity.com/mutual-funds/summary/315911750" target="_blank" rel="noopener">FXAIX</a> · <a href="https://investor.vanguard.com/investment-products/etfs/profile/vgt" target="_blank" rel="noopener">VGT</a> · <a href="https://www.ishares.com/us/products/239705/ishares-semiconductor-etf" target="_blank" rel="noopener">SOXX</a>
+</footer>
+</main>
+<script>
+const funds=[
+ {name:"FXAIX",key:"fx",annualized:15.42},
+ {name:"VGT",key:"vgt",annualized:24.26},
+ {name:"SOXX",key:"soxx",annualized:30.64}
+];
+const trailing=[
+ {label:"10 years",sub:"annualized",values:[15.42,24.26,30.64],bar:true},
+ {label:"5 years",sub:"annualized",values:[12.47,18.40,26.92],bar:true},
+ {label:"3 years",sub:"annualized",values:[23.40,35.01,50.58],bar:true},
+ {label:"1 year",sub:"total return",values:[14.44,25.56,66.77],bar:false},
+ {label:"Last 6 months",sub:"total return",values:[7.84,16.41,6.67],bar:false},
+ {label:"2026 YTD",sub:"partial year",values:[12.38,28.82,63.60],bar:false}
+];
+const annual=[
+[2026,12.38,30.75,70.00],[2025,17.88,21.77,40.74],[2024,25.02,29.30,12.92],
+[2023,26.29,52.66,67.12],[2022,-18.11,-29.70,-35.09],[2021,28.71,30.45,44.09],
+[2020,18.40,46.04,52.72],[2019,31.49,48.62,62.42],[2018,-4.38,2.46,-6.49],
+[2017,21.83,37.08,39.79],[2016,12.00,13.77,38.34],[2015,1.38,5.05,-2.02]
+];
+const pct=n=>(n<0?"−":"")+Math.abs(n).toFixed(1)+"%";
+document.getElementById("trailingTable").innerHTML=trailing.map(r=>`<tr><td><b>${r.label}</b><br><span style="font-size:.75rem;color:#657287">${r.sub}</span></td>${r.values.map((v,i)=>`<td class="num ${v<0?'negative':'positive'}">${pct(v)}</td>`).join("")}</tr>`).join("");
+const maxBar=Math.max(...trailing.flatMap(r=>r.values.map(Math.abs)));
+document.getElementById("visualBars").innerHTML=trailing.map(r=>`<div class="period-group"><div class="period-title"><span>${r.label}</span><span class="subperiod">${r.sub}</span></div>${r.values.map((v,i)=>`<div class="barline"><span class="barlabel ${funds[i].key}">${funds[i].name}</span><div class="track"><div class="bar ${funds[i].key}" style="width:${Math.max(2,Math.abs(v)/maxBar*100)}%"></div></div><span class="barvalue ${v<0?'negative':'positive'}">${pct(v)}</span></div>`).join("")}</div>`).join("");
+function heatStyle(v){if(v<0){let a=Math.min(.75,.18+Math.abs(v)/40);return `background:rgba(190,55,65,${a});color:${Math.abs(v)>20?'#fff':'#81242c'}`}let a=Math.min(.72,.14+v/75);return `background:rgba(22,145,104,${a});color:${v>35?'#fff':'#145b45'}`}
+document.getElementById("annualTable").innerHTML=annual.filter(r=>r[0]>=2015).map(r=>`<tr><td class="year-cell">${r[0]}${r[0]===2026?'<br><span style="font-size:.72rem;color:#657287;font-weight:500">YTD</span>':''}</td>${r.slice(1).map(v=>`<td><span class="heat" style="${heatStyle(v)}">${pct(v)}</span></td>`).join("")}</tr>`).join("");
+function money(n){return n.toLocaleString("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0});}
+function updateBalances(){
+ const starting=Math.max(0,Number(document.getElementById("amount").value)||0);
+ let balances=[starting,starting,starting], peak=[starting,starting,starting], recovered=[false,false,false];
+ const rows=annual.filter(r=>r[0]>=2015 && r[0]<=2025).sort((a,b)=>a[0]-b[0]);
+ document.getElementById("balanceTable").innerHTML=rows.map(r=>{
+   const vals=r.slice(1);
+   const cells=vals.map((ret,i)=>{
+     const change=balances[i]*ret/100;
+     balances[i]+=change;
+     const changeClass=change<0?"negative":"positive";
+     return `<td class="${changeClass}">${change<0?"−": "+"}${money(Math.abs(change))}</td><td class="num">${money(balances[i])}</td>`;
+   }).join("");
+   return `<tr><td class="year-cell">${r[0]}</td>${cells}</tr>`;
+ }).join("");
+}
+function updateCalc(){
+ const amount=Math.max(0,Number(document.getElementById("amount").value)||0);
+ const years=Number(document.getElementById("years").value);
+ document.getElementById("results").innerHTML=funds.map(f=>{
+  const ending=amount*Math.pow(1+f.annualized/100,years);
+  return `<div class="result"><div><div class="result-name ${f.key}">${f.name}</div><div class="result-detail">${f.annualized.toFixed(2)}% annualized assumption</div></div><div class="result-value">${ending.toLocaleString("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0})}</div><div class="result-detail" style="grid-column:1/-1">Illustrative ending value after ${years} ${years===1?"year":"years"}</div></div>`;
+ }).join("");
+}
+document.getElementById("amount").addEventListener("input",()=>{updateCalc();updateBalances()});
+document.getElementById("years").addEventListener("change",updateCalc);
+updateCalc();
+updateBalances();
+</script>
+</body>
+</html>
