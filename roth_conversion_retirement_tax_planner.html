@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roth Conversion & Retirement Tax Planner</title>
+<style>
+:root{--ink:#172235;--muted:#637187;--line:#dce3ec;--soft:#f4f7fb;--blue:#1f559d;--green:#17633c;--amber:#8a4b08;--red:#9d3434}
+*{box-sizing:border-box}
+body{margin:0;background:#edf1f6;color:var(--ink);font:16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+main{max-width:1120px;margin:22px auto;padding:0 14px 32px}
+header{background:#17345f;color:#fff;padding:24px;border-radius:16px 16px 0 0}
+header h1{font-size:clamp(1.45rem,4vw,2rem);margin:0 0 5px}
+header p{margin:0;color:#d9e5f5}
+.content{background:white;padding:22px;border-radius:0 0 16px 16px;box-shadow:0 8px 28px #1c2c4414}
+h2{font-size:1.16rem;margin:25px 0 12px}h2:first-child{margin-top:0}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+label{display:block;font-weight:650;font-size:.91rem}
+input,select{width:100%;margin-top:6px;border:1px solid #c9d3df;border-radius:9px;padding:10px 11px;font:inherit;color:var(--ink);background:#fff}
+input:focus,select:focus{outline:3px solid #2457a72a;border-color:var(--blue)}
+.hint{font-size:.78rem;color:var(--muted);font-weight:400;margin-top:3px}
+.note{background:#f1f6fc;border-left:4px solid var(--blue);padding:12px 14px;border-radius:8px;color:#35465e;font-size:.89rem;margin:15px 0}
+.slider-panel{border:1px solid var(--line);border-radius:13px;padding:17px;background:#fbfcfe;margin-top:14px}
+.slider-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.amount{font-size:2.15rem;font-weight:850;letter-spacing:-.035em}
+.slider-panel input[type=range]{padding:0;margin:17px 0 4px;accent-color:var(--blue)}
+.range-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:.78rem}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}
+.card{background:var(--soft);border:1px solid var(--line);border-radius:11px;padding:14px;min-width:0}
+.card .k{font-size:.81rem;color:var(--muted)}.card .v{font-size:1.55rem;font-weight:820;margin-top:4px;overflow-wrap:anywhere}
+.card .sub{font-size:.78rem;color:var(--muted);margin-top:3px}
+.green{color:var(--green)}.amber{color:var(--amber)}.red{color:var(--red)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}
+table{width:100%;border-collapse:collapse;min-width:660px}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:right}
+th:first-child,td:first-child{text-align:left}
+thead th{background:#f3f6fa;font-size:.84rem}tbody tr:last-child td{border-bottom:0}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:17px}
+button{border:0;border-radius:9px;padding:10px 15px;font:650 .92rem system-ui;cursor:pointer}
+.primary{background:var(--blue);color:white}.secondary{background:#e8edf3;color:#25334a}
+.small{font-size:.82rem;color:var(--muted)}
+.pill{display:inline-block;border-radius:20px;padding:3px 9px;background:#e8f4ec;color:var(--green);font-size:.76rem;font-weight:700}
+footer{font-size:.78rem;color:var(--muted);margin-top:20px}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cards{grid-template-columns:1fr}}
+@media(max-width:470px){.grid{grid-template-columns:1fr}.content{padding:15px}.amount{font-size:1.8rem}}
+@media print{body{background:white}main{margin:0;max-width:none}header{background:white;color:black;border:1px solid #aaa}header p{color:#333}.actions{display:none}.content{box-shadow:none}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<h1>Roth Conversion & Retirement Tax Planner</h1>
+<p>Compare the tax cost of converting now with projected traditional IRA RMD taxes and after-tax wealth.</p>
+</header>
+<section class="content">
+<h2>1. Enter the person's financial information</h2>
+<div class="grid">
+<label>Current age
+<input id="age" type="number" min="18" max="100" step="1" value="63">
+<div class="hint">Age during the current projection year.</div></label>
+<label>Traditional IRA balance ($)
+<input id="ira" type="number" min="0" step="1000" value="300000">
+<div class="hint">Illustrative starting balance; replace with actual balance.</div></label>
+<label>Filing status
+<select id="filing">
+<option value="single">Single</option>
+<option value="mfj">Married filing jointly</option>
+<option value="hoh">Head of household</option>
+</select></label>
+<label>Annual Social Security ($)
+<input id="ss" type="number" min="0" step="100" value="36000"></label>
+<label>Annual long-term capital gains ($)
+<input id="gains" type="number" min="0" step="100" value="6000">
+<div class="hint">Assumes gains qualify for regular long-term capital-gains rates.</div></label>
+<label>Other annual ordinary taxable income ($)
+<input id="other" type="number" min="0" step="100" value="0">
+<div class="hint">For example, pension, wages, or taxable interest.</div></label>
+<label>Tax-exempt interest ($)
+<input id="taxExempt" type="number" min="0" step="100" value="0">
+<div class="hint">Included in Social Security provisional income.</div></label>
+<label>Annual investment growth (%)
+<input id="growth" type="number" min="-20" max="30" step=".25" value="5">
+<div class="hint">Applied to the IRA/Roth and reinvested net RMDs.</div></label>
+<label>Assumed future marginal tax rate (%)
+<input id="futureRate" type="number" min="0" max="50" step=".5" value="22">
+<div class="hint">Used for future RMD tax estimates. Change to test a different bracket.</div></label>
+<label>RMD starting age
+<select id="rmdAge">
+<option value="75" selected>75 — generally born 1960 or later</option>
+<option value="73">73 — generally born 1951–1959</option>
+</select></label>
+<label>2026 standard deduction ($)
+<input id="deduction" type="number" min="0" step="100" value="16100">
+<div class="hint">Auto-fills for filing status; you can override it.</div></label>
+<label>Projection horizon for optimization
+<select id="optHorizon">
+<option value="20">20 years</option><option value="25" selected>25 years</option><option value="30">30 years</option><option value="35">35 years</option>
+</select></label>
+</div>
+<div class="note"><strong>Starting example:</strong> The initial values are examples to make the calculator work immediately. Replace them with the person's actual numbers. The tax estimate is federal only and uses 2026 tax brackets. The future tax rate is an assumption, not a forecast.</div>
+
+<h2>2. Adjust the Roth conversion amount</h2>
+<div class="slider-panel">
+<div class="slider-head">
+<div><div class="small">Selected conversion amount</div><div class="amount" id="amountDisplay">$10,000</div></div>
+<label style="width:170px">Enter amount ($)
+<input id="amountInput" type="number" min="0" step="500" value="10000"></label>
+</div>
+<input id="conversion" type="range" min="0" max="300000" step="500" value="10000" aria-label="Roth conversion amount">
+<div class="range-labels"><span>$0</span><span id="maxLabel">$300,000</span></div>
+<div class="cards">
+<div class="card"><div class="k">Additional federal tax to convert today</div><div class="v" id="todayTax">$—</div><div class="sub" id="todayRate">Incremental tax rate: —</div></div>
+<div class="card"><div class="k">Future taxes if this amount stays traditional</div><div class="v" id="futureTax25">$—</div><div class="sub" id="futureTaxCaption">Cumulative RMD tax plus estimated tax on remaining balance at year 25</div></div>
+<div class="card"><div class="k">Projected after-tax wealth advantage</div><div class="v" id="wealthAdvantage">$—</div><div class="sub" id="wealthCaption">Roth strategy compared with keeping this slice traditional</div></div>
+</div>
+<div class="small" id="liveExplanation" aria-live="polite"></div>
+</div>
+
+<h2>3. Today's tax cost versus future traditional IRA taxes</h2>
+<div class="tablewrap">
+<table>
+<thead><tr><th>Selected conversion amount</th><th>Tax today</th><th>Effective tax rate today</th><th>Future tax at 20 years</th><th>Future tax at 25 years</th><th>Future tax at 30 years</th><th>Future tax at 35 years</th></tr></thead>
+<tbody id="taxCompareRows"></tbody>
+</table>
+</div>
+<div class="small" style="margin-top:7px">Future tax includes estimated taxes on RMDs received during the horizon plus an illustrative tax liability on the traditional IRA balance remaining at the end of that horizon, assuming it were then withdrawn at the selected future rate.</div>
+
+<h2>4. Compare projected after-tax wealth</h2>
+<div class="tablewrap">
+<table>
+<thead><tr><th>At the end of the horizon</th><th>20 years</th><th>25 years</th><th>30 years</th><th>35 years</th></tr></thead>
+<tbody id="wealthRows"></tbody>
+</table>
+</div>
+<div class="note" id="wealthSummary"></div>
+
+<h2>5. Paying the conversion tax</h2>
+<div class="grid">
+<label>How will the conversion tax be paid?
+<select id="taxSource">
+<option value="outside">From money outside the IRA</option>
+<option value="ira">Withheld from the IRA conversion</option>
+</select>
+<div class="hint">The calculator adjusts how much reaches the Roth account.</div></label>
+<label>Additional conversion tax paid today
+<input id="taxDisplay" type="text" readonly value="$—">
+<div class="hint">Estimated incremental federal tax versus no conversion.</div></label>
+<label>Amount deposited into Roth IRA
+<input id="rothDeposit" type="text" readonly value="$—">
+<div class="hint">If tax is withheld from the IRA, the deposit is reduced.</div></label>
+</div>
+<div class="note" id="taxSourceNote"></div>
+
+<h2>6. Suggested conversion amount under these assumptions</h2>
+<div class="cards">
+<div class="card"><div class="k">Highest projected after-tax wealth at selected horizon</div><div class="v" id="optAmount">$—</div><div class="sub" id="optCaption">Calculated across conversion amounts up to the current IRA balance.</div></div>
+<div class="card"><div class="k">Projected advantage at that amount</div><div class="v" id="optBenefit">$—</div><div class="sub" id="optBenefitCaption">Compared with not converting that amount.</div></div>
+<div class="card"><div class="k">Marginal tax rate on the next $500 converted</div><div class="v" id="nextRate">—</div><div class="sub">Estimated incremental tax on the next slider step.</div></div>
+</div>
+<div class="small" id="optWarning">This is a mathematical result under the assumptions entered, not individualized tax advice. It does not account for Medicare IRMAA, state taxes, tax credits, future tax-law changes, estate planning, or all interactions with other income.</div>
+
+<div class="actions">
+<button class="primary" type="button" onclick="recalculate()">Recalculate</button>
+<button class="secondary" type="button" onclick="resetExample()">Restore example values</button>
+<button class="secondary" type="button" onclick="window.print()">Print comparison</button>
+</div>
+
+<h2>How this model works — and what it does not claim</h2>
+<ul class="small">
+<li>Today's conversion tax is the increase in estimated 2026 federal income tax with the conversion versus without it. It includes the modeled effect of additional taxable Social Security and long-term capital gains stacking.</li>
+<li>Future RMDs are estimated using the IRS Uniform Lifetime Table factors from the selected RMD starting age. The calculator isolates the slider-selected amount as a proportional slice of the traditional IRA.</li>
+<li>Future RMD taxes use the future marginal tax rate entered above. The model assumes net RMD distributions are reinvested at the same annual return, and estimates tax on the remaining traditional IRA balance at the horizon as if it were then withdrawn.</li>
+<li>The after-tax wealth comparison values the Roth balance tax-free and the traditional IRA balance after the assumed future tax. It also accounts for the opportunity cost of the conversion tax paid today by treating that amount as money that could otherwise have grown at the entered return.</li>
+<li>For the comparison, tax paid from outside the IRA and tax withheld from the conversion have the same economic cost if both would otherwise earn the same return. The choice changes the Roth deposit amount, not the modeled overall wealth advantage.</li>
+</ul>
+<footer>
+Educational planning estimate only, not tax, legal, or investment advice. Federal income tax estimate only. 2026 brackets and standard deductions are built in; the model does not include state tax, NIIT, qualified dividends, itemized deductions, tax credits, the additional age-65 deductions, Medicare IRMAA, survivor filing-status changes, spouse-specific RMD calculations, inherited IRAs, QCDs, or tax drag on reinvested distributions. RMDs are generally based on the prior year-end account balance and the applicable IRS life-expectancy factor; the actual first distribution year and deadline can vary. Verify results with a qualified tax professional.
+</footer>
+</section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const num=id=>Math.max(0,Number($(id).value)||0);
+const money=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(Number.isFinite(n)?n:0);
+const rateText=n=>(n*100).toFixed(1)+'%';
+const standard={single:16100,mfj:32200,hoh:24150};
+const brackets={
+ single:[[12400,.10],[50400,.12],[105700,.22],[201775,.24],[256225,.32],[640600,.35],[Infinity,.37]],
+ mfj:[[24800,.10],[100800,.12],[211400,.22],[403550,.24],[512450,.32],[768700,.35],[Infinity,.37]],
+ hoh:[[17700,.10],[67450,.12],[105700,.22],[201750,.24],[256200,.32],[640600,.35],[Infinity,.37]]
+};
+const gainsThresholds={
+ single:[49450,545500],mfj:[98900,613700],hoh:[66200,579600]
+};
+const uniform={
+ 73:26.5,74:25.5,75:24.6,76:23.7,77:22.9,78:22.0,79:21.1,80:20.2,
+ 81:19.4,82:18.5,83:17.7,84:16.8,85:16.0,86:15.2,87:14.4,88:13.7,
+ 89:12.9,90:12.2,91:11.5,92:10.8,93:10.1,94:9.5,95:8.9,96:8.4,
+ 97:7.8,98:7.3,99:6.8,100:6.4,101:6.0,102:5.6,103:5.2,104:4.9,
+ 105:4.6,106:4.3,107:4.1,108:3.9,109:3.7,110:3.5,111:3.4,112:3.3,
+ 113:3.1,114:3.0,115:2.9,116:2.8,117:2.7,118:2.5,119:2.3,120:2.0
+};
+function ordinaryTax(taxable,status){
+ let tax=0,lower=0;
+ for(const [upper,rate] of brackets[status]){
+  tax+=Math.max(0,Math.min(taxable,upper)-lower)*rate;
+  if(taxable<=upper)break;
+  lower=upper;
+ }
+ return tax;
+}
+function capitalGainsTax(ordinary,gains,status){
+ const [zeroLimit,topLimit]=gainsThresholds[status];
+ const zeroRoom=Math.max(0,zeroLimit-ordinary);
+ const zero=Math.min(gains,zeroRoom);
+ const afterZero=Math.max(0,gains-zero);
+ const fifteenRoom=Math.max(0,topLimit-Math.max(ordinary,zeroLimit));
+ const fifteen=Math.min(afterZero,fifteenRoom);
+ const twenty=Math.max(0,afterZero-fifteen);
+ return fifteen*.15+twenty*.20;
+}
+function taxableSocialSecurity(ss,provisional,status){
+ const joint=status==='mfj';
+ const base=joint?32000:25000;
+ const upper=joint?44000:34000;
+ if(provisional<=base)return 0;
+ const first=Math.min(ss*.5,(provisional-base)*.5);
+ if(provisional<=upper)return first;
+ return Math.min(ss*.85,first+(provisional-upper)*.85);
+}
+function taxEstimate(conversion){
+ const status=$('filing').value;
+ const ss=num('ss'),gains=num('gains'),other=num('other'),exempt=num('taxExempt');
+ const provisional=ss*.5+gains+other+exempt+conversion;
+ const taxableSS=taxableSocialSecurity(ss,provisional,status);
+ const agi=taxableSS+gains+other+conversion;
+ const taxableIncome=Math.max(0,agi-num('deduction'));
+ const taxableGains=Math.min(gains,taxableIncome);
+ const ordinary=Math.max(0,taxableIncome-taxableGains);
+ const tax=ordinaryTax(ordinary,status)+capitalGainsTax(ordinary,taxableGains,status);
+ return {provisional,taxableSS,agi,taxableIncome,ordinary,taxableGains,tax};
+}
+function currentTaxCost(amount){
+ return Math.max(0,taxEstimate(amount).tax-taxEstimate(0).tax);
+}
+function projectTraditional(amount,years){
+ const age=Math.max(18,Math.min(100,Math.floor(num('age'))));
+ const start=Number($('rmdAge').value);
+ const growth=Number($('growth').value)/100;
+ const futureRate=Number($('futureRate').value)/100;
+ let ira=amount,netRmdAccount=0,cumRmd=0,cumRmdTax=0,firstRmd=0;
+ for(let y=1;y<=years;y++){
+  ira*=Math.max(0,1+growth);
+  const currentAge=age+y;
+  if(currentAge>=start){
+   const divisor=uniform[Math.min(120,currentAge)]||2.0;
+   const rmd=ira/divisor;
+   if(firstRmd===0)firstRmd=rmd;
+   const tax=rmd*futureRate;
+   cumRmd+=rmd;cumRmdTax+=tax;
+   netRmdAccount+=(rmd-tax);
+   netRmdAccount*=Math.max(0,1+growth);
+   ira=Math.max(0,ira-rmd);
+  }
+ }
+ const terminalTax=ira*futureRate;
+ const futureTax=cumRmdTax+terminalTax;
+ const traditionalAfterTax=ira-terminalTax+netRmdAccount;
+ return {ira,netRmdAccount,cumRmd,cumRmdTax,terminalTax,futureTax,traditionalAfterTax,firstRmd};
+}
+function projectRoth(amount,taxCost,years){
+ const growth=Math.max(0,1+Number($('growth').value)/100);
+ const taxSource=$('taxSource').value;
+ const deposited=taxSource==='ira'?Math.max(0,amount-taxCost):amount;
+ const rothValue=deposited*Math.pow(growth,years);
+ const taxOpportunityCost=taxCost*Math.pow(growth,years);
+ return {deposited,rothValue,taxOpportunityCost,netWealth:rothValue-taxOpportunityCost};
+}
+function compare(amount,years){
+ const tax=currentTaxCost(amount);
+ const traditional=projectTraditional(amount,years);
+ const roth=projectRoth(amount,tax,years);
+ return {tax,traditional,roth,advantage:roth.netWealth-traditional.traditionalAfterTax};
+}
+function optimize(horizon,maxAmount){
+ if(maxAmount<=0)return {amount:0,advantage:0};
+ const step=Math.max(500,Math.ceil(maxAmount/1200/500)*500);
+ let best={amount:0,advantage:0};
+ for(let a=0;a<=maxAmount;a+=step){
+  const c=compare(a,horizon);
+  if(c.advantage>best.advantage)best={amount:a,advantage:c.advantage};
+ }
+ if(best.amount<maxAmount){
+  const end=compare(maxAmount,horizon);
+  if(end.advantage>best.advantage)best={amount:maxAmount,advantage:end.advantage};
+ }
+ return best;
+}
+function recalculate(){
+ const status=$('filing').value;
+ if(!$('deduction').dataset.edited)$('deduction').value=standard[status];
+ const ira=num('ira');
+ const max=Math.floor(ira/500)*500;
+ $('conversion').max=max;$('amountInput').max=max;$('maxLabel').textContent=money(max);
+ const amount=Math.min(num('conversion'),max);
+ $('conversion').value=amount;$('amountInput').value=amount;
+ $('amountDisplay').textContent=money(amount);
+ const no=taxEstimate(0),yes=taxEstimate(amount),tax=currentTaxCost(amount);
+ const effective=amount>0?tax/amount:0;
+ const next=Math.min(max,amount+500);
+ const nextRate=next>amount?(currentTaxCost(next)-tax)/(next-amount):0;
+ $('todayTax').textContent=money(tax);
+ $('todayRate').textContent='Effective tax rate on conversion: '+(amount?rateText(effective):'—');
+ $('nextRate').textContent=next>amount?rateText(nextRate):'—';
+ $('taxDisplay').value=money(tax);
+ const roth=projectRoth(amount,tax,Number($('optHorizon').value));
+ $('rothDeposit').value=money(roth.deposited);
+ $('taxSourceNote').textContent=$('taxSource').value==='outside'
+ ? `The full ${money(amount)} conversion is deposited into the Roth. The ${money(tax)} conversion tax is paid from outside funds; the model counts the foregone growth on those funds when comparing future wealth.`
+ : `The ${money(tax)} estimated conversion tax is assumed withheld from the IRA. Approximately ${money(roth.deposited)} of the selected ${money(amount)} reaches the Roth account. Actual withholding rules and transaction mechanics can vary.`;
+ const horizons=[20,25,30,35];
+ const comparisons=horizons.map(y=>compare(amount,y));
+ const selected=Number($('optHorizon').value);
+ const chosen=compare(amount,selected);
+ $('futureTax25').textContent=money(comparisons[1].traditional.futureTax);
+ $('futureTaxCaption').textContent='Cumulative RMD tax plus estimated tax on remaining balance at year 25';
+ $('wealthAdvantage').textContent=(chosen.advantage>=0?'+':'−')+money(Math.abs(chosen.advantage));
+ $('wealthAdvantage').className='v '+(chosen.advantage>=0?'green':'amber');
+ $('wealthCaption').textContent='Roth strategy vs. traditional strategy at year '+selected;
+ $('taxCompareRows').innerHTML=`<tr><td>${money(amount)}</td><td>${money(tax)}</td><td>${amount?rateText(effective):'—'}</td>${comparisons.map(c=>`<td>${money(c.traditional.futureTax)}</td>`).join('')}</tr>`;
+ const wealthRows=[
+  ['Roth account value at horizon',...comparisons.map(c=>money(c.roth.rothValue))],
+  ['Future value of conversion tax paid today',...comparisons.map(c=>money(c.roth.taxOpportunityCost))],
+  ['Roth strategy net value after tax-funding cost',...comparisons.map(c=>money(c.roth.netWealth))],
+  ['Traditional IRA balance remaining',...comparisons.map(c=>money(c.traditional.ira))],
+  ['After-tax value of remaining traditional IRA',...comparisons.map(c=>money(c.traditional.ira-c.traditional.terminalTax))],
+  ['Net RMDs reinvested outside IRA',...comparisons.map(c=>money(c.traditional.netRmdAccount))],
+  ['Traditional strategy total after-tax wealth',...comparisons.map(c=>money(c.traditional.traditionalAfterTax))],
+  ['Roth strategy less traditional strategy',...comparisons.map(c=>(c.advantage>=0?'+':'−')+money(Math.abs(c.advantage)))]
+ ];
+ $('wealthRows').innerHTML=wealthRows.map(r=>'<tr>'+r.map(v=>`<td>${v}</td>`).join('')+'</tr>').join('');
+ $('wealthSummary').innerHTML=`At ${selected} years, the model estimates <strong>${money(chosen.roth.netWealth)}</strong> in Roth-strategy net value after accounting for the future value of the conversion tax paid today, versus <strong>${money(chosen.traditional.traditionalAfterTax)}</strong> in after-tax traditional-IRA-related wealth if the selected amount is not converted. Estimated difference: <strong>${(chosen.advantage>=0?'+':'−')+money(Math.abs(chosen.advantage))}</strong>.`;
+ $('liveExplanation').textContent=`The conversion adds ${money(tax)} to estimated 2026 federal tax (${amount?rateText(effective):'0%'} of the amount converted). If this amount stays traditional, estimated RMD and terminal-balance taxes total ${money(comparisons[0].traditional.futureTax)} at 20 years, ${money(comparisons[1].traditional.futureTax)} at 25 years, ${money(comparisons[2].traditional.futureTax)} at 30 years, and ${money(comparisons[3].traditional.futureTax)} at 35 years, using the future tax rate and growth assumptions above.`;
+ const best=optimize(selected,max);
+ $('optAmount').textContent=money(best.amount);
+ $('optBenefit').textContent=(best.advantage>=0?'+':'−')+money(Math.abs(best.advantage));
+ $('optCaption').textContent='Best tested amount for the '+selected+'-year horizon, in $500-or-larger increments.';
+ $('optBenefitCaption').textContent='Projected difference versus leaving that amount traditional.';
+}
+function resetExample(){
+ const d={age:63,ira:300000,ss:36000,gains:6000,other:0,taxExempt:0,growth:5,futureRate:22,deduction:16100};
+ for(const [id,v] of Object.entries(d))$(id).value=v;
+ $('filing').value='single';$('rmdAge').value='75';$('optHorizon').value='25';$('taxSource').value='outside';
+ $('deduction').dataset.edited='';$('conversion').value=10000;$('amountInput').value=10000;
+ recalculate();
+}
+$('deduction').addEventListener('input',()=>{$('deduction').dataset.edited='1';recalculate();});
+$('filing').addEventListener('change',()=>{$('deduction').dataset.edited='';recalculate();});
+$('conversion').addEventListener('input',recalculate);
+$('amountInput').addEventListener('input',()=>{$('conversion').value=Math.min(num('amountInput'),Math.floor(num('ira')/500)*500);recalculate();});
+document.querySelectorAll('input:not(#conversion):not(#amountInput),select').forEach(el=>el.addEventListener('input',recalculate));
+$('taxSource').addEventListener('change',recalculate);
+recalculate();
+</script>
+</body>
+</html>
