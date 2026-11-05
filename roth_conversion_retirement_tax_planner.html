@@ -39,7 +39,7 @@ thead th{background:#f3f6fa;font-size:.84rem}tbody tr:last-child td{border-botto
 button{border:0;border-radius:9px;padding:10px 15px;font:650 .92rem system-ui;cursor:pointer}
 .primary{background:var(--blue);color:white}.secondary{background:#e8edf3;color:#25334a}
 .small{font-size:.82rem;color:var(--muted)}
-.pill{display:inline-block;border-radius:20px;padding:3px 9px;background:#e8f4ec;color:var(--green);font-size:.76rem;font-weight:700}
+.period-buttons{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.period-buttons button{background:#e8edf3;color:#25334a}.period-buttons button.active{background:var(--blue);color:#fff}.editable-target{max-width:220px}.rmd-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.rmd-grid .card{background:#f7f9fc}.pill{display:inline-block;border-radius:20px;padding:3px 9px;background:#e8f4ec;color:var(--green);font-size:.76rem;font-weight:700}
 footer{font-size:.78rem;color:var(--muted);margin-top:20px}
 @media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.cards{grid-template-columns:1fr}}
 @media(max-width:470px){.grid{grid-template-columns:1fr}.content{padding:15px}.amount{font-size:1.8rem}}
@@ -151,7 +151,40 @@ footer{font-size:.78rem;color:var(--muted);margin-top:20px}
 </div>
 <div class="note" id="taxSourceNote"></div>
 
-<h2>6. Suggested conversion amount under these assumptions</h2>
+<h2>6. Monthly retirement-income comparison</h2>
+<div class="note">Illustrative monthly view using the current traditional IRA balance and the selected conversion. RMDs are annual IRS minimums divided by 12 for display; actual distributions are not required monthly. Federal tax is estimated on the person's modeled annual income plus the RMD, using the selected filing status and tax inputs.</div>
+<div class="rmd-grid">
+ <div class="card"><div class="k">Before conversion — monthly RMD</div><div class="v" id="beforeRmd">$—</div><div class="sub">Gross required distribution</div></div>
+ <div class="card"><div class="k">Estimated federal tax on RMD</div><div class="v" id="beforeRmdTax">$—</div><div class="sub">Incremental monthly tax estimate</div></div>
+ <div class="card"><div class="k">Before conversion — net monthly RMD income</div><div class="v" id="beforeNet">$—</div><div class="sub">After estimated federal tax</div></div>
+</div>
+<div class="rmd-grid">
+ <div class="card"><div class="k">After conversion — monthly RMD</div><div class="v" id="afterRmd">$—</div><div class="sub">Gross required distribution from remaining traditional IRA</div></div>
+ <div class="card"><div class="k">Estimated federal tax on adjusted RMD</div><div class="v" id="afterRmdTax">$—</div><div class="sub">Incremental monthly tax estimate</div></div>
+ <div class="card"><div class="k">After conversion — net monthly RMD income</div><div class="v" id="afterNet">$—</div><div class="sub">After estimated federal tax</div></div>
+</div>
+<div class="grid" style="margin-top:12px">
+ <label>Desired net monthly retirement income ($)
+  <input class="editable-target" id="desiredNet" type="number" min="0" step="100" value="0">
+  <div class="hint">Defaults to the before-conversion net amount. Adjust in $100 increments. Cannot be set below the after-conversion net RMD amount.</div>
+ </label>
+ <label>Additional monthly Roth withdrawal needed
+  <input id="rothMonthly" type="text" readonly value="$—">
+  <div class="hint">Tax-free Roth withdrawal to reach the selected net monthly target.</div>
+ </label>
+ <label>Resulting net monthly income
+  <input id="resultNet" type="text" readonly value="$—">
+  <div class="hint">Adjusted traditional RMD net plus Roth withdrawal.</div>
+ </label>
+</div>
+<h2>7. End-of-year retirement account balances</h2>
+<div class="small">Projected balances after each year, assuming the selected conversion is made now, annual investment growth remains constant, and monthly income needs are met first from the traditional RMD and then from Roth withdrawals. Roth withdrawals are modeled as annualized withdrawals from the Roth balance; future taxes on RMDs are not assumed to be reinvested. These are estimates, not guaranteed outcomes.</div>
+<div class="period-buttons" id="periodButtons">
+ <button type="button" data-years="10" class="active">10 years</button><button type="button" data-years="15">15 years</button><button type="button" data-years="20">20 years</button><button type="button" data-years="25">25 years</button><button type="button" data-years="30">30 years</button>
+</div>
+<div class="tablewrap"><table><thead><tr><th>End of year</th><th>Traditional IRA balance</th><th>Roth IRA balance</th><th>Total retirement balances</th></tr></thead><tbody id="balanceRows"></tbody></table></div>
+
+<h2>8. Suggested conversion amount under these assumptions</h2>
 <div class="cards">
 <div class="card"><div class="k">Highest projected after-tax wealth at selected horizon</div><div class="v" id="optAmount">$—</div><div class="sub" id="optCaption">Calculated across conversion amounts up to the current IRA balance.</div></div>
 <div class="card"><div class="k">Projected advantage at that amount</div><div class="v" id="optBenefit">$—</div><div class="sub" id="optBenefitCaption">Compared with not converting that amount.</div></div>
@@ -296,6 +329,71 @@ function optimize(horizon,maxAmount){
  }
  return best;
 }
+let balanceYears=10;
+function rmdDivisor(age){
+ const a=Math.max(73,Math.min(120,Math.floor(age)));
+ return uniform[a] || 2.0;
+}
+function annualRmd(balance,age){
+ const start=Number($('rmdAge').value);
+ if(age<start || balance<=0)return 0;
+ return balance/rmdDivisor(age);
+}
+function incrementalRmdTax(annualRmd){
+ if(annualRmd<=0)return 0;
+ const base=taxEstimate(0).tax;
+ const withRmd=taxEstimate(0 + annualRmd).tax;
+ return Math.max(0,withRmd-base);
+}
+function monthlyRmdSnapshot(balance){
+ const age=Math.max(18,Math.floor(num('age')));
+ // Show the first applicable RMD year. If not yet at RMD age, use the starting-age divisor as a forward-looking illustration.
+ const calcAge=Math.max(age,Number($('rmdAge').value));
+ const annual=balance/rmdDivisor(calcAge);
+ const tax=incrementalRmdTax(annual);
+ return {gross:annual/12,tax:tax/12,net:(annual-tax)/12};
+}
+function renderBalanceProjection(amount, desiredNet, years){
+ const growth=Math.max(0,1+Number($('growth').value)/100);
+ let traditional=Math.max(0,num('ira')-amount);
+ let roth=amount;
+ const age=Math.floor(num('age'));
+ const before=monthlyRmdSnapshot(num('ira'));
+ const after=monthlyRmdSnapshot(traditional);
+ const monthlyRoth=Math.max(0,desiredNet-after.net);
+ const rows=[];
+ for(let y=1;y<=years;y++){
+  traditional*=growth; roth*=growth;
+  const yrAge=age+y;
+  const rmd=annualRmd(traditional,yrAge);
+  traditional=Math.max(0,traditional-rmd);
+  // Model a full year's Roth top-up to maintain the chosen net monthly income.
+  const annualRothDraw=yrAge>=Number($('rmdAge').value)?monthlyRoth*12:0;
+  roth=Math.max(0,roth-annualRothDraw);
+  rows.push(`<tr><td>${y}</td><td>${money(traditional)}</td><td>${money(roth)}</td><td>${money(traditional+roth)}</td></tr>`);
+ }
+ $('balanceRows').innerHTML=rows.join('');
+}
+function updateMonthlyRmd(amount){
+ const before=monthlyRmdSnapshot(num('ira'));
+ const after=monthlyRmdSnapshot(Math.max(0,num('ira')-amount));
+ $('beforeRmd').textContent=money(before.gross);
+ $('beforeRmdTax').textContent=money(before.tax);
+ $('beforeNet').textContent=money(before.net);
+ $('afterRmd').textContent=money(after.gross);
+ $('afterRmdTax').textContent=money(after.tax);
+ $('afterNet').textContent=money(after.net);
+ const input=$('desiredNet');
+ const floor=Math.max(0,after.net);
+ input.min=Math.ceil(floor/100)*100;
+ if(!input.dataset.userEdited || Number(input.value)<floor)input.value=Math.max(floor,before.net).toFixed(0);
+ const desired=Math.max(floor,Number(input.value)||0);
+ const rothMonthly=Math.max(0,desired-after.net);
+ $('rothMonthly').value=money(rothMonthly);
+ $('resultNet').value=money(after.net+rothMonthly);
+ $('desiredNet').title='Minimum allowed: '+money(floor)+' (net proceeds of estimated RMD)';
+ renderBalanceProjection(amount,desired,balanceYears);
+}
 function recalculate(){
  const status=$('filing').value;
  if(!$('deduction').dataset.edited)$('deduction').value=standard[status];
@@ -341,6 +439,7 @@ function recalculate(){
  $('wealthRows').innerHTML=wealthRows.map(r=>'<tr>'+r.map(v=>`<td>${v}</td>`).join('')+'</tr>').join('');
  $('wealthSummary').innerHTML=`At ${selected} years, the model estimates <strong>${money(chosen.roth.netWealth)}</strong> in Roth-strategy net value after accounting for the future value of the conversion tax paid today, versus <strong>${money(chosen.traditional.traditionalAfterTax)}</strong> in after-tax traditional-IRA-related wealth if the selected amount is not converted. Estimated difference: <strong>${(chosen.advantage>=0?'+':'−')+money(Math.abs(chosen.advantage))}</strong>.`;
  $('liveExplanation').textContent=`The conversion adds ${money(tax)} to estimated 2026 federal tax (${amount?rateText(effective):'0%'} of the amount converted). If this amount stays traditional, estimated RMD and terminal-balance taxes total ${money(comparisons[0].traditional.futureTax)} at 20 years, ${money(comparisons[1].traditional.futureTax)} at 25 years, ${money(comparisons[2].traditional.futureTax)} at 30 years, and ${money(comparisons[3].traditional.futureTax)} at 35 years, using the future tax rate and growth assumptions above.`;
+ updateMonthlyRmd(amount);
  const best=optimize(selected,max);
  $('optAmount').textContent=money(best.amount);
  $('optBenefit').textContent=(best.advantage>=0?'+':'−')+money(Math.abs(best.advantage));
@@ -351,7 +450,7 @@ function resetExample(){
  const d={age:63,ira:300000,ss:36000,gains:6000,other:0,taxExempt:0,growth:5,futureRate:22,deduction:16100};
  for(const [id,v] of Object.entries(d))$(id).value=v;
  $('filing').value='single';$('rmdAge').value='75';$('optHorizon').value='25';$('taxSource').value='outside';
- $('deduction').dataset.edited='';$('conversion').value=10000;$('amountInput').value=10000;
+ $('deduction').dataset.edited='';$('desiredNet').dataset.userEdited='';$('desiredNet').value=0;balanceYears=10;document.querySelectorAll('#periodButtons button').forEach(b=>b.classList.toggle('active',b.dataset.years==='10'));$('conversion').value=10000;$('amountInput').value=10000;
  recalculate();
 }
 $('deduction').addEventListener('input',()=>{$('deduction').dataset.edited='1';recalculate();});
@@ -360,6 +459,8 @@ $('conversion').addEventListener('input',recalculate);
 $('amountInput').addEventListener('input',()=>{$('conversion').value=Math.min(num('amountInput'),Math.floor(num('ira')/500)*500);recalculate();});
 document.querySelectorAll('input:not(#conversion):not(#amountInput),select').forEach(el=>el.addEventListener('input',recalculate));
 $('taxSource').addEventListener('change',recalculate);
+$('desiredNet').addEventListener('input',()=>{$('desiredNet').dataset.userEdited='1';updateMonthlyRmd(Math.min(num('conversion'),num('ira')));});
+document.querySelectorAll('#periodButtons button').forEach(btn=>btn.addEventListener('click',()=>{balanceYears=Number(btn.dataset.years);document.querySelectorAll('#periodButtons button').forEach(b=>b.classList.toggle('active',b===btn));updateMonthlyRmd(Math.min(num('conversion'),num('ira')));}));
 recalculate();
 </script>
 </body>
